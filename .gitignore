@@ -1,0 +1,50 @@
+# anything generated here
+ExtractDebug*/*
+ProcessDebug*/*
+ExtractRelease*/*
+ProcessRelease*/*
+Debug*/*
+Release*/*
+
+#	python compiled files
+*pyc
+
+.mypy_cache
+
+#	our test executable(w)
+
+XBRL_Extract
+ProcessXBRL_Extract
+ExtractEDGAR_XBRL
+
+#	log file
+
+*log*
+
+
+# skip test files for now
+
+test_files
+test_directory_list.*
+
+#	any stray library files
+
+*.a
+
+# tags
+
+.tags
+tags
+
+test.py
+
+
+.vscode*/*
+
+.ccls-cache
+
+*.plist
+
+# things here we are not using now and may never use
+
+maybe_later*/*

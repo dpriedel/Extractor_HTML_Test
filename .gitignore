@@ -13,9 +13,7 @@ Release*/*
 
 #	our test executable(w)
 
-XBRL_Extract
-ProcessXBRL_Extract
-ExtractEDGAR_XBRL
+Unit_Test
 
 #	log file
 

@@ -68,10 +68,10 @@
             "-I/extra/gcc/cpp-json/include/",
             "-march=native",
             "-o",
-            "Debug_unit/EDGAR_XML_FileFilter.o",
-            "../ExtractEDGAR_XBRL/src/EDGAR_XML_FileFilter.cpp"
+            "Debug_unit/EDGAR_FileFilter.o",
+            "../ExtractEDGAR_XBRL/src/EDGAR_FileFilter.cpp"
         ],
         "directory": "/home/dpriedel/projects/github/ExtractEDGAR_HTML_Test",
-        "file": "../ExtractEDGAR_XBRL/src/EDGAR_XML_FileFilter.cpp"
+        "file": "../ExtractEDGAR_XBRL/src/EDGAR_FileFilter.cpp"
     }
 ]

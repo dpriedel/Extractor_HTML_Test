@@ -64,6 +64,8 @@ CFG_LIB := -lpthread -lstdc++fs -L$(BOOSTDIR)/lib \
 		-lboost_date_time-mt-d -lboost_iostreams-mt-d -lboost_regex-mt-d \
 		-L/usr/local/lib -lPocoFoundationd -lPocoUtild \
 		-lgmock -lgmock_main -lgtest \
+		-lgumbo \
+		-lgq \
 		-L/usr/lib \
 		-lpugixml \
 		-lpqxx -lpq

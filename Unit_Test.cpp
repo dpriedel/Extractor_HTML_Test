@@ -84,6 +84,9 @@ using Poco::AutoPtr;
 // some specific files for Testing.
 
 constexpr const char* FILE_WITH_HTML_10Q{"/vol_DA/EDGAR/Archives/edgar/data/1046672/0001102624-13-001243.txt"};
+constexpr const char* FILE_WITH_XML_10Q{"/vol_DA/EDGAR/Archives/edgar/data/1460602/0001062993-13-005017.txt"};
+constexpr const char* FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS{"/vol_DA/EDGAR/Archives/edgar/data/1046672/0001102624-13-001243.txt"};
+constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS{"/vol_DA/EDGAR/Archives/edgar/data/1420525/0001420525-09-000028.txt"};
 //constexpr const char* FILE_WITH_XML_10K{"/vol_DA/EDGAR/Archives/edgar/data/google-10k.txt"};
 //constexpr const char* FILE_WITHOUT_XML{"/vol_DA/EDGAR/Archives/edgar/data/841360/0001086380-13-000030.txt"};
 //constexpr const char* EDGAR_DIRECTORY{"/vol_DA/EDGAR/Archives/edgar/data"};
@@ -310,31 +313,34 @@ TEST_F(IdentifyHTMLFilesToUse, ConfirmFileHasHTML)
 
     FileHasHTML filter1;
     auto use_file = filter1(EE::SEC_Header_fields{}, file_content_10Q);
-    ASSERT_THAT(use_file, Eq(true));
+    ASSERT_TRUE(use_file);
 }
 
-//TEST_F(IdentifyXMLFilesToUse, ConfirmFileHasNOXML)
-//{
-//    auto file_content_10Q = LoadXMLDataFileForUse(FILE_WITHOUT_XML);
-//
-//    FileHasXBRL filter1;
-//    auto use_file = filter1(EE::SEC_Header_fields{}, file_content_10Q);
-//    ASSERT_THAT(use_file, Eq(false));
-//}
-//
-//class ValidateCanNavigateDocumentStructure : public Test
-//{
-//};
-//
-//TEST_F(ValidateCanNavigateDocumentStructure, FindSECHeader_10Q)
-//{
-//    auto file_content_10Q = LoadXMLDataFileForUse(FILE_WITH_XML_10Q);
-//
-//    SEC_Header SEC_data;
-//
-//    ASSERT_NO_THROW(SEC_data.UseData(file_content_10Q));
-//}
-//
+TEST_F(IdentifyHTMLFilesToUse, ConfirmFileHasXML)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_XML_10Q);
+
+    FileHasHTML filter1;
+    auto use_file = filter1(EE::SEC_Header_fields{}, file_content_10Q);
+    ASSERT_FALSE(use_file);
+}
+
+class FindAnchorsForFinancialStatements : public Test
+{
+public:
+    std::vector<sview> documents;
+};
+
+TEST_F(FindAnchorsForFinancialStatements, FindAnchors_10Q)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
+    documents = LocateDocumentSections(file_content_10Q);
+
+    auto statement_anchors = FindDocumentAnchorsForFinancialStatements(documents);
+
+    ASSERT_TRUE(3 <= statement_anchors.size() && statement_anchors.size() <= 4);
+}
+
 //TEST_F(ValidateCanNavigateDocumentStructure, FindSECHeader_10K)
 //{
 //    auto file_content_10K = LoadXMLDataFileForUse(FILE_WITH_XML_10K);

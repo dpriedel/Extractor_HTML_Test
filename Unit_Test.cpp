@@ -338,7 +338,8 @@ TEST_F(FindAnchorsForFinancialStatements, FindAnchors_10Q)
 
     auto statement_anchors = FindDocumentAnchorsForFinancialStatements(documents);
 
-    ASSERT_TRUE(3 <= statement_anchors.size() && statement_anchors.size() <= 4);
+//    ASSERT_TRUE(3 <= statement_anchors.size() && statement_anchors.size() <= 4);
+    ASSERT_TRUE(statement_anchors.size() == 4);
 }
 
 //TEST_F(ValidateCanNavigateDocumentStructure, FindSECHeader_10K)

@@ -362,9 +362,23 @@ TEST_F(FindAnchorsForFinancialStatements, FindDollarMultipliers_10Q)
     auto all_anchors = FindAllDocumentAnchors(documents);
     auto statement_anchors = FilterFinancialAnchors(all_anchors);
     auto destination_anchors = FindAnchorDestinations(statement_anchors, all_anchors);
-    auto multipliers = FindDollarMultipliers(destination_anchors);
+    auto multipliers = FindDollarMultipliers(destination_anchors, file_content_10Q);
 
     ASSERT_TRUE(multipliers.size() == 4);
+}
+
+TEST_F(FindAnchorsForFinancialStatements, FindFinancialTables_10Q)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
+    documents = LocateDocumentSections(file_content_10Q);
+
+    auto all_anchors = FindAllDocumentAnchors(documents);
+    auto statement_anchors = FilterFinancialAnchors(all_anchors);
+    auto destination_anchors = FindAnchorDestinations(statement_anchors, all_anchors);
+    auto multipliers = FindDollarMultipliers(destination_anchors, file_content_10Q);
+    auto financial_tables = FindFinancialTables(multipliers, documents);
+
+    ASSERT_TRUE(financial_tables.size() == 4);
 }
 
 //TEST_F(ValidateCanNavigateDocumentStructure, FindSECHeader_10K)

@@ -14,6 +14,7 @@ Release*/*
 #	our test executable(w)
 
 Unit_Test
+EndToEnd_Test
 
 #	log file
 

@@ -43,7 +43,7 @@
 
 #include <gmock/gmock.h>
 
-#include "EDGAR_XML_FileFilter.h"
+#include "EDGAR_FileFilter.h"
 
 
 const fs::path FILE_WITH_XML_10Q{"/vol_DA/EDGAR/Archives/edgar/data/1460602/0001062993-13-005017.txt"};

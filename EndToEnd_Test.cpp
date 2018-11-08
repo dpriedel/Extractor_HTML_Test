@@ -100,6 +100,7 @@ TEST_F(SingleFileEndToEnd, VerifyCanLoadDataToDBForFileWithXML_10Q)
 	std::vector<std::string> tokens{"the_program",
         "--log-level", "debug",
 		"--form", "10-Q",
+        "--mode", "XBRL",
 		"-f", FILE_WITH_XML_10Q.string()
 	};
 

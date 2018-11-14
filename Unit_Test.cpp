@@ -77,7 +77,8 @@ using Poco::Util::AbstractConfiguration;
 using Poco::Util::OptionCallback;
 using Poco::AutoPtr;
 
-#include "EDGAR_FileFilter.h"
+#include "ExtractEDGAR_Utils.h"
+#include "EDGAR_HTML_FileFilter.h"
 #include "SEC_Header.h"
 
 
@@ -379,6 +380,21 @@ TEST_F(FindAnchorsForFinancialStatements, FindFinancialTables_10Q)
     auto financial_tables = FindFinancialTables(multipliers, documents);
 
     ASSERT_TRUE(financial_tables.size() == 4);
+}
+
+TEST_F(FindAnchorsForFinancialStatements, FindBalanceSheet_10Q)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
+    documents = LocateDocumentSections(file_content_10Q);
+
+    auto all_anchors = FindAllDocumentAnchors(documents);
+    auto statement_anchors = FilterFinancialAnchors(all_anchors);
+    auto destination_anchors = FindAnchorDestinations(statement_anchors, all_anchors);
+    auto multipliers = FindDollarMultipliers(destination_anchors, file_content_10Q);
+    auto financial_tables = FindFinancialTables(multipliers, documents);
+    auto balance_sheet = FindBalanceSheet(financial_tables);
+
+    ASSERT_TRUE(! balance_sheet.empty());
 }
 
 //TEST_F(ValidateCanNavigateDocumentStructure, FindSECHeader_10K)

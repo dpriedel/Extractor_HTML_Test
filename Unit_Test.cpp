@@ -363,7 +363,7 @@ TEST_F(FindAnchorsForFinancialStatements, FindDollarMultipliers_10Q)
     auto all_anchors = FindAllDocumentAnchors(documents);
     auto statement_anchors = FilterFinancialAnchors(all_anchors);
     auto destination_anchors = FindAnchorDestinations(statement_anchors, all_anchors);
-    auto multipliers = FindDollarMultipliers(destination_anchors, file_content_10Q);
+    auto multipliers = FindDollarMultipliers(destination_anchors);
 
     ASSERT_TRUE(multipliers.size() == 4);
 }
@@ -376,8 +376,13 @@ TEST_F(FindAnchorsForFinancialStatements, FindFinancialTables_10Q)
     auto all_anchors = FindAllDocumentAnchors(documents);
     auto statement_anchors = FilterFinancialAnchors(all_anchors);
     auto destination_anchors = FindAnchorDestinations(statement_anchors, all_anchors);
-    auto multipliers = FindDollarMultipliers(destination_anchors, file_content_10Q);
-    auto financial_tables = FindFinancialTables(multipliers, documents);
+    auto multipliers = FindDollarMultipliers(destination_anchors);
+    auto financial_tables = FindFinancialTables(multipliers);
+
+    for (const auto& t : financial_tables)
+    {
+        std::cout << "offset: " << t.data() - file_content_10Q.data() << '\n';
+    }
 
     ASSERT_TRUE(financial_tables.size() == 4);
 }
@@ -390,11 +395,26 @@ TEST_F(FindAnchorsForFinancialStatements, FindBalanceSheet_10Q)
     auto all_anchors = FindAllDocumentAnchors(documents);
     auto statement_anchors = FilterFinancialAnchors(all_anchors);
     auto destination_anchors = FindAnchorDestinations(statement_anchors, all_anchors);
-    auto multipliers = FindDollarMultipliers(destination_anchors, file_content_10Q);
-    auto financial_tables = FindFinancialTables(multipliers, documents);
+    auto multipliers = FindDollarMultipliers(destination_anchors);
+    auto financial_tables = FindFinancialTables(multipliers);
     auto balance_sheet = FindBalanceSheet(financial_tables);
 
     ASSERT_TRUE(! balance_sheet.empty());
+}
+
+TEST_F(FindAnchorsForFinancialStatements, FindStatementOfOperations_10Q)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
+    documents = LocateDocumentSections(file_content_10Q);
+
+    auto all_anchors = FindAllDocumentAnchors(documents);
+    auto statement_anchors = FilterFinancialAnchors(all_anchors);
+    auto destination_anchors = FindAnchorDestinations(statement_anchors, all_anchors);
+    auto multipliers = FindDollarMultipliers(destination_anchors);
+    auto financial_tables = FindFinancialTables(multipliers);
+    auto ops_sheet = FindStatementOfOperations(financial_tables);
+
+    ASSERT_TRUE(! ops_sheet.empty());
 }
 
 //TEST_F(ValidateCanNavigateDocumentStructure, FindSECHeader_10K)

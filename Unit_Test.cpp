@@ -417,6 +417,37 @@ TEST_F(FindAnchorsForFinancialStatements, FindStatementOfOperations_10Q)
     ASSERT_TRUE(! ops_sheet.empty());
 }
 
+TEST_F(FindAnchorsForFinancialStatements, FindCashFlowStatement_10Q)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
+    documents = LocateDocumentSections(file_content_10Q);
+
+    auto all_anchors = FindAllDocumentAnchors(documents);
+    auto statement_anchors = FilterFinancialAnchors(all_anchors);
+    auto destination_anchors = FindAnchorDestinations(statement_anchors, all_anchors);
+    auto multipliers = FindDollarMultipliers(destination_anchors);
+    auto financial_tables = FindFinancialTables(multipliers);
+    auto cash_flow = FindCashFlowStatement(financial_tables);
+
+    ASSERT_TRUE(! cash_flow.empty());
+}
+
+TEST_F(FindAnchorsForFinancialStatements, FindStockholderEquity_10Q)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
+    documents = LocateDocumentSections(file_content_10Q);
+
+    auto all_anchors = FindAllDocumentAnchors(documents);
+    auto statement_anchors = FilterFinancialAnchors(all_anchors);
+    auto destination_anchors = FindAnchorDestinations(statement_anchors, all_anchors);
+    auto multipliers = FindDollarMultipliers(destination_anchors);
+    auto financial_tables = FindFinancialTables(multipliers);
+    auto sh_equity = FindStatementOfStockholderEquity(financial_tables);
+
+    std::cout << sh_equity << '\n';
+    ASSERT_TRUE(! sh_equity.empty());
+}
+
 //TEST_F(ValidateCanNavigateDocumentStructure, FindSECHeader_10K)
 //{
 //    auto file_content_10K = LoadXMLDataFileForUse(FILE_WITH_XML_10K);

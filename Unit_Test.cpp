@@ -377,7 +377,7 @@ TEST_F(FindAnchorsForFinancialStatements, FindFinancialTables_10Q)
     auto statement_anchors = FilterFinancialAnchors(all_anchors);
     auto destination_anchors = FindAnchorDestinations(statement_anchors, all_anchors);
     auto multipliers = FindDollarMultipliers(destination_anchors);
-    auto financial_tables = FindFinancialTables(multipliers);
+    auto financial_tables = LocateFinancialTables(multipliers);
 
     for (const auto& t : financial_tables)
     {
@@ -396,10 +396,10 @@ TEST_F(FindAnchorsForFinancialStatements, FindBalanceSheet_10Q)
     auto statement_anchors = FilterFinancialAnchors(all_anchors);
     auto destination_anchors = FindAnchorDestinations(statement_anchors, all_anchors);
     auto multipliers = FindDollarMultipliers(destination_anchors);
-    auto financial_tables = FindFinancialTables(multipliers);
-    auto balance_sheet = FindBalanceSheet(financial_tables);
+    auto financial_tables = LocateFinancialTables(multipliers);
+    auto balance_sheet = ExtractBalanceSheet(financial_tables);
 
-    ASSERT_TRUE(! balance_sheet.empty());
+    ASSERT_TRUE(! balance_sheet.the_data_.empty());
 }
 
 TEST_F(FindAnchorsForFinancialStatements, FindStatementOfOperations_10Q)
@@ -411,10 +411,10 @@ TEST_F(FindAnchorsForFinancialStatements, FindStatementOfOperations_10Q)
     auto statement_anchors = FilterFinancialAnchors(all_anchors);
     auto destination_anchors = FindAnchorDestinations(statement_anchors, all_anchors);
     auto multipliers = FindDollarMultipliers(destination_anchors);
-    auto financial_tables = FindFinancialTables(multipliers);
-    auto ops_sheet = FindStatementOfOperations(financial_tables);
+    auto financial_tables = LocateFinancialTables(multipliers);
+    auto ops_sheet = ExtractStatementOfOperations(financial_tables);
 
-    ASSERT_TRUE(! ops_sheet.empty());
+    ASSERT_TRUE(! ops_sheet.the_data_.empty());
 }
 
 TEST_F(FindAnchorsForFinancialStatements, FindCashFlowStatement_10Q)
@@ -426,10 +426,10 @@ TEST_F(FindAnchorsForFinancialStatements, FindCashFlowStatement_10Q)
     auto statement_anchors = FilterFinancialAnchors(all_anchors);
     auto destination_anchors = FindAnchorDestinations(statement_anchors, all_anchors);
     auto multipliers = FindDollarMultipliers(destination_anchors);
-    auto financial_tables = FindFinancialTables(multipliers);
-    auto cash_flow = FindCashFlowStatement(financial_tables);
+    auto financial_tables = LocateFinancialTables(multipliers);
+    auto cash_flow = ExtractCashFlowStatement(financial_tables);
 
-    ASSERT_TRUE(! cash_flow.empty());
+    ASSERT_TRUE(! cash_flow.the_data_.empty());
 }
 
 TEST_F(FindAnchorsForFinancialStatements, FindStockholderEquity_10Q)
@@ -441,11 +441,10 @@ TEST_F(FindAnchorsForFinancialStatements, FindStockholderEquity_10Q)
     auto statement_anchors = FilterFinancialAnchors(all_anchors);
     auto destination_anchors = FindAnchorDestinations(statement_anchors, all_anchors);
     auto multipliers = FindDollarMultipliers(destination_anchors);
-    auto financial_tables = FindFinancialTables(multipliers);
-    auto sh_equity = FindStatementOfStockholderEquity(financial_tables);
+    auto financial_tables = LocateFinancialTables(multipliers);
+    auto sh_equity = ExtractStatementOfStockholdersEquity(financial_tables);
 
-    std::cout << sh_equity << '\n';
-    ASSERT_TRUE(! sh_equity.empty());
+    ASSERT_TRUE(! sh_equity.the_data_.empty());
 }
 
 //TEST_F(ValidateCanNavigateDocumentStructure, FindSECHeader_10K)

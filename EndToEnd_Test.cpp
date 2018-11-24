@@ -56,13 +56,15 @@ const fs::path BAD_FILE2{"/vol_DA/EDGAR/Edgar_forms/1000180/10-K/0001000180-16-0
 const fs::path NO_SHARES_OUT{"/vol_DA/EDGAR/Edgar_forms/1023453/10-K/0001144204-12-017368.txt"};
 const fs::path MISSING_VALUES_LIST{"../ExtractEDGAR_XBRL_Test/missing_values_files.txt"};
 
+constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS{"/vol_DA/EDGAR/Archives/edgar/data/1420525/0001420525-09-000028.txt"};
+
 int G_ARGC = 0;
 char** G_ARGV = nullptr;
 
 using namespace testing;
 
 
-class SingleFileEndToEnd : public Test
+class SingleFileEndToEnd_XBRL : public Test
 {
 	public:
 
@@ -93,7 +95,7 @@ class SingleFileEndToEnd : public Test
 };
 
 
-TEST_F(SingleFileEndToEnd, VerifyCanLoadDataToDBForFileWithXML_10QXBRL)
+TEST_F(SingleFileEndToEnd_XBRL, VerifyCanLoadDataToDBForFileWithXML_10QXBRL)
 {
 	//	NOTE: the program name 'the_program' in the command line below is ignored in the
 	//	the test program.
@@ -133,7 +135,7 @@ TEST_F(SingleFileEndToEnd, VerifyCanLoadDataToDBForFileWithXML_10QXBRL)
 	ASSERT_EQ(CountRows(), 194);
 }
 
-TEST_F(SingleFileEndToEnd, VerifyLoadsNoDataToDBForFileWithXML_10QHTML)
+TEST_F(SingleFileEndToEnd_XBRL, VerifyLoadsNoDataToDBForFileWithXML_10QHTML)
 {
 	//	NOTE: the program name 'the_program' in the command line below is ignored in the
 	//	the test program.
@@ -171,6 +173,78 @@ TEST_F(SingleFileEndToEnd, VerifyLoadsNoDataToDBForFileWithXML_10QHTML)
 		throw;
 	}
 	ASSERT_EQ(CountRows(), 0);
+}
+
+class SingleFileEndToEnd_HTML : public Test
+{
+	public:
+
+        void SetUp() override
+        {
+		    pqxx::connection c{"dbname=edgar_extracts user=edgar_pg"};
+		    pqxx::work trxn{c};
+
+		    // make sure the DB is empty before we start
+
+		    trxn.exec("DELETE FROM html_extracts.edgar_filing_id");
+		    trxn.commit();
+			c.disconnect();
+        }
+
+		int CountRows()
+		{
+		    pqxx::connection c{"dbname=edgar_extracts user=edgar_pg"};
+		    pqxx::work trxn{c};
+
+		    // make sure the DB is empty before we start
+
+		    auto row = trxn.exec1("SELECT count(*) FROM html_extracts.edgar_filing_data");
+		    trxn.commit();
+			c.disconnect();
+			return row[0].as<int>();
+		}
+};
+
+TEST_F(SingleFileEndToEnd_HTML, VerifyCanLoadDataToDBForFileWithHTML_10QHTML)
+{
+	//	NOTE: the program name 'the_program' in the command line below is ignored in the
+	//	the test program.
+
+	std::vector<std::string> tokens{"the_program",
+        "--log-level", "debug",
+		"--form", "10-Q",
+        "--mode", "HTML",
+		"-f", FILE_WITH_HTML_10Q_WITH_ANCHORS
+	};
+
+    ExtractEDGAR_XBRLApp myApp;
+	try
+	{
+        myApp.init(tokens);
+
+		decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
+		myApp.logger().information(std::string("\n\nTest: ") + test_info->name() + " test case: " + test_info->test_case_name() + "\n\n");
+
+        myApp.run();
+	}
+
+    // catch any problems trying to setup application
+
+	catch (const std::exception& theProblem)
+	{
+		// poco_fatal(myApp->logger(), theProblem.what());
+
+		myApp.logger().error(std::string("Something fundamental went wrong: ") + theProblem.what());
+		throw;	//	so test framework will get it too.
+	}
+	catch (...)
+	{		// handle exception: unspecified
+		myApp.logger().error("Something totally unexpected happened.");
+		throw;
+	}
+
+    // looking for just 1 row from each section
+	ASSERT_EQ(CountRows(), 4);
 }
 //TEST_F(SingleFileEndToEnd, VerifyCanLoadDataToDBForFileWithXML_NoNamespace_10Q)
 //{

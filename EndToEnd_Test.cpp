@@ -113,7 +113,8 @@ TEST_F(SingleFileEndToEnd_XBRL, VerifyCanLoadDataToDBForFileWithXML_10QXBRL)
         myApp.init(tokens);
 
 		decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
-		myApp.logger().information(std::string("\n\nTest: ") + test_info->name() + " test case: " + test_info->test_case_name() + "\n\n");
+		myApp.logger().information(std::string("\n\nTest: ") + test_info->name() + " test case: "
+                + test_info->test_case_name() + "\n\n");
 
         myApp.run();
 	}
@@ -153,7 +154,8 @@ TEST_F(SingleFileEndToEnd_XBRL, VerifyLoadsNoDataToDBForFileWithXML_10QHTML)
         myApp.init(tokens);
 
 		decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
-		myApp.logger().information(std::string("\n\nTest: ") + test_info->name() + " test case: " + test_info->test_case_name() + "\n\n");
+		myApp.logger().information(std::string("\n\nTest: ") + test_info->name() + " test case: "
+                + test_info->test_case_name() + "\n\n");
 
         myApp.run();
 	}
@@ -223,7 +225,8 @@ TEST_F(SingleFileEndToEnd_HTML, VerifyCanLoadDataToDBForFileWithHTML_10QHTML)
         myApp.init(tokens);
 
 		decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
-		myApp.logger().information(std::string("\n\nTest: ") + test_info->name() + " test case: " + test_info->test_case_name() + "\n\n");
+		myApp.logger().information(std::string("\n\nTest: ") + test_info->name() + " test case: "
+                + test_info->test_case_name() + "\n\n");
 
         myApp.run();
 	}
@@ -404,58 +407,58 @@ TEST_F(SingleFileEndToEnd_HTML, VerifyCanLoadDataToDBForFileWithHTML_10QHTML)
 //	ASSERT_EQ(CountRows(), 1668);
 //}
 //
-//class ProcessFolderEndtoEnd : public Test
-//{
-//	public:
-//
-//        void SetUp() override
-//        {
-//		    pqxx::connection c{"dbname=edgar_extracts user=edgar_pg"};
-//		    pqxx::work trxn{c};
-//
-//		    // make sure the DB is empty before we start
-//
-//		    trxn.exec("DELETE FROM xbrl_extracts.edgar_filing_id");
-//		    trxn.commit();
-//			c.disconnect();
-//        }
-//
-//		int CountRows()
-//		{
-//		    pqxx::connection c{"dbname=edgar_extracts user=edgar_pg"};
-//		    pqxx::work trxn{c};
-//
-//		    auto row = trxn.exec1("SELECT count(*) FROM xbrl_extracts.edgar_filing_data");
-//		    trxn.commit();
-//			c.disconnect();
-//			return row[0].as<int>();
-//		}
-//
-//		int CountMissingValues()
-//		{
-//		    pqxx::connection c{"dbname=edgar_extracts user=edgar_pg"};
-//		    pqxx::work trxn{c};
-//
-//		    auto row = trxn.exec1("SELECT count(*) FROM xbrl_extracts.edgar_filing_data WHERE user_label = 'Missing Value'");
-//		    trxn.commit();
-//			c.disconnect();
-//			return row[0].as<int>();
-//		}
-//
-//		int CountFilings()
-//		{
-//		    pqxx::connection c{"dbname=edgar_extracts user=edgar_pg"};
-//		    pqxx::work trxn{c};
-//
-//		    // make sure the DB is empty before we start
-//
-//		    auto row = trxn.exec1("SELECT count(*) FROM xbrl_extracts.edgar_filing_id");
-//		    trxn.commit();
-//			c.disconnect();
-//			return row[0].as<int>();
-//		}
-//};
-//
+class ProcessFolderEndtoEnd : public Test
+{
+	public:
+
+        void SetUp() override
+        {
+		    pqxx::connection c{"dbname=edgar_extracts user=edgar_pg"};
+		    pqxx::work trxn{c};
+
+		    // make sure the DB is empty before we start
+
+		    trxn.exec("DELETE FROM html_extracts.edgar_filing_id");
+		    trxn.commit();
+			c.disconnect();
+        }
+
+		int CountRows()
+		{
+		    pqxx::connection c{"dbname=edgar_extracts user=edgar_pg"};
+		    pqxx::work trxn{c};
+
+		    auto row = trxn.exec1("SELECT count(*) FROM html_extracts.edgar_filing_data");
+		    trxn.commit();
+			c.disconnect();
+			return row[0].as<int>();
+		}
+
+		int CountMissingValues()
+		{
+		    pqxx::connection c{"dbname=edgar_extracts user=edgar_pg"};
+		    pqxx::work trxn{c};
+
+		    auto row = trxn.exec1("SELECT count(*) FROM html_extracts.edgar_filing_data WHERE user_label = 'Missing Value'");
+		    trxn.commit();
+			c.disconnect();
+			return row[0].as<int>();
+		}
+
+		int CountFilings()
+		{
+		    pqxx::connection c{"dbname=edgar_extracts user=edgar_pg"};
+		    pqxx::work trxn{c};
+
+		    // make sure the DB is empty before we start
+
+		    auto row = trxn.exec1("SELECT count(*) FROM html_extracts.edgar_filing_id");
+		    trxn.commit();
+			c.disconnect();
+			return row[0].as<int>();
+		}
+};
+
 //TEST_F(ProcessFolderEndtoEnd, WorkWithFileList1)
 //{
 //	//	NOTE: the program name 'the_program' in the command line below is ignored in the
@@ -494,45 +497,47 @@ TEST_F(SingleFileEndToEnd_HTML, VerifyCanLoadDataToDBForFileWithHTML_10QHTML)
 //	ASSERT_EQ(CountFilings(), 0);
 //}
 //
-//TEST_F(ProcessFolderEndtoEnd, WorkWithFileList2)
-//{
-//	//	NOTE: the program name 'the_program' in the command line below is ignored in the
-//	//	the test program.
-//
-//	std::vector<std::string> tokens{"the_program",
-//        "--log-level", "debug",
-//		"--form", "10-K",
-//		"--form-dir", EDGAR_DIRECTORY.string()
-//    };
-//
-//    ExtractEDGAR_XBRLApp myApp;
-//	try
-//	{
-//        myApp.init(tokens);
-//
-//		decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
-//		myApp.logger().information(std::string("\n\nTest: ") + test_info->name() + " test case: " + test_info->test_case_name() + "\n\n");
-//
-//        myApp.run();
-//	}
-//
-//    // catch any problems trying to setup application
-//
-//	catch (const std::exception& theProblem)
-//	{
-//		// poco_fatal(myApp->logger(), theProblem.what());
-//
-//		myApp.logger().error(std::string("Something fundamental went wrong: ") + theProblem.what());
-//		throw;	//	so test framework will get it too.
-//	}
-//	catch (...)
-//	{		// handle exception: unspecified
-//		myApp.logger().error("Something totally unexpected happened.");
-//		throw;
-//	}
-//	ASSERT_EQ(CountFilings(), 1);
-//}
-//
+TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
+{
+	//	NOTE: the program name 'the_program' in the command line below is ignored in the
+	//	the test program.
+
+	std::vector<std::string> tokens{"the_program",
+        "--log-level", "debug",
+		"--form", "10-Q",
+        "--mode", "HTML",
+		"--form-dir", EDGAR_DIRECTORY.string()
+    };
+
+    ExtractEDGAR_XBRLApp myApp;
+	try
+	{
+        myApp.init(tokens);
+
+		decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
+		myApp.logger().information(std::string("\n\nTest: ") + test_info->name() + " test case: "
+                + test_info->test_case_name() + "\n\n");
+
+        myApp.run();
+	}
+
+    // catch any problems trying to setup application
+
+	catch (const std::exception& theProblem)
+	{
+		// poco_fatal(myApp->logger(), theProblem.what());
+
+		myApp.logger().error(std::string("Something fundamental went wrong: ") + theProblem.what());
+		throw;	//	so test framework will get it too.
+	}
+	catch (...)
+	{		// handle exception: unspecified
+		myApp.logger().error("Something totally unexpected happened.");
+		throw;
+	}
+	ASSERT_EQ(CountFilings(), 1);
+}
+
 //TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3_10Q)
 //{
 //	//	NOTE: the program name 'the_program' in the command line below is ignored in the

@@ -88,8 +88,9 @@ constexpr const char* FILE_WITH_HTML_10Q{"/vol_DA/EDGAR/Archives/edgar/data/1046
 constexpr const char* FILE_WITH_XML_10Q{"/vol_DA/EDGAR/Archives/edgar/data/1460602/0001062993-13-005017.txt"};
 constexpr const char* FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS{"/vol_DA/EDGAR/Archives/edgar/data/1046672/0001102624-13-001243.txt"};
 constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS{"/vol_DA/EDGAR/Archives/edgar/data/1420525/0001420525-09-000028.txt"};
+//constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS{"/tmp/x1.html"};
 //constexpr const char* FILE_WITH_XML_10K{"/vol_DA/EDGAR/Archives/edgar/data/google-10k.txt"};
-//constexpr const char* FILE_WITHOUT_XML{"/vol_DA/EDGAR/Archives/edgar/data/841360/0001086380-13-000030.txt"};
+constexpr const char* FILE_WITH_HTML_10Q_MINIMAL_DATA{"/vol_DA/EDGAR/Archives/edgar/data/841360/0001086380-13-000030.txt"};
 //constexpr const char* EDGAR_DIRECTORY{"/vol_DA/EDGAR/Archives/edgar/data"};
 //constexpr const char* FILE_NO_NAMESPACE_10Q{"/vol_DA/EDGAR/Archives/edgar/data/68270/0000068270-13-000059.txt"};
 //constexpr const char* FILE_SOME_NAMESPACE_10Q{"/vol_DA/EDGAR/Archives/edgar/data/1552979/0001214782-13-000386.txt"};
@@ -338,6 +339,15 @@ TEST_F(FindAnchorsForFinancialStatements, FindAnchors_10Q)
     documents = LocateDocumentSections(file_content_10Q);
 
     auto all_anchors = FindAllDocumentAnchors(documents);
+    std::cout << "\nAll anchors: \n";
+    for (const auto& anchor : all_anchors)
+    {
+        std::cout
+            << "HREF: " << anchor.href
+            << "\tNAME: " << anchor.name
+            << "\tTEXT: " << anchor.text
+            << "\tCONTENT: " << anchor.anchor_content << '\n';
+    }
     auto statement_anchors = FilterFinancialAnchors(all_anchors);
 
     ASSERT_TRUE(statement_anchors.size() == 4);
@@ -440,6 +450,57 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections)
     auto all_sections = ExtractFinancialStatements(file_content_10Q);
 
     ASSERT_TRUE(all_sections.is_complete());
+}
+
+class ProblemFiles_10Q : public Test
+{
+
+};
+
+TEST_F(ProblemFiles_10Q, FindAnchors_10Q)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
+    auto documents = LocateDocumentSections(file_content_10Q);
+
+    auto all_anchors = FindAllDocumentAnchors(documents);
+    std::cout << "\nAll anchors: \n";
+    for (const auto& anchor : all_anchors)
+    {
+        std::cout << anchor.href << '\t' << anchor.name << '\t' << anchor.text << '\t' << anchor.anchor_content << '\n';
+    }
+    auto statement_anchors = FilterFinancialAnchors(all_anchors);
+    std::cout << "\nFinancial anchors: \n";
+    for (const auto& anchor : statement_anchors)
+    {
+        std::cout << anchor.href << '\t' << anchor.name << '\t' << anchor.text << '\t' << anchor.anchor_content << '\n';
+    }
+
+    ASSERT_TRUE(statement_anchors.size() == 3);
+}
+
+TEST_F(ProblemFiles_10Q, FileWithMinimalData)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
+
+    auto documents = LocateDocumentSections(file_content_10Q);
+
+    auto all_anchors = FindAllDocumentAnchors(documents);
+    std::cout << "\nAll anchors: \n";
+    for (const auto& anchor : all_anchors)
+    {
+        std::cout << anchor.href << '\t' << anchor.name << '\t' << anchor.text << '\t' << anchor.anchor_content << '\n';
+    }
+    auto statement_anchors = FilterFinancialAnchors(all_anchors);
+    std::cout << "\nFinancial anchors: \n";
+    for (const auto& anchor : statement_anchors)
+    {
+        std::cout << anchor.href << '\t' << anchor.name << '\t' << anchor.text << '\t' << anchor.anchor_content << '\n';
+    }
+
+    ASSERT_TRUE(statement_anchors.size() == 3);
+//    auto all_sections = ExtractFinancialStatements(file_content_10Q);
+//
+//    ASSERT_TRUE(all_sections.is_complete());
 }
 
 //TEST_F(ValidateCanNavigateDocumentStructure, FindSECHeader_10K)

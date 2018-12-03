@@ -69,7 +69,6 @@ CFG_LIB := -lpthread -lstdc++fs -L$(BOOSTDIR)/lib \
 		-lgumbo \
 		-lgq \
 		-L/usr/lib \
-		-ltidy \
 		-lpugixml \
 		-lpqxx -lpq
 

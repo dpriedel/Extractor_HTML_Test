@@ -353,6 +353,35 @@ TEST_F(FindAnchorsForFinancialStatements, FindAnchors_10Q)
     ASSERT_TRUE(statement_anchors.size() == 4);
 }
 
+TEST_F(FindAnchorsForFinancialStatements, FindAnchorsMinimalHTML_10Q)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
+    documents = LocateDocumentSections(file_content_10Q);
+
+    auto all_anchors = FindAllDocumentAnchors(documents);
+    std::cout << "\nAll anchors: \n";
+    for (const auto& anchor : all_anchors)
+    {
+        std::cout
+            << "HREF: " << anchor.href
+            << "\tNAME: " << anchor.name
+            << "\tTEXT: " << anchor.text
+            << "\tCONTENT: " << anchor.anchor_content << '\n';
+    }
+    auto statement_anchors = FilterFinancialAnchors(all_anchors);
+    std::cout << "\nSelected Anchors: \n";
+    for (const auto& anchor : statement_anchors)
+    {
+        std::cout
+            << "HREF: " << anchor.href
+            << "\tNAME: " << anchor.name
+            << "\tTEXT: " << anchor.text
+            << "\tCONTENT: " << anchor.anchor_content << '\n';
+    }
+
+    ASSERT_TRUE(statement_anchors.size() == 3);
+}
+
 TEST_F(FindAnchorsForFinancialStatements, FindAnchorDestinations_10Q)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
@@ -363,6 +392,27 @@ TEST_F(FindAnchorsForFinancialStatements, FindAnchorDestinations_10Q)
     auto destination_anchors = FindAnchorDestinations(statement_anchors, all_anchors);
 
     ASSERT_TRUE(destination_anchors.size() == 4);
+}
+
+TEST_F(FindAnchorsForFinancialStatements, FindAnchorDestinationsMinimalHTML_10Q)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
+    documents = LocateDocumentSections(file_content_10Q);
+
+    auto all_anchors = FindAllDocumentAnchors(documents);
+    auto statement_anchors = FilterFinancialAnchors(all_anchors);
+    auto destination_anchors = FindAnchorDestinations(statement_anchors, all_anchors);
+    std::cout << "\nDestination Anchors: \n";
+    for (const auto& anchor : destination_anchors)
+    {
+        std::cout
+            << "HREF: " << anchor.href
+            << "\tNAME: " << anchor.name
+            << "\tTEXT: " << anchor.text
+            << "\tCONTENT: " << anchor.anchor_content << '\n';
+    }
+
+    ASSERT_TRUE(destination_anchors.size() == 3);
 }
 
 class FindFinancialStatements_10Q : public Test
@@ -452,6 +502,23 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections)
     ASSERT_TRUE(all_sections.is_complete());
 }
 
+TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSectionsMinimalHTMLData)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
+
+    auto all_sections = ExtractFinancialStatements(file_content_10Q);
+
+    std::cout << "\n\nBalance Sheet\n";
+    std::cout.write(all_sections.balance_sheet_.the_data_.data(), 500);
+    std::cout << "\n\nCash Flow\n";
+    std::cout.write(all_sections.cash_flows_.the_data_.data(), 500);
+    std::cout << "\n\nStmt of Operations\n";
+    std::cout.write(all_sections.statement_of_operations_.the_data_.data(), 500);
+    std::cout << "\n\nShareholder Equity\n";
+    std::cout.write(all_sections.stockholders_equity_.the_data_.data(), 500);
+    ASSERT_TRUE(all_sections.is_complete());
+}
+
 class ProblemFiles_10Q : public Test
 {
 
@@ -459,7 +526,7 @@ class ProblemFiles_10Q : public Test
 
 TEST_F(ProblemFiles_10Q, FindAnchors_10Q)
 {
-    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
     auto documents = LocateDocumentSections(file_content_10Q);
 
     auto all_anchors = FindAllDocumentAnchors(documents);
@@ -475,7 +542,7 @@ TEST_F(ProblemFiles_10Q, FindAnchors_10Q)
         std::cout << anchor.href << '\t' << anchor.name << '\t' << anchor.text << '\t' << anchor.anchor_content << '\n';
     }
 
-    ASSERT_TRUE(statement_anchors.size() == 3);
+    ASSERT_TRUE(statement_anchors.size() == 4);
 }
 
 TEST_F(ProblemFiles_10Q, FileWithMinimalData)
@@ -497,7 +564,22 @@ TEST_F(ProblemFiles_10Q, FileWithMinimalData)
         std::cout << anchor.href << '\t' << anchor.name << '\t' << anchor.text << '\t' << anchor.anchor_content << '\n';
     }
 
-    ASSERT_TRUE(statement_anchors.size() == 3);
+    EXPECT_TRUE(statement_anchors.size() == 3);
+
+    auto destination_anchors = FindAnchorDestinations(statement_anchors, all_anchors);
+    EXPECT_TRUE(destination_anchors.size() == 3);
+
+    auto multipliers = FindDollarMultipliers(destination_anchors);
+    EXPECT_TRUE(multipliers.size() == 3);
+
+    auto financial_tables = LocateFinancialTables(multipliers);
+    std::cout << "\nFinancial tables: \n";
+    for (const auto& table : financial_tables)
+    {
+        std::cout << table << '\n';
+    }
+
+    ASSERT_TRUE(financial_tables.size() == 3);
 //    auto all_sections = ExtractFinancialStatements(file_content_10Q);
 //
 //    ASSERT_TRUE(all_sections.is_complete());

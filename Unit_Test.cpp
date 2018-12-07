@@ -88,9 +88,13 @@ constexpr const char* FILE_WITH_HTML_10Q{"/vol_DA/EDGAR/Archives/edgar/data/1046
 constexpr const char* FILE_WITH_XML_10Q{"/vol_DA/EDGAR/Archives/edgar/data/1460602/0001062993-13-005017.txt"};
 constexpr const char* FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS{"/vol_DA/EDGAR/Archives/edgar/data/1046672/0001102624-13-001243.txt"};
 constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS{"/vol_DA/EDGAR/Archives/edgar/data/1420525/0001420525-09-000028.txt"};
+constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS2{"/vol_DA/EDGAR/Archives/edgar/data/1434743/0001193125-09-235665.txt"};
+constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS3{"/vol_DA/EDGAR/Archives/edgar/data/1326688/0001104659-09-064933.txt"};
+constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS4{"/vol_DA/EDGAR/Archives/edgar/data/1466739/0001002014-13-000458.txt"};
 //constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS{"/tmp/x1.html"};
 //constexpr const char* FILE_WITH_XML_10K{"/vol_DA/EDGAR/Archives/edgar/data/google-10k.txt"};
 constexpr const char* FILE_WITH_HTML_10Q_MINIMAL_DATA{"/vol_DA/EDGAR/Archives/edgar/data/841360/0001086380-13-000030.txt"};
+constexpr const char* FILE_WITH_HTML_10Q_MINIMAL_DATA2{"/vol_DA/EDGAR/Archives/edgar/data/841360/0001086380-13-000031.txt"};
 //constexpr const char* EDGAR_DIRECTORY{"/vol_DA/EDGAR/Archives/edgar/data"};
 //constexpr const char* FILE_NO_NAMESPACE_10Q{"/vol_DA/EDGAR/Archives/edgar/data/68270/0000068270-13-000059.txt"};
 //constexpr const char* FILE_SOME_NAMESPACE_10Q{"/vol_DA/EDGAR/Archives/edgar/data/1552979/0001214782-13-000386.txt"};
@@ -443,14 +447,14 @@ TEST_F(FindFinancialStatements_10Q , FindDollarMultipliers_10Q)
     ASSERT_TRUE(multipliers.size() == 4);
 }
 
-TEST_F(FindFinancialStatements_10Q, FindFinancialTables_10Q)
-{
-    auto multipliers = FindDollarMultipliers(destination_anchors);
-    auto financial_tables = LocateFinancialTables(multipliers);
-
-    ASSERT_TRUE(financial_tables.size() == 4);
-}
-
+//TEST_F(FindFinancialStatements_10Q, FindFinancialTables_10Q)
+//{
+//    auto multipliers = FindDollarMultipliers(destination_anchors);
+//    auto financial_tables = LocateFinancialTables(multipliers);
+//
+//    ASSERT_TRUE(financial_tables.size() == 4);
+//}
+//
 TEST_F(FindFinancialStatements_10Q, FindBalanceSheet_10Q)
 {
     auto multipliers = FindDollarMultipliers(destination_anchors);
@@ -502,6 +506,57 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections)
     ASSERT_TRUE(all_sections.is_complete());
 }
 
+TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections2)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS2);
+
+    auto all_sections = ExtractFinancialStatements(file_content_10Q);
+    std::cout << "\n\nBalance Sheet\n";
+    std::cout.write(all_sections.balance_sheet_.the_data_.data(), 500);
+    std::cout << "\n\nCash Flow\n";
+    std::cout.write(all_sections.cash_flows_.the_data_.data(), 500);
+    std::cout << "\n\nStmt of Operations\n";
+    std::cout.write(all_sections.statement_of_operations_.the_data_.data(), 500);
+    std::cout << "\n\nShareholder Equity\n";
+    std::cout.write(all_sections.stockholders_equity_.the_data_.data(), std::min(500UL, all_sections.stockholders_equity_.the_data_.size()));
+
+    ASSERT_TRUE(all_sections.is_complete());
+}
+
+TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections3)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS3);
+
+    auto all_sections = ExtractFinancialStatements(file_content_10Q);
+    std::cout << "\n\nBalance Sheet\n";
+    std::cout.write(all_sections.balance_sheet_.the_data_.data(), 500);
+    std::cout << "\n\nCash Flow\n";
+    std::cout.write(all_sections.cash_flows_.the_data_.data(), 500);
+    std::cout << "\n\nStmt of Operations\n";
+    std::cout.write(all_sections.statement_of_operations_.the_data_.data(), 500);
+    std::cout << "\n\nShareholder Equity\n";
+    std::cout.write(all_sections.stockholders_equity_.the_data_.data(), std::min(500UL, all_sections.stockholders_equity_.the_data_.size()));
+
+    ASSERT_TRUE(all_sections.is_complete());
+}
+
+TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections4)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS4);
+
+    auto all_sections = ExtractFinancialStatements(file_content_10Q);
+    std::cout << "\n\nBalance Sheet\n";
+    std::cout.write(all_sections.balance_sheet_.the_data_.data(), 500);
+    std::cout << "\n\nCash Flow\n";
+    std::cout.write(all_sections.cash_flows_.the_data_.data(), 500);
+    std::cout << "\n\nStmt of Operations\n";
+    std::cout.write(all_sections.statement_of_operations_.the_data_.data(), 500);
+    std::cout << "\n\nShareholder Equity\n";
+    std::cout.write(all_sections.stockholders_equity_.the_data_.data(), std::min(500UL, all_sections.stockholders_equity_.the_data_.size()));
+
+    ASSERT_TRUE(all_sections.is_complete());
+}
+
 TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSectionsMinimalHTMLData)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
@@ -515,7 +570,7 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSectionsMinimalHTMLData)
     std::cout << "\n\nStmt of Operations\n";
     std::cout.write(all_sections.statement_of_operations_.the_data_.data(), 500);
     std::cout << "\n\nShareholder Equity\n";
-    std::cout.write(all_sections.stockholders_equity_.the_data_.data(), 500);
+    std::cout.write(all_sections.stockholders_equity_.the_data_.data(), std::min(500UL, all_sections.stockholders_equity_.the_data_.size()));
     ASSERT_TRUE(all_sections.is_complete());
 }
 
@@ -552,17 +607,17 @@ TEST_F(ProblemFiles_10Q, FileWithMinimalData)
     auto documents = LocateDocumentSections(file_content_10Q);
 
     auto all_anchors = FindAllDocumentAnchors(documents);
-    std::cout << "\nAll anchors: \n";
-    for (const auto& anchor : all_anchors)
-    {
-        std::cout << anchor.href << '\t' << anchor.name << '\t' << anchor.text << '\t' << anchor.anchor_content << '\n';
-    }
+//    std::cout << "\nAll anchors: \n";
+//    for (const auto& anchor : all_anchors)
+//    {
+//        std::cout << anchor.href << '\t' << anchor.name << '\t' << anchor.text << '\t' << anchor.anchor_content << '\n';
+//    }
     auto statement_anchors = FilterFinancialAnchors(all_anchors);
-    std::cout << "\nFinancial anchors: \n";
-    for (const auto& anchor : statement_anchors)
-    {
-        std::cout << anchor.href << '\t' << anchor.name << '\t' << anchor.text << '\t' << anchor.anchor_content << '\n';
-    }
+//    std::cout << "\nFinancial anchors: \n";
+//    for (const auto& anchor : statement_anchors)
+//    {
+//        std::cout << anchor.href << '\t' << anchor.name << '\t' << anchor.text << '\t' << anchor.anchor_content << '\n';
+//    }
 
     EXPECT_TRUE(statement_anchors.size() == 3);
 
@@ -573,16 +628,28 @@ TEST_F(ProblemFiles_10Q, FileWithMinimalData)
     EXPECT_TRUE(multipliers.size() == 3);
 
     auto financial_tables = LocateFinancialTables(multipliers);
-    std::cout << "\nFinancial tables: \n";
-    for (const auto& table : financial_tables)
-    {
-        std::cout << table << '\n';
-    }
 
-    ASSERT_TRUE(financial_tables.size() == 3);
+    auto balance_sheet = ExtractBalanceSheet(financial_tables);
+    EXPECT_FALSE(balance_sheet.empty());
+
+    auto stmt_of_ops = ExtractStatementOfOperations(financial_tables);
+    EXPECT_FALSE(stmt_of_ops.empty());
+
+    auto cash_flows = ExtractCashFlowStatement(financial_tables);
+    EXPECT_FALSE(cash_flows.empty());
+
 //    auto all_sections = ExtractFinancialStatements(file_content_10Q);
 //
 //    ASSERT_TRUE(all_sections.is_complete());
+}
+
+TEST_F(ProblemFiles_10Q, FileWithMinimalData2)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA2);
+    auto documents = LocateDocumentSections(file_content_10Q);
+    auto all_anchors = FindAllDocumentAnchors(documents);
+
+    ASSERT_THROW(FilterFinancialAnchors(all_anchors), ExtractException);
 }
 
 //TEST_F(ValidateCanNavigateDocumentStructure, FindSECHeader_10K)

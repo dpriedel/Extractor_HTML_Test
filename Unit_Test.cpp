@@ -80,7 +80,7 @@ using Poco::AutoPtr;
 #include "ExtractEDGAR_Utils.h"
 #include "EDGAR_HTML_FileFilter.h"
 #include "SEC_Header.h"
-
+#include "HTML_FromFile.h"
 
 // some specific files for Testing.
 
@@ -94,7 +94,7 @@ constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS2{"/vol_DA/EDGAR/Archives/e
 constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS3{"/vol_DA/EDGAR/Archives/edgar/data/1326688/0001104659-09-064933.txt"};
 constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS4{"/vol_DA/EDGAR/Archives/edgar/data/1466739/0001002014-13-000458.txt"};
 //constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS{"/tmp/x1.html"};
-//constexpr const char* FILE_WITH_XML_10K{"/vol_DA/EDGAR/Archives/edgar/data/google-10k.txt"};
+constexpr const char* FILE_WITH_XML_10K{"/vol_DA/EDGAR/Archives/edgar/data/google-10k.txt"};
 constexpr const char* FILE_WITH_HTML_10Q_MINIMAL_DATA{"/vol_DA/EDGAR/Archives/edgar/data/841360/0001086380-13-000030.txt"};
 constexpr const char* FILE_WITH_HTML_10Q_PROBLEM_REGEX1{"/vol_DA/EDGAR/Archives/edgar/data/1377936/0001104659-13-075719.txt"};
 constexpr const char* FILE_WITH_NO_HTML_10Q{"/vol_DA/EDGAR/Edgar_forms/855931/10-Q/0001130319-01-500242.txt"};
@@ -310,6 +310,38 @@ protected:
 private:
     bool _helpRequested;
 };
+
+class Iterators : public Test
+{
+
+};
+
+TEST_F(Iterators, HTMLIteratorFileWithHTML_10Q)
+{
+    const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
+    HTML_FromFile html{file_content_10Q};
+
+    auto how_many = std::distance(std::begin(html), std::end(html));
+    ASSERT_TRUE(how_many == 5);
+}
+
+TEST_F(Iterators, HTMLIteratorFileWithMinimalHTML_10Q)
+{
+    const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_NO_HTML_10Q);
+    HTML_FromFile html{file_content_10Q};
+
+    auto how_many = std::distance(std::begin(html), std::end(html));
+    ASSERT_TRUE(how_many == 0);
+}
+
+TEST_F(Iterators, HTMLIteratorFileWithHTML_10K)
+{
+    const auto file_content_10K = LoadDataFileForUse(FILE_WITH_XML_10K);
+    HTML_FromFile html{file_content_10K};
+
+    auto how_many = std::distance(std::begin(html), std::end(html));
+    ASSERT_TRUE(how_many == 107);
+}
 
 class IdentifyHTMLFilesToUse : public Test
 {

@@ -77,10 +77,11 @@ using Poco::Util::AbstractConfiguration;
 using Poco::Util::OptionCallback;
 using Poco::AutoPtr;
 
-#include "ExtractEDGAR_Utils.h"
 #include "EDGAR_HTML_FileFilter.h"
-#include "SEC_Header.h"
+#include "ExtractEDGAR_Utils.h"
 #include "HTML_FromFile.h"
+#include "SEC_Header.h"
+#include "AnchorsFromHTML.h"
 
 // some specific files for Testing.
 
@@ -341,6 +342,18 @@ TEST_F(Iterators, HTMLIteratorFileWithHTML_10K)
 
     auto how_many = std::distance(std::begin(html), std::end(html));
     ASSERT_TRUE(how_many == 107);
+}
+
+TEST_F(Iterators, AnchorIteratorFileWithHTML_10Q)
+{
+    const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
+    HTML_FromFile html{file_content_10Q};
+
+    AnchorsFromHTML anchors(*html.begin());
+
+    auto how_many = std::distance(std::begin(anchors), std::end(anchors));
+    std::cout << how_many << '\n';
+    ASSERT_TRUE(how_many == 5);
 }
 
 class IdentifyHTMLFilesToUse : public Test

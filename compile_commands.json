@@ -158,6 +158,52 @@
             "-I/extra/gcc/cpp-json/include/",
             "-march=native",
             "-o",
+            "Debug_e2e/EDGAR_FileFilter.o",
+            "../ExtractEDGAR_XBRL/src/HTML_FromFile.cpp"
+        ],
+        "directory": "/home/dpriedel/projects/github/ExtractEDGAR_HTML_Test",
+        "file": "../ExtractEDGAR_XBRL/src/HTML_FromFile.cpp"
+    },
+    {
+        "arguments": [
+            "/extra/gcc/gcc-8/bin/g++",
+            "-c",
+            "-x",
+            "c++",
+            "-O0",
+            "-g3",
+            "-std=c++17",
+            "-D_DEBUG",
+            "-fPIC",
+            "-I/home/dpriedel/projects/github/ExtractEDGAR_XBRL/src",
+            "-I/usr/local/include",
+            "-I/extra/boost/boost-1.68_gcc-8",
+            "-I/extra/gcc/cpp-json/include/",
+            "-march=native",
+            "-o",
+            "Debug_e2e/EDGAR_FileFilter.o",
+            "../ExtractEDGAR_XBRL/src/AnchorsFromHTML.cpp"
+        ],
+        "directory": "/home/dpriedel/projects/github/ExtractEDGAR_HTML_Test",
+        "file": "../ExtractEDGAR_XBRL/src/AnchorsFromHTML.cpp"
+    },
+	{
+        "arguments": [
+            "/extra/gcc/gcc-8/bin/g++",
+            "-c",
+            "-x",
+            "c++",
+            "-O0",
+            "-g3",
+            "-std=c++17",
+            "-D_DEBUG",
+            "-fPIC",
+            "-I/home/dpriedel/projects/github/ExtractEDGAR_XBRL/src",
+            "-I/usr/local/include",
+            "-I/extra/boost/boost-1.68_gcc-8",
+            "-I/extra/gcc/cpp-json/include/",
+            "-march=native",
+            "-o",
             "Debug_e2e/ExtractEDGAR_XBRLApp.o",
             "../ExtractEDGAR_XBRL/src/ExtractEDGAR_XBRLApp.cpp"
         ],

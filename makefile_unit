@@ -19,7 +19,7 @@
 #
 MAKE=gmake
 
-BOOSTDIR := /extra/boost/boost-1.68_gcc-8
+BOOSTDIR := /extra/boost/boost-1.69_gcc-8
 GCCDIR := /extra/gcc/gcc-8
 GTESTDIR := /usr/local/include
 CPP := $(GCCDIR)/bin/g++
@@ -65,7 +65,7 @@ ifeq "$(CFG)" "Debug"
 OUTDIR := Debug_unit
 
 CFG_LIB := -lpthread -lstdc++fs -L$(BOOSTDIR)/lib \
-		-lboost_date_time-mt-d -lboost_iostreams-mt-d -lboost_regex-mt-d \
+		-lboost_date_time-mt-d-x64 -lboost_iostreams-mt-d-x64 -lboost_regex-mt-d-x64 \
 		-L/usr/local/lib -lPocoFoundationd -lPocoUtild \
 		-lgmock -lgmock_main -lgtest \
 		-lgumbo \

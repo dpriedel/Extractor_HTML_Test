@@ -347,13 +347,69 @@ TEST_F(Iterators, HTMLIteratorFileWithHTML_10K)
 TEST_F(Iterators, AnchorIteratorFileWithHTML_10Q)
 {
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
+//    auto documents = LocateDocumentSections(file_content_10Q);
+//
+//    auto all_anchors = FindAllDocumentAnchors(documents);
+//    std::cout << "\nAll anchors: " << all_anchors.size() << '\n';
+//    for (const auto& anchor : all_anchors)
+//    {
+//        std::cout
+//            << "HREF: " << anchor.href
+//            << "\tNAME: " << anchor.name
+//            << "\tTEXT: " << anchor.text
+//            << "\tCONTENT: " << anchor.anchor_content << '\n';
+//    }
     HTML_FromFile html{file_content_10Q};
 
     AnchorsFromHTML anchors(*html.begin());
 
     auto how_many = std::distance(std::begin(anchors), std::end(anchors));
-    std::cout << how_many << '\n';
-    ASSERT_TRUE(how_many == 5);
+    std::cout << '\n' <<  how_many << '\n';
+//    for (const auto& anchor : anchors)
+//    {
+//        std::cout
+//            << "HREF: " << anchor.href
+//            << "\tNAME: " << anchor.name
+//            << "\tTEXT: " << anchor.text
+//            << "\tCONTENT: " << anchor.anchor_content << '\n';
+//    }
+    ASSERT_TRUE(how_many == 22);
+}
+
+TEST_F(Iterators, AnchorIteratorFileWithXML_10Q)
+{
+    const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_XML_10Q);
+
+//    auto documents = LocateDocumentSections(file_content_10Q);
+//
+//    auto all_anchors = FindAllDocumentAnchors(documents);
+//    std::cout << "\nAll anchors: " << all_anchors.size() << '\n';
+//    for (const auto& anchor : all_anchors)
+//    {
+//        std::cout
+//            << "HREF: " << anchor.href
+//            << "\tNAME: " << anchor.name
+//            << "\tTEXT: " << anchor.text
+//            << "\tCONTENT: " << anchor.anchor_content << '\n';
+//    }
+
+    HTML_FromFile htmls{file_content_10Q};
+    int total = 0;
+    for (const auto& html : htmls)
+    {
+        AnchorsFromHTML anchors(html);
+        total += std::distance(std::begin(anchors), std::end(anchors));
+//        for (const auto& anchor : all_anchors)
+//        {
+//            std::cout
+//                << "HREF: " << anchor.href
+//                << "\tNAME: " << anchor.name
+//                << "\tTEXT: " << anchor.text
+//                << "\tCONTENT: " << anchor.anchor_content << '\n';
+//        }
+    }
+    std::cout << '\n' <<  total << '\n';
+    ASSERT_TRUE(total == 2215);
 }
 
 class IdentifyHTMLFilesToUse : public Test

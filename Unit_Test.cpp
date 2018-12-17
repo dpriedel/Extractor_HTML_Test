@@ -51,6 +51,8 @@
 
 #include <gmock/gmock.h>
 
+#include <range/v3/all.hpp>
+
 #include "Poco/AutoPtr.h"
 #include "Poco/Channel.h"
 #include "Poco/ConsoleChannel.h"
@@ -384,14 +386,14 @@ TEST_F(Iterators, AnchorIteratorFileWithXML_10Q)
 //
 //    auto all_anchors = FindAllDocumentAnchors(documents);
 //    std::cout << "\nAll anchors: " << all_anchors.size() << '\n';
-//    for (const auto& anchor : all_anchors)
-//    {
-//        std::cout
-//            << "HREF: " << anchor.href
-//            << "\tNAME: " << anchor.name
-//            << "\tTEXT: " << anchor.text
-//            << "\tCONTENT: " << anchor.anchor_content << '\n';
-//    }
+////    for (const auto& anchor : all_anchors)
+////    {
+////        std::cout
+////            << "HREF: " << anchor.href
+////            << "\tNAME: " << anchor.name
+////            << "\tTEXT: " << anchor.text
+////            << "\tCONTENT: " << anchor.anchor_content << '\n';
+////    }
 
     HTML_FromFile htmls{file_content_10Q};
     int total = 0;
@@ -399,7 +401,7 @@ TEST_F(Iterators, AnchorIteratorFileWithXML_10Q)
     {
         AnchorsFromHTML anchors(html);
         total += std::distance(std::begin(anchors), std::end(anchors));
-//        for (const auto& anchor : all_anchors)
+//        for (const auto& anchor : anchors)
 //        {
 //            std::cout
 //                << "HREF: " << anchor.href

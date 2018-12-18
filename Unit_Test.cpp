@@ -446,1198 +446,1206 @@ public:
 TEST_F(FindAnchorsForFinancialStatements, FindAnchors_10Q)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
-    documents = LocateDocumentSections(file_content_10Q);
 
-    auto all_anchors = FindAllDocumentAnchors(documents);
-    std::cout << "\nAll anchors: \n";
-    for (const auto& anchor : all_anchors)
-    {
-        std::cout
-            << "HREF: " << anchor.href
-            << "\tNAME: " << anchor.name
-            << "\tTEXT: " << anchor.text
-            << "\tCONTENT: " << anchor.anchor_content << '\n';
-    }
-    auto statement_anchors = FilterFinancialAnchors(all_anchors);
-
-    ASSERT_TRUE(statement_anchors.size() == 4);
-}
-
-TEST_F(FindAnchorsForFinancialStatements, FindAnchorsMinimalHTML_10Q)
-{
-    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
-    documents = LocateDocumentSections(file_content_10Q);
-
-    auto all_anchors = FindAllDocumentAnchors(documents);
-    std::cout << "\nAll anchors: \n";
-    for (const auto& anchor : all_anchors)
-    {
-        std::cout
-            << "HREF: " << anchor.href
-            << "\tNAME: " << anchor.name
-            << "\tTEXT: " << anchor.text
-            << "\tCONTENT: " << anchor.anchor_content << '\n';
-    }
-    auto statement_anchors = FilterFinancialAnchors(all_anchors);
-    std::cout << "\nSelected Anchors: \n";
-    for (const auto& anchor : statement_anchors)
-    {
-        std::cout
-            << "HREF: " << anchor.href
-            << "\tNAME: " << anchor.name
-            << "\tTEXT: " << anchor.text
-            << "\tCONTENT: " << anchor.anchor_content << '\n';
-    }
-
-    ASSERT_TRUE(statement_anchors.size() == 3);
-}
-
-TEST_F(FindAnchorsForFinancialStatements, FindAnchorDestinations_10Q)
-{
-    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
-    documents = LocateDocumentSections(file_content_10Q);
-
-    auto all_anchors = FindAllDocumentAnchors(documents);
-    auto statement_anchors = FilterFinancialAnchors(all_anchors);
-    auto destination_anchors = FindAnchorDestinations(statement_anchors, all_anchors);
-
-    ASSERT_TRUE(destination_anchors.size() == 4);
-}
-
-TEST_F(FindAnchorsForFinancialStatements, FindAnchorDestinationsMinimalHTML_10Q)
-{
-    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
-    documents = LocateDocumentSections(file_content_10Q);
-
-    auto all_anchors = FindAllDocumentAnchors(documents);
-    auto statement_anchors = FilterFinancialAnchors(all_anchors);
-    auto destination_anchors = FindAnchorDestinations(statement_anchors, all_anchors);
-    std::cout << "\nDestination Anchors: \n";
-    for (const auto& anchor : destination_anchors)
-    {
-        std::cout
-            << "HREF: " << anchor.href
-            << "\tNAME: " << anchor.name
-            << "\tTEXT: " << anchor.text
-            << "\tCONTENT: " << anchor.anchor_content << '\n';
-    }
-
-    ASSERT_TRUE(destination_anchors.size() == 3);
-}
-
-class FindFinancialStatements_10Q : public Test
-{
-public:
-
-    std::string file_content_10Q; 
-    std::vector<sview> documents;
     AnchorList all_anchors;
-    AnchorList statement_anchors;
-    AnchorList destination_anchors;
-
-    void SetUp() override
+    HTML_FromFile htmls{file_content_10Q};
+    for (const auto& html : htmls)
     {
-        file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
-        documents = LocateDocumentSections(file_content_10Q);
-
-        all_anchors = FindAllDocumentAnchors(documents);
-        statement_anchors = FilterFinancialAnchors(all_anchors);
-        destination_anchors = FindAnchorDestinations(statement_anchors, all_anchors);
+        AnchorsFromHTML anchors(html);
+        std::copy(anchors.begin(),
+                anchors.end(),
+                std::back_inserter(all_anchors)
+                );
     }
-};
-
-TEST_F(FindFinancialStatements_10Q , FindDollarMultipliers_10Q)
-{
-    auto multipliers = FindDollarMultipliers(destination_anchors);
-
-    ASSERT_TRUE(multipliers.size() == 4);
-}
-
-//TEST_F(FindFinancialStatements_10Q, FindFinancialTables_10Q)
-//{
-//    auto multipliers = FindDollarMultipliers(destination_anchors);
-//    auto financial_tables = LocateFinancialTables(multipliers);
-//
-//    ASSERT_TRUE(financial_tables.size() == 4);
-//}
-//
-TEST_F(FindFinancialStatements_10Q, FindBalanceSheet_10Q)
-{
-    auto multipliers = FindDollarMultipliers(destination_anchors);
-    auto financial_tables = LocateFinancialTables(multipliers);
-    auto balance_sheet = ExtractBalanceSheet(financial_tables);
-
-    ASSERT_TRUE(! balance_sheet.the_data_.empty());
-}
-
-TEST_F(FindFinancialStatements_10Q, FindStatementOfOperations_10Q)
-{
-    auto multipliers = FindDollarMultipliers(destination_anchors);
-    auto financial_tables = LocateFinancialTables(multipliers);
-    auto ops_sheet = ExtractStatementOfOperations(financial_tables);
-
-    ASSERT_TRUE(! ops_sheet.the_data_.empty());
-}
-
-TEST_F(FindFinancialStatements_10Q, FindCashFlowStatement_10Q)
-{
-    auto multipliers = FindDollarMultipliers(destination_anchors);
-    auto financial_tables = LocateFinancialTables(multipliers);
-    auto cash_flow = ExtractCashFlowStatement(financial_tables);
-
-    ASSERT_TRUE(! cash_flow.the_data_.empty());
-}
-
-TEST_F(FindFinancialStatements_10Q, FindStockholderEquity_10Q)
-{
-    auto multipliers = FindDollarMultipliers(destination_anchors);
-    auto financial_tables = LocateFinancialTables(multipliers);
-    auto sh_equity = ExtractStatementOfStockholdersEquity(financial_tables);
-
-    ASSERT_TRUE(! sh_equity.the_data_.empty());
-}
-
-class ProcessEntireFile_10Q : public Test
-{
-public:
-
-};
-
-TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections)
-{
-    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
-
-    auto all_sections = ExtractFinancialStatements(file_content_10Q);
-
-    ASSERT_TRUE(all_sections.is_complete());
-}
-
-TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections2)
-{
-    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS2);
-
-    auto all_sections = ExtractFinancialStatements(file_content_10Q);
-    std::cout << "\n\nBalance Sheet\n";
-    std::cout.write(all_sections.balance_sheet_.the_data_.data(), 500);
-    std::cout << "\n\nCash Flow\n";
-    std::cout.write(all_sections.cash_flows_.the_data_.data(), 500);
-    std::cout << "\n\nStmt of Operations\n";
-    std::cout.write(all_sections.statement_of_operations_.the_data_.data(), 500);
-    std::cout << "\n\nShareholder Equity\n";
-    std::cout.write(all_sections.stockholders_equity_.the_data_.data(), std::min(500UL, all_sections.stockholders_equity_.the_data_.size()));
-
-    ASSERT_TRUE(all_sections.is_complete());
-}
-
-TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections3)
-{
-    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS3);
-
-    auto all_sections = ExtractFinancialStatements(file_content_10Q);
-    std::cout << "\n\nBalance Sheet\n";
-    std::cout.write(all_sections.balance_sheet_.the_data_.data(), 500);
-    std::cout << "\n\nCash Flow\n";
-    std::cout.write(all_sections.cash_flows_.the_data_.data(), 500);
-    std::cout << "\n\nStmt of Operations\n";
-    std::cout.write(all_sections.statement_of_operations_.the_data_.data(), 500);
-    std::cout << "\n\nShareholder Equity\n";
-    std::cout.write(all_sections.stockholders_equity_.the_data_.data(), std::min(500UL, all_sections.stockholders_equity_.the_data_.size()));
-
-    ASSERT_TRUE(all_sections.is_complete());
-}
-
-TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections4)
-{
-    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS4);
-
-    auto all_sections = ExtractFinancialStatements(file_content_10Q);
-    std::cout << "\n\nBalance Sheet\n";
-    std::cout.write(all_sections.balance_sheet_.the_data_.data(), 500);
-    std::cout << "\n\nCash Flow\n";
-    std::cout.write(all_sections.cash_flows_.the_data_.data(), 500);
-    std::cout << "\n\nStmt of Operations\n";
-    std::cout.write(all_sections.statement_of_operations_.the_data_.data(), 500);
-    std::cout << "\n\nShareholder Equity\n";
-    std::cout.write(all_sections.stockholders_equity_.the_data_.data(), std::min(500UL, all_sections.stockholders_equity_.the_data_.size()));
-
-    ASSERT_TRUE(all_sections.is_complete());
-}
-
-TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSectionsMinimalHTMLData)
-{
-    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
-
-    auto all_sections = ExtractFinancialStatements(file_content_10Q);
-
-    std::cout << "\n\nBalance Sheet\n";
-    std::cout.write(all_sections.balance_sheet_.the_data_.data(), 500);
-    std::cout << "\n\nCash Flow\n";
-    std::cout.write(all_sections.cash_flows_.the_data_.data(), 500);
-    std::cout << "\n\nStmt of Operations\n";
-    std::cout.write(all_sections.statement_of_operations_.the_data_.data(), 500);
-    std::cout << "\n\nShareholder Equity\n";
-    std::cout.write(all_sections.stockholders_equity_.the_data_.data(), std::min(500UL, all_sections.stockholders_equity_.the_data_.size()));
-    ASSERT_TRUE(all_sections.is_complete());
-}
-
-class ProblemFiles_10Q : public Test
-{
-
-};
-
-TEST_F(ProblemFiles_10Q, FindAnchors_10Q)
-{
-    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
-    auto documents = LocateDocumentSections(file_content_10Q);
-
-    auto all_anchors = FindAllDocumentAnchors(documents);
     std::cout << "\nAll anchors: \n";
     for (const auto& anchor : all_anchors)
     {
-        std::cout << anchor.href << '\t' << anchor.name << '\t' << anchor.text << '\t' << anchor.anchor_content << '\n';
+        std::cout
+            << "HREF: " << anchor.href
+            << "\tNAME: " << anchor.name
+            << "\tTEXT: " << anchor.text
+            << "\tCONTENT: " << anchor.anchor_content << '\n';
     }
     auto statement_anchors = FilterFinancialAnchors(all_anchors);
-    std::cout << "\nFinancial anchors: \n";
-    for (const auto& anchor : statement_anchors)
-    {
-        std::cout << anchor.href << '\t' << anchor.name << '\t' << anchor.text << '\t' << anchor.anchor_content << '\n';
-    }
 
     ASSERT_TRUE(statement_anchors.size() == 4);
 }
-
-TEST_F(ProblemFiles_10Q, FileWithMinimalData)
-{
-    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
-
-    auto documents = LocateDocumentSections(file_content_10Q);
-
-    auto all_anchors = FindAllDocumentAnchors(documents);
+//
+//TEST_F(FindAnchorsForFinancialStatements, FindAnchorsMinimalHTML_10Q)
+//{
+//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
+//    documents = LocateDocumentSections(file_content_10Q);
+//
+//    auto all_anchors = FindAllDocumentAnchors(documents);
 //    std::cout << "\nAll anchors: \n";
 //    for (const auto& anchor : all_anchors)
 //    {
-//        std::cout << anchor.href << '\t' << anchor.name << '\t' << anchor.text << '\t' << anchor.anchor_content << '\n';
+//        std::cout
+//            << "HREF: " << anchor.href
+//            << "\tNAME: " << anchor.name
+//            << "\tTEXT: " << anchor.text
+//            << "\tCONTENT: " << anchor.anchor_content << '\n';
 //    }
-    auto statement_anchors = FilterFinancialAnchors(all_anchors);
-//    std::cout << "\nFinancial anchors: \n";
+//    auto statement_anchors = FilterFinancialAnchors(all_anchors);
+//    std::cout << "\nSelected Anchors: \n";
 //    for (const auto& anchor : statement_anchors)
 //    {
-//        std::cout << anchor.href << '\t' << anchor.name << '\t' << anchor.text << '\t' << anchor.anchor_content << '\n';
+//        std::cout
+//            << "HREF: " << anchor.href
+//            << "\tNAME: " << anchor.name
+//            << "\tTEXT: " << anchor.text
+//            << "\tCONTENT: " << anchor.anchor_content << '\n';
 //    }
-
-    EXPECT_TRUE(statement_anchors.size() == 3);
-
-    auto destination_anchors = FindAnchorDestinations(statement_anchors, all_anchors);
-    EXPECT_TRUE(destination_anchors.size() == 3);
-
-    auto multipliers = FindDollarMultipliers(destination_anchors);
-    EXPECT_TRUE(multipliers.size() == 3);
-
-    auto financial_tables = LocateFinancialTables(multipliers);
-
-    auto balance_sheet = ExtractBalanceSheet(financial_tables);
-    EXPECT_FALSE(balance_sheet.empty());
-
-    auto stmt_of_ops = ExtractStatementOfOperations(financial_tables);
-    EXPECT_FALSE(stmt_of_ops.empty());
-
-    auto cash_flows = ExtractCashFlowStatement(financial_tables);
-    EXPECT_FALSE(cash_flows.empty());
-
-//    auto all_sections = ExtractFinancialStatements(file_content_10Q);
 //
-//    ASSERT_TRUE(all_sections.is_complete());
-}
-
-class NoAnchors_10Q : public Test
-{
-
-};
-
-TEST_F(NoAnchors_10Q, FileWithNoAnchors1)
-{
-    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS);
-    auto documents = LocateDocumentSections(file_content_10Q);
-    auto all_anchors = FindAllDocumentAnchors(documents);
-    auto statement_anchors = FilterFinancialAnchors(all_anchors);
-
-    EXPECT_TRUE(statement_anchors.size() < 3);
-
-    auto empty_multipliers = CreateMultiplierListWhenNoAnchors(file_content_10Q);
-    auto all_tables = LocateFinancialTables(empty_multipliers);
-
-    FinancialStatements the_tables;
-    the_tables.balance_sheet_ = ExtractBalanceSheet(all_tables);
-    the_tables.statement_of_operations_ = ExtractStatementOfOperations(all_tables);
-    the_tables.cash_flows_ = ExtractCashFlowStatement(all_tables);
-    the_tables.stockholders_equity_ = ExtractStatementOfStockholdersEquity(all_tables);
-
-    std::cout << "\n\nBalance Sheet\n";
-    std::cout.write(the_tables.balance_sheet_.the_data_.data(), 500);
-    std::cout << "\n\nCash Flow\n";
-    std::cout.write(the_tables.cash_flows_.the_data_.data(), 500);
-    std::cout << "\n\nStmt of Operations\n";
-    std::cout.write(the_tables.statement_of_operations_.the_data_.data(), 500);
-    std::cout << "\n\nShareholder Equity\n";
-    std::cout.write(the_tables.stockholders_equity_.the_data_.data(), std::min(500UL, the_tables.stockholders_equity_.the_data_.size()));
-
-    ASSERT_TRUE(the_tables.is_complete());
-}
-
-TEST_F(NoAnchors_10Q, FileWithNoAnchors2)
-{
-    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS2);
-    auto documents = LocateDocumentSections(file_content_10Q);
-    auto all_anchors = FindAllDocumentAnchors(documents);
-    auto statement_anchors = FilterFinancialAnchors(all_anchors);
-
-    EXPECT_TRUE(statement_anchors.size() < 3);
-
-    auto empty_multipliers = CreateMultiplierListWhenNoAnchors(file_content_10Q);
-    auto all_tables = LocateFinancialTables(empty_multipliers);
-
-    FinancialStatements the_tables;
-    the_tables.balance_sheet_ = ExtractBalanceSheet(all_tables);
-    the_tables.statement_of_operations_ = ExtractStatementOfOperations(all_tables);
-    the_tables.cash_flows_ = ExtractCashFlowStatement(all_tables);
-    the_tables.stockholders_equity_ = ExtractStatementOfStockholdersEquity(all_tables);
-
-    ASSERT_TRUE(the_tables.is_complete());
-}
-
-TEST_F(NoAnchors_10Q, FileWithNoAnchors3)
-{
-    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS3);
-    auto documents = LocateDocumentSections(file_content_10Q);
-    auto all_anchors = FindAllDocumentAnchors(documents);
-    auto statement_anchors = FilterFinancialAnchors(all_anchors);
-
-    EXPECT_TRUE(statement_anchors.size() < 3);
-
-    auto empty_multipliers = CreateMultiplierListWhenNoAnchors(file_content_10Q);
-    auto financial_tables = LocateFinancialTables(empty_multipliers);
-
-    FinancialStatements the_tables;
-
-    the_tables.balance_sheet_ = ExtractBalanceSheet(financial_tables);
-    std::cout << "\n\nBalance Sheet\n";
-    std::cout.write(the_tables.balance_sheet_.the_data_.data(), 500);
-    
-    the_tables.statement_of_operations_ = ExtractStatementOfOperations(financial_tables);
-    std::cout << "\n\nStmt of Operations\n";
-    std::cout.write(the_tables.statement_of_operations_.the_data_.data(), 500);
-    
-    the_tables.cash_flows_ = ExtractCashFlowStatement(financial_tables);
-    std::cout << "\n\nCash Flow\n";
-    std::cout.write(the_tables.cash_flows_.the_data_.data(), 500);
-    
-    the_tables.stockholders_equity_ = ExtractStatementOfStockholdersEquity(financial_tables);
-    std::cout << "\n\nShareholder Equity\n";
-    std::cout.write(the_tables.stockholders_equity_.the_data_.data(), std::min(500UL, the_tables.stockholders_equity_.the_data_.size()));
-
-    ASSERT_TRUE(the_tables.is_complete());
-}
-
-class ProblemWithRegexs_10Q : public Test
-{
-
-};
-
-TEST_F(ProblemWithRegexs_10Q, UseRegexProblemFile1)
-{
-    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_PROBLEM_REGEX1);
-
-    auto documents = LocateDocumentSections(file_content_10Q);
-    auto all_anchors = FindAllDocumentAnchors(documents);
-    auto statement_anchors = FilterFinancialAnchors(all_anchors);
-    auto destination_anchors = FindAnchorDestinations(statement_anchors, all_anchors);
-    auto multipliers = FindDollarMultipliers(destination_anchors);
-    auto financial_tables = LocateFinancialTables(multipliers);
-
-    FinancialStatements the_tables;
-
-    the_tables.balance_sheet_ = ExtractBalanceSheet(financial_tables);
-    std::cout << "\n\nBalance Sheet\n";
-    std::cout.write(the_tables.balance_sheet_.the_data_.data(), 500);
-    
-    the_tables.statement_of_operations_ = ExtractStatementOfOperations(financial_tables);
-    std::cout << "\n\nStmt of Operations\n";
-    std::cout.write(the_tables.statement_of_operations_.the_data_.data(), 500);
-    
-    the_tables.cash_flows_ = ExtractCashFlowStatement(financial_tables);
-    std::cout << "\n\nCash Flow\n";
-    std::cout.write(the_tables.cash_flows_.the_data_.data(), 500);
-    
-    the_tables.stockholders_equity_ = ExtractStatementOfStockholdersEquity(financial_tables);
-    std::cout << "\n\nShareholder Equity\n";
-    std::cout.write(the_tables.stockholders_equity_.the_data_.data(), std::min(500UL, the_tables.stockholders_equity_.the_data_.size()));
-
-    ASSERT_TRUE(the_tables.is_complete());
-}
-
-//TEST_F(ValidateCanNavigateDocumentStructure, FindSECHeader_10K)
-//{
-//    auto file_content_10K = LoadXMLDataFileForUse(FILE_WITH_XML_10K);
-//
-//    SEC_Header SEC_data;
-//
-//    ASSERT_NO_THROW(SEC_data.UseData(file_content_10K));
+//    ASSERT_TRUE(statement_anchors.size() == 3);
 //}
 //
-//TEST_F(ValidateCanNavigateDocumentStructure, SECHeaderFindAllFields_10Q)
+//TEST_F(FindAnchorsForFinancialStatements, FindAnchorDestinations_10Q)
 //{
-//    auto file_content_10Q = LoadXMLDataFileForUse(FILE_WITH_XML_10Q);
+//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
+//    documents = LocateDocumentSections(file_content_10Q);
 //
-//    SEC_Header SEC_data;
-//    SEC_data.UseData(file_content_10Q);
-//    ASSERT_NO_THROW(SEC_data.ExtractHeaderFields());
+//    auto all_anchors = FindAllDocumentAnchors(documents);
+//    auto statement_anchors = FilterFinancialAnchors(all_anchors);
+//    auto destination_anchors = FindAnchorDestinations(statement_anchors, all_anchors);
+//
+//    ASSERT_TRUE(destination_anchors.size() == 4);
 //}
 //
-//TEST_F(ValidateCanNavigateDocumentStructure, FindsAllDocumentSections_10Q)
+//TEST_F(FindAnchorsForFinancialStatements, FindAnchorDestinationsMinimalHTML_10Q)
 //{
-//    auto file_content_10Q = LoadXMLDataFileForUse(FILE_WITH_XML_10Q);
+//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
+//    documents = LocateDocumentSections(file_content_10Q);
 //
-//    auto result = LocateDocumentSections(file_content_10Q);
+//    auto all_anchors = FindAllDocumentAnchors(documents);
+//    auto statement_anchors = FilterFinancialAnchors(all_anchors);
+//    auto destination_anchors = FindAnchorDestinations(statement_anchors, all_anchors);
+//    std::cout << "\nDestination Anchors: \n";
+//    for (const auto& anchor : destination_anchors)
+//    {
+//        std::cout
+//            << "HREF: " << anchor.href
+//            << "\tNAME: " << anchor.name
+//            << "\tTEXT: " << anchor.text
+//            << "\tCONTENT: " << anchor.anchor_content << '\n';
+//    }
 //
-//    ASSERT_EQ(result.size(), 52);
+//    ASSERT_TRUE(destination_anchors.size() == 3);
 //}
 //
-//TEST_F(ValidateCanNavigateDocumentStructure, FindsAllDocumentSections_10K)
+//class FindFinancialStatements_10Q : public Test
 //{
-//    auto file_content_10K = LoadXMLDataFileForUse(FILE_WITH_XML_10K);
+//public:
 //
-//    auto result = LocateDocumentSections(file_content_10K);
+//    std::string file_content_10Q; 
+//    std::vector<sview> documents;
+//    AnchorList all_anchors;
+//    AnchorList statement_anchors;
+//    AnchorList destination_anchors;
 //
-//    ASSERT_EQ(result.size(), 119);
-//}
+//    void SetUp() override
+//    {
+//        file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
+//        documents = LocateDocumentSections(file_content_10Q);
 //
-//class LocateFileContentToUse : public Test
-//{
-//
+//        all_anchors = FindAllDocumentAnchors(documents);
+//        statement_anchors = FilterFinancialAnchors(all_anchors);
+//        destination_anchors = FindAnchorDestinations(statement_anchors, all_anchors);
+//    }
 //};
 //
-//TEST_F(LocateFileContentToUse, FindInstanceDocument_10Q)
+//TEST_F(FindFinancialStatements_10Q , FindDollarMultipliers_10Q)
 //{
-//    auto file_content_10Q = LoadXMLDataFileForUse(FILE_WITH_XML_10Q);
+//    auto multipliers = FindDollarMultipliers(destination_anchors);
 //
-//    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
-//
-//    auto instance_document = LocateInstanceDocument(document_sections_10Q);
-//    ASSERT_TRUE(boost::algorithm::starts_with(instance_document, "<?xml version")
-//        && boost::algorithm::ends_with(instance_document, "</xbrl>\n"));
+//    ASSERT_TRUE(multipliers.size() == 4);
 //}
 //
-//TEST_F(LocateFileContentToUse, FindInstanceDocument_10K)
+////TEST_F(FindFinancialStatements_10Q, FindFinancialTables_10Q)
+////{
+////    auto multipliers = FindDollarMultipliers(destination_anchors);
+////    auto financial_tables = LocateFinancialTables(multipliers);
+////
+////    ASSERT_TRUE(financial_tables.size() == 4);
+////}
+////
+//TEST_F(FindFinancialStatements_10Q, FindBalanceSheet_10Q)
 //{
-//    auto file_content_10K = LoadXMLDataFileForUse(FILE_WITH_XML_10K);
+//    auto multipliers = FindDollarMultipliers(destination_anchors);
+//    auto financial_tables = LocateFinancialTables(multipliers);
+//    auto balance_sheet = ExtractBalanceSheet(financial_tables);
 //
-//    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
-//
-//    auto instance_document = LocateInstanceDocument(document_sections_10K);
-//    ASSERT_TRUE(boost::algorithm::starts_with(instance_document, "<?xml version")
-//        && boost::algorithm::ends_with(instance_document, "</xbrli:xbrl>\n"));
+//    ASSERT_TRUE(! balance_sheet.the_data_.empty());
 //}
 //
-//TEST_F(LocateFileContentToUse, FindLabelDocument_10Q)
+//TEST_F(FindFinancialStatements_10Q, FindStatementOfOperations_10Q)
 //{
-//    auto file_content_10Q = LoadXMLDataFileForUse(FILE_WITH_XML_10Q);
+//    auto multipliers = FindDollarMultipliers(destination_anchors);
+//    auto financial_tables = LocateFinancialTables(multipliers);
+//    auto ops_sheet = ExtractStatementOfOperations(financial_tables);
 //
-//    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
-//
-//    auto labels_document = LocateLabelDocument(document_sections_10Q);
-//    ASSERT_TRUE(boost::algorithm::starts_with(labels_document, "<?xml version")
-//        && boost::algorithm::ends_with(labels_document, "</link:linkbase>\n"));
+//    ASSERT_TRUE(! ops_sheet.the_data_.empty());
 //}
 //
-//TEST_F(LocateFileContentToUse, FindLabelDocument_10K)
+//TEST_F(FindFinancialStatements_10Q, FindCashFlowStatement_10Q)
 //{
-//    auto file_content_10K = LoadXMLDataFileForUse(FILE_WITH_XML_10K);
+//    auto multipliers = FindDollarMultipliers(destination_anchors);
+//    auto financial_tables = LocateFinancialTables(multipliers);
+//    auto cash_flow = ExtractCashFlowStatement(financial_tables);
 //
-//    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
-//
-//    auto labels_document = LocateLabelDocument(document_sections_10K);
-//    ASSERT_TRUE(boost::algorithm::starts_with(labels_document, "<?xml version")
-//        && boost::algorithm::ends_with(labels_document, "</link:linkbase>\n"));
+//    ASSERT_TRUE(! cash_flow.the_data_.empty());
 //}
 //
-//class ParseDocumentContent : public Test
+//TEST_F(FindFinancialStatements_10Q, FindStockholderEquity_10Q)
 //{
+//    auto multipliers = FindDollarMultipliers(destination_anchors);
+//    auto financial_tables = LocateFinancialTables(multipliers);
+//    auto sh_equity = ExtractStatementOfStockholdersEquity(financial_tables);
 //
-//};
-//
-//TEST_F(ParseDocumentContent, VerifyCanParseInstanceDocument_10Q)
-//{
-//    auto file_content_10Q = LoadXMLDataFileForUse(FILE_WITH_XML_10Q);
-//
-//    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
-//
-//    auto instance_document = LocateInstanceDocument(document_sections_10Q);
-//    ASSERT_NO_THROW(ParseXMLContent(instance_document));
+//    ASSERT_TRUE(! sh_equity.the_data_.empty());
 //}
 //
-//TEST_F(ParseDocumentContent, VerifyCanParseInstanceDocument_10K)
-//{
-//    auto file_content_10K = LoadXMLDataFileForUse(FILE_WITH_XML_10K);
-//
-//    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
-//
-//    auto instance_document = LocateInstanceDocument(document_sections_10K);
-//    ASSERT_NO_THROW(ParseXMLContent(instance_document));
-//}
-//
-//TEST_F(ParseDocumentContent, VerifyParseBadInstanceDocumentThrows_10K)
-//{
-//    auto file_content_10K = LoadXMLDataFileForUse(BAD_FILE1);
-//
-//    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
-//
-//    auto instance_document = LocateInstanceDocument(document_sections_10K);
-//    ASSERT_THROW(ParseXMLContent(instance_document), ExtractException);
-//}
-//
-//TEST_F(ParseDocumentContent, VerifyParseBadInstanceDocumentThrows2_10K)
-//{
-//    auto file_content_10K = LoadXMLDataFileForUse(BAD_FILE3);
-//
-//    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
-//
-//    auto instance_document = LocateInstanceDocument(document_sections_10K);
-//    ASSERT_THROW(ParseXMLContent(instance_document), ExtractException);
-//}
-//
-//TEST_F(ParseDocumentContent, VerifyCanParseLabelsDocument_10Q)
-//{
-//    auto file_content_10Q = LoadXMLDataFileForUse(FILE_WITH_XML_10Q);
-//
-//    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
-//
-//    auto labels_document = LocateLabelDocument(document_sections_10Q);
-//    ASSERT_NO_THROW(ParseXMLContent(labels_document));
-//}
-//
-//TEST_F(ParseDocumentContent, VerifyCanParseLabelsDocument_10K)
-//{
-//    auto file_content_10K = LoadXMLDataFileForUse(FILE_WITH_XML_10K);
-//
-//    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
-//
-//    auto labels_document = LocateLabelDocument(document_sections_10K);
-//    ASSERT_NO_THROW(ParseXMLContent(labels_document));
-//}
-//
-//class ExtractDocumentContent : public Test
-//{
-//
-//};
-//
-//template<typename ...Ts>
-//auto AllNotEmpty(Ts ...ts)
-//{
-//    return ((! ts.empty()) && ...);
-//}
-//
-//TEST_F(ExtractDocumentContent, VerifyCanExtractFilingData_10Q)
-//{
-//    auto file_content_10Q = LoadXMLDataFileForUse(FILE_WITH_XML_10Q);
-//
-//    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
-//
-//    auto instance_document = LocateInstanceDocument(document_sections_10Q);
-//    auto instance_xml = ParseXMLContent(instance_document);
-//
-//    const auto& [a, b, c, d] = ExtractFilingData(instance_xml);
-//
-//    ASSERT_TRUE(AllNotEmpty(a, b, c, d));
-//}
-//
-//TEST_F(ExtractDocumentContent, VerifyCanExtractFilingData_10K)
-//{
-//    auto file_content_10K = LoadXMLDataFileForUse(FILE_WITH_XML_10K);
-//
-//    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
-//
-//    auto instance_document = LocateInstanceDocument(document_sections_10K);
-//    auto instance_xml = ParseXMLContent(instance_document);
-//
-//    const auto& [a, b, c, d] = ExtractFilingData(instance_xml);
-//
-//    ASSERT_TRUE(AllNotEmpty(a, b, c, d));
-//}
-//
-//TEST_F(ExtractDocumentContent, VerifyCanExtractFilingDataNoSharesOut_10K)
-//{
-//    auto file_content_10K = LoadXMLDataFileForUse(NO_SHARES_OUT);
-//
-//    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
-//
-//    auto instance_document = LocateInstanceDocument(document_sections_10K);
-//    auto instance_xml = ParseXMLContent(instance_document);
-//
-//    const auto& [a, b, c, d] = ExtractFilingData(instance_xml);
-//
-//    // there is no symbol in this file either.
-//    ASSERT_TRUE(AllNotEmpty(b, c, d));
-//}
-//
-//TEST_F(ExtractDocumentContent, VerifyCanExtractGAAP_10Q)
-//{
-//    auto file_content_10Q = LoadXMLDataFileForUse(FILE_WITH_XML_10Q);
-//
-//    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
-//
-//    auto instance_document = LocateInstanceDocument(document_sections_10Q);
-//    auto instance_xml = ParseXMLContent(instance_document);
-//
-//    auto gaap_data = ExtractGAAPFields(instance_xml);
-//
-//    ASSERT_EQ(gaap_data.size(), 194);
-//}
-//
-//TEST_F(ExtractDocumentContent, VerifyCanExtractGAAPNoNamespace_10Q)
-//{
-//    auto file_content_10Q = LoadXMLDataFileForUse(FILE_NO_NAMESPACE_10Q);
-//
-//    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
-//
-//    auto instance_document = LocateInstanceDocument(document_sections_10Q);
-//    auto instance_xml = ParseXMLContent(instance_document);
-//
-//    auto gaap_data = ExtractGAAPFields(instance_xml);
-//
-//    ASSERT_EQ(gaap_data.size(), 723);
-//}
-//
-//TEST_F(ExtractDocumentContent, VerifyCanExtractGAAP_10K)
-//{
-//    auto file_content_10K = LoadXMLDataFileForUse(FILE_WITH_XML_10K);
-//
-//    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
-//
-//    auto instance_document = LocateInstanceDocument(document_sections_10K);
-//    auto instance_xml = ParseXMLContent(instance_document);
-//
-//    auto gaap_data = ExtractGAAPFields(instance_xml);
-//
-//    ASSERT_EQ(gaap_data.size(), 1984);
-//}
-//
-//TEST_F(ExtractDocumentContent, VerifyCanExtractLabels_10Q)
-//{
-//    auto file_content_10Q = LoadXMLDataFileForUse(FILE_WITH_XML_10Q);
-//
-//    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
-//
-//    auto labels_document = LocateLabelDocument(document_sections_10Q);
-//    auto labels_xml = ParseXMLContent(labels_document);
-//
-//    /* auto label_data = ExtractFieldLabels(labels_xml); */
-//    auto label_data = ExtractFieldLabels(labels_xml);
-//
-//    ASSERT_EQ(label_data.size(), 125);
-//}
-//
-//TEST_F(ExtractDocumentContent, VerifyCanExtractLabelsNoNamespace_10Q)
-//{
-//    auto file_content_10Q = LoadXMLDataFileForUse(FILE_NO_NAMESPACE_10Q);
-//
-//    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
-//
-//    auto labels_document = LocateLabelDocument(document_sections_10Q);
-//    auto labels_xml = ParseXMLContent(labels_document);
-//
-//    auto label_data = ExtractFieldLabels(labels_xml);
-//
-//    ASSERT_EQ(label_data.size(), 352);
-//}
-//
-//TEST_F(ExtractDocumentContent, VerifyCanExtractLabelsMultipleLabelLinks_10Q)
-//{
-//    auto file_content_10Q = LoadXMLDataFileForUse(FILE_MULTIPLE_LABEL_LINKS);
-//
-//    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
-//
-//    auto labels_document = LocateLabelDocument(document_sections_10Q);
-//    auto labels_xml = ParseXMLContent(labels_document);
-//
-//    auto label_data = ExtractFieldLabels(labels_xml);
-//
-//    ASSERT_EQ(label_data.size(), 158);
-//}
-//
-//TEST_F(ExtractDocumentContent, VerifyCanExtractLabels_10K)
-//{
-//    auto file_content_10K = LoadXMLDataFileForUse(FILE_WITH_XML_10K);
-//
-//    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
-//
-//    auto labels_document = LocateLabelDocument(document_sections_10K);
-//    auto labels_xml = ParseXMLContent(labels_document);
-//
-//    auto label_data = ExtractFieldLabels(labels_xml);
-//
-//    ASSERT_EQ(label_data.size(), 746);
-//}
-//
-//TEST_F(ExtractDocumentContent, VerifyCanExtractContexts_10Q)
-//{
-//    auto file_content_10Q = LoadXMLDataFileForUse(FILE_WITH_XML_10Q);
-//
-//    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
-//
-//    auto instance_document = LocateInstanceDocument(document_sections_10Q);
-//    auto instance_xml = ParseXMLContent(instance_document);
-//
-//    auto context_data = ExtractContextDefinitions(instance_xml);
-//
-//    ASSERT_EQ(context_data.size(), 37);
-//}
-//
-//TEST_F(ExtractDocumentContent, VerifyCanExtractContextsSomeNamespace_10Q)
-//{
-//    auto file_content_10Q = LoadXMLDataFileForUse(FILE_SOME_NAMESPACE_10Q);
-//
-//    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
-//
-//    auto instance_document = LocateInstanceDocument(document_sections_10Q);
-//    auto instance_xml = ParseXMLContent(instance_document);
-//
-//    auto context_data = ExtractContextDefinitions(instance_xml);
-//
-//    ASSERT_EQ(context_data.size(), 12);
-//}
-//
-//TEST_F(ExtractDocumentContent, VerifyCanExtractContexts_10K)
-//{
-//    auto file_content_10K = LoadXMLDataFileForUse(FILE_WITH_XML_10K);
-//
-//    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
-//
-//    auto instance_document = LocateInstanceDocument(document_sections_10K);
-//    auto instance_xml = ParseXMLContent(instance_document);
-//
-//    auto context_data = ExtractContextDefinitions(instance_xml);
-//
-//    ASSERT_EQ(context_data.size(), 492);
-//}
-//
-//TEST_F(ExtractDocumentContent, VerifyCanMatchGAAPDataWithUserLabel_10Q)
-//{
-//    auto file_content_10Q = LoadXMLDataFileForUse(FILE_WITH_XML_10Q);
-//
-//    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
-//
-//    auto labels_document = LocateLabelDocument(document_sections_10Q);
-//    auto labels_xml = ParseXMLContent(labels_document);
-//
-//    auto label_data = ExtractFieldLabels(labels_xml);
-//
-//    auto instance_document = LocateInstanceDocument(document_sections_10Q);
-//    auto instance_xml = ParseXMLContent(instance_document);
-//
-//    auto gaap_data = ExtractGAAPFields(instance_xml);
-//
-//    bool result = FindAllLabels(gaap_data, label_data);
-//
-//    ASSERT_TRUE(result);
-//}
-//
-//TEST_F(ExtractDocumentContent, VerifyCanMatchGAAPDataWithUserLabelBadFile2_10K)
-//{
-//    auto file_content_10K = LoadXMLDataFileForUse(BAD_FILE2);
-//
-//    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
-//
-//    auto labels_document = LocateLabelDocument(document_sections_10K);
-//    auto labels_xml = ParseXMLContent(labels_document);
-//
-//    auto label_data = ExtractFieldLabels(labels_xml);
-//
-//    auto instance_document = LocateInstanceDocument(document_sections_10K);
-//    auto instance_xml = ParseXMLContent(instance_document);
-//
-//    auto gaap_data = ExtractGAAPFields(instance_xml);
-//
-//    bool result = FindAllLabels(gaap_data, label_data);
-//
-//    ASSERT_TRUE(result);
-//}
-//
-//TEST_F(ExtractDocumentContent, VerifyCanMatchGAAPDataWithUserLabelNoNamespace_10Q)
-//{
-//    auto file_content_10Q = LoadXMLDataFileForUse(FILE_NO_NAMESPACE_10Q);
-//
-//    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
-//
-//    auto labels_document = LocateLabelDocument(document_sections_10Q);
-//    auto labels_xml = ParseXMLContent(labels_document);
-//
-//    auto label_data = ExtractFieldLabels(labels_xml);
-//
-//    auto instance_document = LocateInstanceDocument(document_sections_10Q);
-//    auto instance_xml = ParseXMLContent(instance_document);
-//
-//    auto gaap_data = ExtractGAAPFields(instance_xml);
-//
-//    bool result = FindAllLabels(gaap_data, label_data);
-//
-//    ASSERT_TRUE(result);
-//}
-//
-//TEST_F(ExtractDocumentContent, VerifyCanMatchGAAPDataWithUserLabelSomeNamespace_10Q)
-//{
-//    auto file_content_10Q = LoadXMLDataFileForUse(FILE_SOME_NAMESPACE_10Q);
-//
-//    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
-//
-//    auto labels_document = LocateLabelDocument(document_sections_10Q);
-//    auto labels_xml = ParseXMLContent(labels_document);
-//
-//    auto label_data = ExtractFieldLabels(labels_xml);
-//
-//    auto instance_document = LocateInstanceDocument(document_sections_10Q);
-//    auto instance_xml = ParseXMLContent(instance_document);
-//
-//    auto gaap_data = ExtractGAAPFields(instance_xml);
-//
-//    bool result = FindAllLabels(gaap_data, label_data);
-//
-//    ASSERT_TRUE(result);
-//}
-//
-//TEST_F(ExtractDocumentContent, VerifyCanMatchGAAPDataWithUserLabel_10K)
-//{
-//    auto file_content_10K = LoadXMLDataFileForUse(FILE_WITH_XML_10K);
-//
-//    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
-//
-//    auto labels_document = LocateLabelDocument(document_sections_10K);
-//    auto labels_xml = ParseXMLContent(labels_document);
-//
-//    auto label_data = ExtractFieldLabels(labels_xml);
-//
-//    auto instance_document = LocateInstanceDocument(document_sections_10K);
-//    auto instance_xml = ParseXMLContent(instance_document);
-//
-//    auto context_data = ExtractContextDefinitions(instance_xml);
-//    auto gaap_data = ExtractGAAPFields(instance_xml);
-//
-//    bool result = FindAllLabels(gaap_data, label_data);
-//
-//    ASSERT_TRUE(result);
-//}
-//
-//TEST_F(ExtractDocumentContent, VerifyCanMatchGAAPDataWithUserLabelMissingValues_10K)
-//{
-//    auto file_content_10K = LoadXMLDataFileForUse(MISSING_VALUES1_10K);
-//
-//    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
-//
-//    auto labels_document = LocateLabelDocument(document_sections_10K);
-//    auto labels_xml = ParseXMLContent(labels_document);
-//
-//    auto label_data = ExtractFieldLabels(labels_xml);
-//
-//    auto instance_document = LocateInstanceDocument(document_sections_10K);
-//    auto instance_xml = ParseXMLContent(instance_document);
-//
-//    auto gaap_data = ExtractGAAPFields(instance_xml);
-//
-//    bool result = FindAllLabels(gaap_data, label_data);
-//
-//    ASSERT_TRUE(result);
-//}
-//
-//TEST_F(ExtractDocumentContent, VerifyCanMatchGAAPDataWithUserLabelMissingValues2_10K)
-//{
-//    auto file_content_10K = LoadXMLDataFileForUse(MISSING_VALUES2_10K);
-//
-//    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
-//
-//    auto labels_document = LocateLabelDocument(document_sections_10K);
-//    auto labels_xml = ParseXMLContent(labels_document);
-//
-//    auto label_data = ExtractFieldLabels(labels_xml);
-//
-//    auto instance_document = LocateInstanceDocument(document_sections_10K);
-//    auto instance_xml = ParseXMLContent(instance_document);
-//
-//    auto gaap_data = ExtractGAAPFields(instance_xml);
-//
-//    bool result = FindAllLabels(gaap_data, label_data);
-//
-//    ASSERT_TRUE(result);
-//}
-//
-//TEST_F(ExtractDocumentContent, VerifyCanMatchGAAPDataWithContext_10Q)
-//{
-//    auto file_content_10Q = LoadXMLDataFileForUse(FILE_WITH_XML_10Q);
-//    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
-//
-//    auto instance_document = LocateInstanceDocument(document_sections_10Q);
-//    auto instance_xml = ParseXMLContent(instance_document);
-//
-//    auto gaap_data = ExtractGAAPFields(instance_xml);
-//
-//    auto context_data = ExtractContextDefinitions(instance_xml);
-//
-//    bool result = FindAllContexts(gaap_data, context_data);
-//
-//    ASSERT_TRUE(result);
-//}
-//
-//TEST_F(ExtractDocumentContent, VerifyCanMatchGAAPDataWithContextSomeNamespace_10Q)
-//{
-//    auto file_content_10Q = LoadXMLDataFileForUse(FILE_SOME_NAMESPACE_10Q);
-//
-//    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
-//
-//    auto instance_document = LocateInstanceDocument(document_sections_10Q);
-//    auto instance_xml = ParseXMLContent(instance_document);
-//
-//    auto gaap_data = ExtractGAAPFields(instance_xml);
-//
-//    auto context_data = ExtractContextDefinitions(instance_xml);
-//
-//    bool result = FindAllContexts(gaap_data, context_data);
-//
-//    ASSERT_TRUE(result);
-//}
-//
-//TEST_F(ExtractDocumentContent, VerifyCanMatchGAAPDataWithContext_10K)
-//{
-//    auto file_content_10K = LoadXMLDataFileForUse(FILE_WITH_XML_10K);
-//
-//    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
-//
-//    auto instance_document = LocateInstanceDocument(document_sections_10K);
-//    auto instance_xml = ParseXMLContent(instance_document);
-//
-//    auto gaap_data = ExtractGAAPFields(instance_xml);
-//
-//    auto context_data = ExtractContextDefinitions(instance_xml);
-//
-//    bool result = FindAllContexts(gaap_data, context_data);
-//
-//    ASSERT_TRUE(result);
-//}
-//
-//
-//class ValidateFolderFilters : public Test
+//class ProcessEntireFile_10Q : public Test
 //{
 //public:
 //
 //};
 //
-//TEST_F(ValidateFolderFilters, VerifyFindAllXBRL)
+//TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections)
 //{
-//    int files_with_XML{0};
+//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
 //
-//    auto test_file([&files_with_XML](const auto& dir_ent)
-//    {
-//        if (dir_ent.status().type() == fs::file_type::regular)
-//        {
-//            auto file_content = LoadXMLDataFileForUse(dir_ent.path().string().c_str());
+//    auto all_sections = ExtractFinancialStatements(file_content_10Q);
 //
-//            FileHasXBRL filter;
-//            bool has_XML = filter(EE::SEC_Header_fields{}, file_content);
-//            if (has_XML)
-//            {
-//                ++files_with_XML;
-//            }
-//        }
-//    });
-//
-//    std::for_each(fs::recursive_directory_iterator(EDGAR_DIRECTORY), fs::recursive_directory_iterator(), test_file);
-//
-//    ASSERT_EQ(files_with_XML, 159);
+//    ASSERT_TRUE(all_sections.is_complete());
 //}
 //
-//TEST_F(ValidateFolderFilters, VerifyFindAll10Q)
+//TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections2)
 //{
-//    int files_with_form{0};
+//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS2);
 //
-//    auto test_file([&files_with_form](const auto& dir_ent)
-//    {
-//        if (dir_ent.status().type() == fs::file_type::regular)
-//        {
-//            auto file_content = LoadXMLDataFileForUse(dir_ent.path().string().c_str());
+//    auto all_sections = ExtractFinancialStatements(file_content_10Q);
+//    std::cout << "\n\nBalance Sheet\n";
+//    std::cout.write(all_sections.balance_sheet_.the_data_.data(), 500);
+//    std::cout << "\n\nCash Flow\n";
+//    std::cout.write(all_sections.cash_flows_.the_data_.data(), 500);
+//    std::cout << "\n\nStmt of Operations\n";
+//    std::cout.write(all_sections.statement_of_operations_.the_data_.data(), 500);
+//    std::cout << "\n\nShareholder Equity\n";
+//    std::cout.write(all_sections.stockholders_equity_.the_data_.data(), std::min(500UL, all_sections.stockholders_equity_.the_data_.size()));
 //
-//            SEC_Header SEC_data;
-//            SEC_data.UseData(file_content);
-//            SEC_data.ExtractHeaderFields();
-//
-//            FileHasXBRL filter1;
-//            std::vector<sview> forms{"10-Q"};
-//            FileHasFormType filter2{forms};
-//
-//            bool has_form = ApplyFilters(SEC_data.GetFields(), file_content, filter1, filter2);
-//            if (has_form)
-//            {
-//                ++files_with_form;
-//            }
-//        }
-//    });
-//
-//    std::for_each(fs::recursive_directory_iterator(EDGAR_DIRECTORY), fs::recursive_directory_iterator(), test_file);
-//
-//    ASSERT_EQ(files_with_form, 157);
+//    ASSERT_TRUE(all_sections.is_complete());
 //}
 //
-//TEST_F(ValidateFolderFilters, VerifyFindAll10K)
+//TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections3)
 //{
-//    int files_with_form{0};
+//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS3);
 //
-//    auto test_file([&files_with_form](const auto& dir_ent)
-//    {
-//        if (dir_ent.status().type() == fs::file_type::regular)
-//        {
-//            auto file_content = LoadXMLDataFileForUse(dir_ent.path().string().c_str());
+//    auto all_sections = ExtractFinancialStatements(file_content_10Q);
+//    std::cout << "\n\nBalance Sheet\n";
+//    std::cout.write(all_sections.balance_sheet_.the_data_.data(), 500);
+//    std::cout << "\n\nCash Flow\n";
+//    std::cout.write(all_sections.cash_flows_.the_data_.data(), 500);
+//    std::cout << "\n\nStmt of Operations\n";
+//    std::cout.write(all_sections.statement_of_operations_.the_data_.data(), 500);
+//    std::cout << "\n\nShareholder Equity\n";
+//    std::cout.write(all_sections.stockholders_equity_.the_data_.data(), std::min(500UL, all_sections.stockholders_equity_.the_data_.size()));
 //
-//            SEC_Header SEC_data;
-//            SEC_data.UseData(file_content);
-//            SEC_data.ExtractHeaderFields();
-//
-//            FileHasXBRL filter1;
-//            std::vector<sview> forms{"10-K"};
-//            FileHasFormType filter2{forms};
-//
-//            bool has_form = ApplyFilters(SEC_data.GetFields(), file_content, filter1, filter2);
-//            if (has_form)
-//            {
-//                ++files_with_form;
-//            }
-//        }
-//    });
-//
-//    std::for_each(fs::recursive_directory_iterator(EDGAR_DIRECTORY), fs::recursive_directory_iterator(), test_file);
-//
-//    ASSERT_EQ(files_with_form, 1);
+//    ASSERT_TRUE(all_sections.is_complete());
 //}
 //
-//TEST_F(ValidateFolderFilters, VerifyFindAllInDateRange)
+//TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections4)
 //{
-//    int files_with_form{0};
+//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS4);
 //
-//    auto test_file([&files_with_form](const auto& dir_ent)
-//    {
-//        if (dir_ent.status().type() == fs::file_type::regular)
-//        {
-//            auto file_content = LoadXMLDataFileForUse(dir_ent.path().string().c_str());
+//    auto all_sections = ExtractFinancialStatements(file_content_10Q);
+//    std::cout << "\n\nBalance Sheet\n";
+//    std::cout.write(all_sections.balance_sheet_.the_data_.data(), 500);
+//    std::cout << "\n\nCash Flow\n";
+//    std::cout.write(all_sections.cash_flows_.the_data_.data(), 500);
+//    std::cout << "\n\nStmt of Operations\n";
+//    std::cout.write(all_sections.statement_of_operations_.the_data_.data(), 500);
+//    std::cout << "\n\nShareholder Equity\n";
+//    std::cout.write(all_sections.stockholders_equity_.the_data_.data(), std::min(500UL, all_sections.stockholders_equity_.the_data_.size()));
 //
-//            SEC_Header SEC_data;
-//            SEC_data.UseData(file_content);
-//            SEC_data.ExtractHeaderFields();
-//
-//            FileHasXBRL filter1;
-//            FileIsWithinDateRange filter2{bg::from_simple_string("2013-Jan-1"), bg::from_simple_string("2013-09-30")};
-//
-//            bool has_form = ApplyFilters(SEC_data.GetFields(), file_content, filter1, filter2);
-//            if (has_form)
-//            {
-//                ++files_with_form;
-//            }
-//        }
-//    });
-//
-//    std::for_each(fs::recursive_directory_iterator(EDGAR_DIRECTORY), fs::recursive_directory_iterator(), test_file);
-//
-//    ASSERT_EQ(files_with_form, 151);
+//    ASSERT_TRUE(all_sections.is_complete());
 //}
 //
-//TEST_F(ValidateFolderFilters, VerifyFindAllInDateRangeNoMatches)
+//TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSectionsMinimalHTMLData)
 //{
-//    int files_with_form{0};
+//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
 //
-//    auto test_file([&files_with_form](const auto& dir_ent)
-//    {
-//        if (dir_ent.status().type() == fs::file_type::regular)
-//        {
-//            auto file_content = LoadXMLDataFileForUse(dir_ent.path().string().c_str());
+//    auto all_sections = ExtractFinancialStatements(file_content_10Q);
 //
-//            SEC_Header SEC_data;
-//            SEC_data.UseData(file_content);
-//            SEC_data.ExtractHeaderFields();
-//
-//            FileHasXBRL filter1;
-//            FileIsWithinDateRange filter2{bg::from_simple_string("2015-Jan-1"), bg::from_simple_string("2015-09-30")};
-//
-//            bool has_form = ApplyFilters(SEC_data.GetFields(), file_content, filter1, filter2);
-//            if (has_form)
-//            {
-//                ++files_with_form;
-//            }
-//        }
-//    });
-//
-//    std::for_each(fs::recursive_directory_iterator(EDGAR_DIRECTORY), fs::recursive_directory_iterator(), test_file);
-//
-//    ASSERT_EQ(files_with_form, 0);
+//    std::cout << "\n\nBalance Sheet\n";
+//    std::cout.write(all_sections.balance_sheet_.the_data_.data(), 500);
+//    std::cout << "\n\nCash Flow\n";
+//    std::cout.write(all_sections.cash_flows_.the_data_.data(), 500);
+//    std::cout << "\n\nStmt of Operations\n";
+//    std::cout.write(all_sections.statement_of_operations_.the_data_.data(), 500);
+//    std::cout << "\n\nShareholder Equity\n";
+//    std::cout.write(all_sections.stockholders_equity_.the_data_.data(), std::min(500UL, all_sections.stockholders_equity_.the_data_.size()));
+//    ASSERT_TRUE(all_sections.is_complete());
 //}
 //
-//TEST_F(ValidateFolderFilters, VerifyComboFiltersWithMatches)
+//class ProblemFiles_10Q : public Test
 //{
-//    int files_with_form{0};
 //
-//    auto test_file([&files_with_form](const auto& dir_ent)
+//};
+//
+//TEST_F(ProblemFiles_10Q, FindAnchors_10Q)
+//{
+//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
+//    auto documents = LocateDocumentSections(file_content_10Q);
+//
+//    auto all_anchors = FindAllDocumentAnchors(documents);
+//    std::cout << "\nAll anchors: \n";
+//    for (const auto& anchor : all_anchors)
 //    {
-//        if (dir_ent.status().type() == fs::file_type::regular)
-//        {
-//            auto file_content = LoadXMLDataFileForUse(dir_ent.path().string().c_str());
+//        std::cout << anchor.href << '\t' << anchor.name << '\t' << anchor.text << '\t' << anchor.anchor_content << '\n';
+//    }
+//    auto statement_anchors = FilterFinancialAnchors(all_anchors);
+//    std::cout << "\nFinancial anchors: \n";
+//    for (const auto& anchor : statement_anchors)
+//    {
+//        std::cout << anchor.href << '\t' << anchor.name << '\t' << anchor.text << '\t' << anchor.anchor_content << '\n';
+//    }
 //
-//            SEC_Header SEC_data;
-//            SEC_data.UseData(file_content);
-//            SEC_data.ExtractHeaderFields();
-//
-//            FileHasXBRL filter1;
-//            std::vector<sview> forms{"10-Q"};
-//            FileHasFormType filter2{forms};
-//            FileIsWithinDateRange filter3{bg::from_simple_string("2013-03-1"), bg::from_simple_string("2013-03-31")};
-//
-//            bool has_form = ApplyFilters(SEC_data.GetFields(), file_content, filter1, filter2, filter3);
-//            if (has_form)
-//            {
-//                ++files_with_form;
-//            }
-//        }
-//    });
-//
-//    std::for_each(fs::recursive_directory_iterator(EDGAR_DIRECTORY), fs::recursive_directory_iterator(), test_file);
-//
-//    ASSERT_EQ(files_with_form, 5);
+//    ASSERT_TRUE(statement_anchors.size() == 4);
 //}
 //
-//TEST_F(ValidateFolderFilters, VerifyFindFormsInFileNameList)
+//TEST_F(ProblemFiles_10Q, FileWithMinimalData)
 //{
-//    std::vector<std::string> list_of_files_to_process;
+//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
 //
-//    std::ifstream input_file{TEST_FILE_LIST};
+//    auto documents = LocateDocumentSections(file_content_10Q);
 //
-//    // Tell the stream to use our facet, so only '\n' is treated as a space.
+//    auto all_anchors = FindAllDocumentAnchors(documents);
+////    std::cout << "\nAll anchors: \n";
+////    for (const auto& anchor : all_anchors)
+////    {
+////        std::cout << anchor.href << '\t' << anchor.name << '\t' << anchor.text << '\t' << anchor.anchor_content << '\n';
+////    }
+//    auto statement_anchors = FilterFinancialAnchors(all_anchors);
+////    std::cout << "\nFinancial anchors: \n";
+////    for (const auto& anchor : statement_anchors)
+////    {
+////        std::cout << anchor.href << '\t' << anchor.name << '\t' << anchor.text << '\t' << anchor.anchor_content << '\n';
+////    }
 //
-//    input_file.imbue(std::locale(input_file.getloc(), new line_only_whitespace()));
+//    EXPECT_TRUE(statement_anchors.size() == 3);
 //
-//    std::istream_iterator<std::string> itor{input_file};
-//    std::istream_iterator<std::string> itor_end;
-//    std::copy(
-//        itor,
-//        itor_end,
-//        std::back_inserter(list_of_files_to_process)
-//    );
-//    input_file.close();
+//    auto destination_anchors = FindAnchorDestinations(statement_anchors, all_anchors);
+//    EXPECT_TRUE(destination_anchors.size() == 3);
+//
+//    auto multipliers = FindDollarMultipliers(destination_anchors);
+//    EXPECT_TRUE(multipliers.size() == 3);
+//
+//    auto financial_tables = LocateFinancialTables(multipliers);
+//
+//    auto balance_sheet = ExtractBalanceSheet(financial_tables);
+//    EXPECT_FALSE(balance_sheet.empty());
+//
+//    auto stmt_of_ops = ExtractStatementOfOperations(financial_tables);
+//    EXPECT_FALSE(stmt_of_ops.empty());
+//
+//    auto cash_flows = ExtractCashFlowStatement(financial_tables);
+//    EXPECT_FALSE(cash_flows.empty());
+//
+////    auto all_sections = ExtractFinancialStatements(file_content_10Q);
+////
+////    ASSERT_TRUE(all_sections.is_complete());
+//}
+//
+//class NoAnchors_10Q : public Test
+//{
+//
+//};
+//
+//TEST_F(NoAnchors_10Q, FileWithNoAnchors1)
+//{
+//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS);
+//    auto documents = LocateDocumentSections(file_content_10Q);
+//    auto all_anchors = FindAllDocumentAnchors(documents);
+//    auto statement_anchors = FilterFinancialAnchors(all_anchors);
+//
+//    EXPECT_TRUE(statement_anchors.size() < 3);
+//
+//    auto empty_multipliers = CreateMultiplierListWhenNoAnchors(file_content_10Q);
+//    auto all_tables = LocateFinancialTables(empty_multipliers);
+//
+//    FinancialStatements the_tables;
+//    the_tables.balance_sheet_ = ExtractBalanceSheet(all_tables);
+//    the_tables.statement_of_operations_ = ExtractStatementOfOperations(all_tables);
+//    the_tables.cash_flows_ = ExtractCashFlowStatement(all_tables);
+//    the_tables.stockholders_equity_ = ExtractStatementOfStockholdersEquity(all_tables);
+//
+//    std::cout << "\n\nBalance Sheet\n";
+//    std::cout.write(the_tables.balance_sheet_.the_data_.data(), 500);
+//    std::cout << "\n\nCash Flow\n";
+//    std::cout.write(the_tables.cash_flows_.the_data_.data(), 500);
+//    std::cout << "\n\nStmt of Operations\n";
+//    std::cout.write(the_tables.statement_of_operations_.the_data_.data(), 500);
+//    std::cout << "\n\nShareholder Equity\n";
+//    std::cout.write(the_tables.stockholders_equity_.the_data_.data(), std::min(500UL, the_tables.stockholders_equity_.the_data_.size()));
+//
+//    ASSERT_TRUE(the_tables.is_complete());
+//}
+//
+//TEST_F(NoAnchors_10Q, FileWithNoAnchors2)
+//{
+//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS2);
+//    auto documents = LocateDocumentSections(file_content_10Q);
+//    auto all_anchors = FindAllDocumentAnchors(documents);
+//    auto statement_anchors = FilterFinancialAnchors(all_anchors);
+//
+//    EXPECT_TRUE(statement_anchors.size() < 3);
+//
+//    auto empty_multipliers = CreateMultiplierListWhenNoAnchors(file_content_10Q);
+//    auto all_tables = LocateFinancialTables(empty_multipliers);
+//
+//    FinancialStatements the_tables;
+//    the_tables.balance_sheet_ = ExtractBalanceSheet(all_tables);
+//    the_tables.statement_of_operations_ = ExtractStatementOfOperations(all_tables);
+//    the_tables.cash_flows_ = ExtractCashFlowStatement(all_tables);
+//    the_tables.stockholders_equity_ = ExtractStatementOfStockholdersEquity(all_tables);
+//
+//    ASSERT_TRUE(the_tables.is_complete());
+//}
+//
+//TEST_F(NoAnchors_10Q, FileWithNoAnchors3)
+//{
+//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS3);
+//    auto documents = LocateDocumentSections(file_content_10Q);
+//    auto all_anchors = FindAllDocumentAnchors(documents);
+//    auto statement_anchors = FilterFinancialAnchors(all_anchors);
+//
+//    EXPECT_TRUE(statement_anchors.size() < 3);
+//
+//    auto empty_multipliers = CreateMultiplierListWhenNoAnchors(file_content_10Q);
+//    auto financial_tables = LocateFinancialTables(empty_multipliers);
+//
+//    FinancialStatements the_tables;
+//
+//    the_tables.balance_sheet_ = ExtractBalanceSheet(financial_tables);
+//    std::cout << "\n\nBalance Sheet\n";
+//    std::cout.write(the_tables.balance_sheet_.the_data_.data(), 500);
 //    
-//    std::vector<sview> forms1{"10-Q"};
-//    auto qs = std::count_if(std::begin(list_of_files_to_process), std::end(list_of_files_to_process), [&forms1](const auto &fname) { return FormIsInFileName(forms1, fname); });
-//    EXPECT_EQ(qs, 114);
+//    the_tables.statement_of_operations_ = ExtractStatementOfOperations(financial_tables);
+//    std::cout << "\n\nStmt of Operations\n";
+//    std::cout.write(the_tables.statement_of_operations_.the_data_.data(), 500);
+//    
+//    the_tables.cash_flows_ = ExtractCashFlowStatement(financial_tables);
+//    std::cout << "\n\nCash Flow\n";
+//    std::cout.write(the_tables.cash_flows_.the_data_.data(), 500);
+//    
+//    the_tables.stockholders_equity_ = ExtractStatementOfStockholdersEquity(financial_tables);
+//    std::cout << "\n\nShareholder Equity\n";
+//    std::cout.write(the_tables.stockholders_equity_.the_data_.data(), std::min(500UL, the_tables.stockholders_equity_.the_data_.size()));
 //
-//    std::vector<sview> forms2{"10-K"};
-//    auto ks = std::count_if(std::begin(list_of_files_to_process), std::end(list_of_files_to_process), [&forms2](const auto &fname) { return FormIsInFileName(forms2, fname); });
-//    EXPECT_EQ(ks, 25);
-//
-//    std::vector<sview> forms3{"10-K", "10-Q"};
-//    auto kqs = std::count_if(std::begin(list_of_files_to_process), std::end(list_of_files_to_process), [&forms3](const auto &fname) { return FormIsInFileName(forms3, fname); });
-//    ASSERT_EQ(kqs, 139);
+//    ASSERT_TRUE(the_tables.is_complete());
 //}
 //
+//class ProblemWithRegexs_10Q : public Test
+//{
+//
+//};
+//
+//TEST_F(ProblemWithRegexs_10Q, UseRegexProblemFile1)
+//{
+//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_PROBLEM_REGEX1);
+//
+//    auto documents = LocateDocumentSections(file_content_10Q);
+//    auto all_anchors = FindAllDocumentAnchors(documents);
+//    auto statement_anchors = FilterFinancialAnchors(all_anchors);
+//    auto destination_anchors = FindAnchorDestinations(statement_anchors, all_anchors);
+//    auto multipliers = FindDollarMultipliers(destination_anchors);
+//    auto financial_tables = LocateFinancialTables(multipliers);
+//
+//    FinancialStatements the_tables;
+//
+//    the_tables.balance_sheet_ = ExtractBalanceSheet(financial_tables);
+//    std::cout << "\n\nBalance Sheet\n";
+//    std::cout.write(the_tables.balance_sheet_.the_data_.data(), 500);
+//    
+//    the_tables.statement_of_operations_ = ExtractStatementOfOperations(financial_tables);
+//    std::cout << "\n\nStmt of Operations\n";
+//    std::cout.write(the_tables.statement_of_operations_.the_data_.data(), 500);
+//    
+//    the_tables.cash_flows_ = ExtractCashFlowStatement(financial_tables);
+//    std::cout << "\n\nCash Flow\n";
+//    std::cout.write(the_tables.cash_flows_.the_data_.data(), 500);
+//    
+//    the_tables.stockholders_equity_ = ExtractStatementOfStockholdersEquity(financial_tables);
+//    std::cout << "\n\nShareholder Equity\n";
+//    std::cout.write(the_tables.stockholders_equity_.the_data_.data(), std::min(500UL, the_tables.stockholders_equity_.the_data_.size()));
+//
+//    ASSERT_TRUE(the_tables.is_complete());
+//}
+//
+////TEST_F(ValidateCanNavigateDocumentStructure, FindSECHeader_10K)
+////{
+////    auto file_content_10K = LoadXMLDataFileForUse(FILE_WITH_XML_10K);
+////
+////    SEC_Header SEC_data;
+////
+////    ASSERT_NO_THROW(SEC_data.UseData(file_content_10K));
+////}
+////
+////TEST_F(ValidateCanNavigateDocumentStructure, SECHeaderFindAllFields_10Q)
+////{
+////    auto file_content_10Q = LoadXMLDataFileForUse(FILE_WITH_XML_10Q);
+////
+////    SEC_Header SEC_data;
+////    SEC_data.UseData(file_content_10Q);
+////    ASSERT_NO_THROW(SEC_data.ExtractHeaderFields());
+////}
+////
+////TEST_F(ValidateCanNavigateDocumentStructure, FindsAllDocumentSections_10Q)
+////{
+////    auto file_content_10Q = LoadXMLDataFileForUse(FILE_WITH_XML_10Q);
+////
+////    auto result = LocateDocumentSections(file_content_10Q);
+////
+////    ASSERT_EQ(result.size(), 52);
+////}
+////
+////TEST_F(ValidateCanNavigateDocumentStructure, FindsAllDocumentSections_10K)
+////{
+////    auto file_content_10K = LoadXMLDataFileForUse(FILE_WITH_XML_10K);
+////
+////    auto result = LocateDocumentSections(file_content_10K);
+////
+////    ASSERT_EQ(result.size(), 119);
+////}
+////
+////class LocateFileContentToUse : public Test
+////{
+////
+////};
+////
+////TEST_F(LocateFileContentToUse, FindInstanceDocument_10Q)
+////{
+////    auto file_content_10Q = LoadXMLDataFileForUse(FILE_WITH_XML_10Q);
+////
+////    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
+////
+////    auto instance_document = LocateInstanceDocument(document_sections_10Q);
+////    ASSERT_TRUE(boost::algorithm::starts_with(instance_document, "<?xml version")
+////        && boost::algorithm::ends_with(instance_document, "</xbrl>\n"));
+////}
+////
+////TEST_F(LocateFileContentToUse, FindInstanceDocument_10K)
+////{
+////    auto file_content_10K = LoadXMLDataFileForUse(FILE_WITH_XML_10K);
+////
+////    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
+////
+////    auto instance_document = LocateInstanceDocument(document_sections_10K);
+////    ASSERT_TRUE(boost::algorithm::starts_with(instance_document, "<?xml version")
+////        && boost::algorithm::ends_with(instance_document, "</xbrli:xbrl>\n"));
+////}
+////
+////TEST_F(LocateFileContentToUse, FindLabelDocument_10Q)
+////{
+////    auto file_content_10Q = LoadXMLDataFileForUse(FILE_WITH_XML_10Q);
+////
+////    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
+////
+////    auto labels_document = LocateLabelDocument(document_sections_10Q);
+////    ASSERT_TRUE(boost::algorithm::starts_with(labels_document, "<?xml version")
+////        && boost::algorithm::ends_with(labels_document, "</link:linkbase>\n"));
+////}
+////
+////TEST_F(LocateFileContentToUse, FindLabelDocument_10K)
+////{
+////    auto file_content_10K = LoadXMLDataFileForUse(FILE_WITH_XML_10K);
+////
+////    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
+////
+////    auto labels_document = LocateLabelDocument(document_sections_10K);
+////    ASSERT_TRUE(boost::algorithm::starts_with(labels_document, "<?xml version")
+////        && boost::algorithm::ends_with(labels_document, "</link:linkbase>\n"));
+////}
+////
+////class ParseDocumentContent : public Test
+////{
+////
+////};
+////
+////TEST_F(ParseDocumentContent, VerifyCanParseInstanceDocument_10Q)
+////{
+////    auto file_content_10Q = LoadXMLDataFileForUse(FILE_WITH_XML_10Q);
+////
+////    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
+////
+////    auto instance_document = LocateInstanceDocument(document_sections_10Q);
+////    ASSERT_NO_THROW(ParseXMLContent(instance_document));
+////}
+////
+////TEST_F(ParseDocumentContent, VerifyCanParseInstanceDocument_10K)
+////{
+////    auto file_content_10K = LoadXMLDataFileForUse(FILE_WITH_XML_10K);
+////
+////    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
+////
+////    auto instance_document = LocateInstanceDocument(document_sections_10K);
+////    ASSERT_NO_THROW(ParseXMLContent(instance_document));
+////}
+////
+////TEST_F(ParseDocumentContent, VerifyParseBadInstanceDocumentThrows_10K)
+////{
+////    auto file_content_10K = LoadXMLDataFileForUse(BAD_FILE1);
+////
+////    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
+////
+////    auto instance_document = LocateInstanceDocument(document_sections_10K);
+////    ASSERT_THROW(ParseXMLContent(instance_document), ExtractException);
+////}
+////
+////TEST_F(ParseDocumentContent, VerifyParseBadInstanceDocumentThrows2_10K)
+////{
+////    auto file_content_10K = LoadXMLDataFileForUse(BAD_FILE3);
+////
+////    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
+////
+////    auto instance_document = LocateInstanceDocument(document_sections_10K);
+////    ASSERT_THROW(ParseXMLContent(instance_document), ExtractException);
+////}
+////
+////TEST_F(ParseDocumentContent, VerifyCanParseLabelsDocument_10Q)
+////{
+////    auto file_content_10Q = LoadXMLDataFileForUse(FILE_WITH_XML_10Q);
+////
+////    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
+////
+////    auto labels_document = LocateLabelDocument(document_sections_10Q);
+////    ASSERT_NO_THROW(ParseXMLContent(labels_document));
+////}
+////
+////TEST_F(ParseDocumentContent, VerifyCanParseLabelsDocument_10K)
+////{
+////    auto file_content_10K = LoadXMLDataFileForUse(FILE_WITH_XML_10K);
+////
+////    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
+////
+////    auto labels_document = LocateLabelDocument(document_sections_10K);
+////    ASSERT_NO_THROW(ParseXMLContent(labels_document));
+////}
+////
+////class ExtractDocumentContent : public Test
+////{
+////
+////};
+////
+////template<typename ...Ts>
+////auto AllNotEmpty(Ts ...ts)
+////{
+////    return ((! ts.empty()) && ...);
+////}
+////
+////TEST_F(ExtractDocumentContent, VerifyCanExtractFilingData_10Q)
+////{
+////    auto file_content_10Q = LoadXMLDataFileForUse(FILE_WITH_XML_10Q);
+////
+////    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
+////
+////    auto instance_document = LocateInstanceDocument(document_sections_10Q);
+////    auto instance_xml = ParseXMLContent(instance_document);
+////
+////    const auto& [a, b, c, d] = ExtractFilingData(instance_xml);
+////
+////    ASSERT_TRUE(AllNotEmpty(a, b, c, d));
+////}
+////
+////TEST_F(ExtractDocumentContent, VerifyCanExtractFilingData_10K)
+////{
+////    auto file_content_10K = LoadXMLDataFileForUse(FILE_WITH_XML_10K);
+////
+////    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
+////
+////    auto instance_document = LocateInstanceDocument(document_sections_10K);
+////    auto instance_xml = ParseXMLContent(instance_document);
+////
+////    const auto& [a, b, c, d] = ExtractFilingData(instance_xml);
+////
+////    ASSERT_TRUE(AllNotEmpty(a, b, c, d));
+////}
+////
+////TEST_F(ExtractDocumentContent, VerifyCanExtractFilingDataNoSharesOut_10K)
+////{
+////    auto file_content_10K = LoadXMLDataFileForUse(NO_SHARES_OUT);
+////
+////    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
+////
+////    auto instance_document = LocateInstanceDocument(document_sections_10K);
+////    auto instance_xml = ParseXMLContent(instance_document);
+////
+////    const auto& [a, b, c, d] = ExtractFilingData(instance_xml);
+////
+////    // there is no symbol in this file either.
+////    ASSERT_TRUE(AllNotEmpty(b, c, d));
+////}
+////
+////TEST_F(ExtractDocumentContent, VerifyCanExtractGAAP_10Q)
+////{
+////    auto file_content_10Q = LoadXMLDataFileForUse(FILE_WITH_XML_10Q);
+////
+////    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
+////
+////    auto instance_document = LocateInstanceDocument(document_sections_10Q);
+////    auto instance_xml = ParseXMLContent(instance_document);
+////
+////    auto gaap_data = ExtractGAAPFields(instance_xml);
+////
+////    ASSERT_EQ(gaap_data.size(), 194);
+////}
+////
+////TEST_F(ExtractDocumentContent, VerifyCanExtractGAAPNoNamespace_10Q)
+////{
+////    auto file_content_10Q = LoadXMLDataFileForUse(FILE_NO_NAMESPACE_10Q);
+////
+////    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
+////
+////    auto instance_document = LocateInstanceDocument(document_sections_10Q);
+////    auto instance_xml = ParseXMLContent(instance_document);
+////
+////    auto gaap_data = ExtractGAAPFields(instance_xml);
+////
+////    ASSERT_EQ(gaap_data.size(), 723);
+////}
+////
+////TEST_F(ExtractDocumentContent, VerifyCanExtractGAAP_10K)
+////{
+////    auto file_content_10K = LoadXMLDataFileForUse(FILE_WITH_XML_10K);
+////
+////    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
+////
+////    auto instance_document = LocateInstanceDocument(document_sections_10K);
+////    auto instance_xml = ParseXMLContent(instance_document);
+////
+////    auto gaap_data = ExtractGAAPFields(instance_xml);
+////
+////    ASSERT_EQ(gaap_data.size(), 1984);
+////}
+////
+////TEST_F(ExtractDocumentContent, VerifyCanExtractLabels_10Q)
+////{
+////    auto file_content_10Q = LoadXMLDataFileForUse(FILE_WITH_XML_10Q);
+////
+////    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
+////
+////    auto labels_document = LocateLabelDocument(document_sections_10Q);
+////    auto labels_xml = ParseXMLContent(labels_document);
+////
+////    /* auto label_data = ExtractFieldLabels(labels_xml); */
+////    auto label_data = ExtractFieldLabels(labels_xml);
+////
+////    ASSERT_EQ(label_data.size(), 125);
+////}
+////
+////TEST_F(ExtractDocumentContent, VerifyCanExtractLabelsNoNamespace_10Q)
+////{
+////    auto file_content_10Q = LoadXMLDataFileForUse(FILE_NO_NAMESPACE_10Q);
+////
+////    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
+////
+////    auto labels_document = LocateLabelDocument(document_sections_10Q);
+////    auto labels_xml = ParseXMLContent(labels_document);
+////
+////    auto label_data = ExtractFieldLabels(labels_xml);
+////
+////    ASSERT_EQ(label_data.size(), 352);
+////}
+////
+////TEST_F(ExtractDocumentContent, VerifyCanExtractLabelsMultipleLabelLinks_10Q)
+////{
+////    auto file_content_10Q = LoadXMLDataFileForUse(FILE_MULTIPLE_LABEL_LINKS);
+////
+////    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
+////
+////    auto labels_document = LocateLabelDocument(document_sections_10Q);
+////    auto labels_xml = ParseXMLContent(labels_document);
+////
+////    auto label_data = ExtractFieldLabels(labels_xml);
+////
+////    ASSERT_EQ(label_data.size(), 158);
+////}
+////
+////TEST_F(ExtractDocumentContent, VerifyCanExtractLabels_10K)
+////{
+////    auto file_content_10K = LoadXMLDataFileForUse(FILE_WITH_XML_10K);
+////
+////    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
+////
+////    auto labels_document = LocateLabelDocument(document_sections_10K);
+////    auto labels_xml = ParseXMLContent(labels_document);
+////
+////    auto label_data = ExtractFieldLabels(labels_xml);
+////
+////    ASSERT_EQ(label_data.size(), 746);
+////}
+////
+////TEST_F(ExtractDocumentContent, VerifyCanExtractContexts_10Q)
+////{
+////    auto file_content_10Q = LoadXMLDataFileForUse(FILE_WITH_XML_10Q);
+////
+////    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
+////
+////    auto instance_document = LocateInstanceDocument(document_sections_10Q);
+////    auto instance_xml = ParseXMLContent(instance_document);
+////
+////    auto context_data = ExtractContextDefinitions(instance_xml);
+////
+////    ASSERT_EQ(context_data.size(), 37);
+////}
+////
+////TEST_F(ExtractDocumentContent, VerifyCanExtractContextsSomeNamespace_10Q)
+////{
+////    auto file_content_10Q = LoadXMLDataFileForUse(FILE_SOME_NAMESPACE_10Q);
+////
+////    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
+////
+////    auto instance_document = LocateInstanceDocument(document_sections_10Q);
+////    auto instance_xml = ParseXMLContent(instance_document);
+////
+////    auto context_data = ExtractContextDefinitions(instance_xml);
+////
+////    ASSERT_EQ(context_data.size(), 12);
+////}
+////
+////TEST_F(ExtractDocumentContent, VerifyCanExtractContexts_10K)
+////{
+////    auto file_content_10K = LoadXMLDataFileForUse(FILE_WITH_XML_10K);
+////
+////    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
+////
+////    auto instance_document = LocateInstanceDocument(document_sections_10K);
+////    auto instance_xml = ParseXMLContent(instance_document);
+////
+////    auto context_data = ExtractContextDefinitions(instance_xml);
+////
+////    ASSERT_EQ(context_data.size(), 492);
+////}
+////
+////TEST_F(ExtractDocumentContent, VerifyCanMatchGAAPDataWithUserLabel_10Q)
+////{
+////    auto file_content_10Q = LoadXMLDataFileForUse(FILE_WITH_XML_10Q);
+////
+////    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
+////
+////    auto labels_document = LocateLabelDocument(document_sections_10Q);
+////    auto labels_xml = ParseXMLContent(labels_document);
+////
+////    auto label_data = ExtractFieldLabels(labels_xml);
+////
+////    auto instance_document = LocateInstanceDocument(document_sections_10Q);
+////    auto instance_xml = ParseXMLContent(instance_document);
+////
+////    auto gaap_data = ExtractGAAPFields(instance_xml);
+////
+////    bool result = FindAllLabels(gaap_data, label_data);
+////
+////    ASSERT_TRUE(result);
+////}
+////
+////TEST_F(ExtractDocumentContent, VerifyCanMatchGAAPDataWithUserLabelBadFile2_10K)
+////{
+////    auto file_content_10K = LoadXMLDataFileForUse(BAD_FILE2);
+////
+////    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
+////
+////    auto labels_document = LocateLabelDocument(document_sections_10K);
+////    auto labels_xml = ParseXMLContent(labels_document);
+////
+////    auto label_data = ExtractFieldLabels(labels_xml);
+////
+////    auto instance_document = LocateInstanceDocument(document_sections_10K);
+////    auto instance_xml = ParseXMLContent(instance_document);
+////
+////    auto gaap_data = ExtractGAAPFields(instance_xml);
+////
+////    bool result = FindAllLabels(gaap_data, label_data);
+////
+////    ASSERT_TRUE(result);
+////}
+////
+////TEST_F(ExtractDocumentContent, VerifyCanMatchGAAPDataWithUserLabelNoNamespace_10Q)
+////{
+////    auto file_content_10Q = LoadXMLDataFileForUse(FILE_NO_NAMESPACE_10Q);
+////
+////    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
+////
+////    auto labels_document = LocateLabelDocument(document_sections_10Q);
+////    auto labels_xml = ParseXMLContent(labels_document);
+////
+////    auto label_data = ExtractFieldLabels(labels_xml);
+////
+////    auto instance_document = LocateInstanceDocument(document_sections_10Q);
+////    auto instance_xml = ParseXMLContent(instance_document);
+////
+////    auto gaap_data = ExtractGAAPFields(instance_xml);
+////
+////    bool result = FindAllLabels(gaap_data, label_data);
+////
+////    ASSERT_TRUE(result);
+////}
+////
+////TEST_F(ExtractDocumentContent, VerifyCanMatchGAAPDataWithUserLabelSomeNamespace_10Q)
+////{
+////    auto file_content_10Q = LoadXMLDataFileForUse(FILE_SOME_NAMESPACE_10Q);
+////
+////    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
+////
+////    auto labels_document = LocateLabelDocument(document_sections_10Q);
+////    auto labels_xml = ParseXMLContent(labels_document);
+////
+////    auto label_data = ExtractFieldLabels(labels_xml);
+////
+////    auto instance_document = LocateInstanceDocument(document_sections_10Q);
+////    auto instance_xml = ParseXMLContent(instance_document);
+////
+////    auto gaap_data = ExtractGAAPFields(instance_xml);
+////
+////    bool result = FindAllLabels(gaap_data, label_data);
+////
+////    ASSERT_TRUE(result);
+////}
+////
+////TEST_F(ExtractDocumentContent, VerifyCanMatchGAAPDataWithUserLabel_10K)
+////{
+////    auto file_content_10K = LoadXMLDataFileForUse(FILE_WITH_XML_10K);
+////
+////    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
+////
+////    auto labels_document = LocateLabelDocument(document_sections_10K);
+////    auto labels_xml = ParseXMLContent(labels_document);
+////
+////    auto label_data = ExtractFieldLabels(labels_xml);
+////
+////    auto instance_document = LocateInstanceDocument(document_sections_10K);
+////    auto instance_xml = ParseXMLContent(instance_document);
+////
+////    auto context_data = ExtractContextDefinitions(instance_xml);
+////    auto gaap_data = ExtractGAAPFields(instance_xml);
+////
+////    bool result = FindAllLabels(gaap_data, label_data);
+////
+////    ASSERT_TRUE(result);
+////}
+////
+////TEST_F(ExtractDocumentContent, VerifyCanMatchGAAPDataWithUserLabelMissingValues_10K)
+////{
+////    auto file_content_10K = LoadXMLDataFileForUse(MISSING_VALUES1_10K);
+////
+////    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
+////
+////    auto labels_document = LocateLabelDocument(document_sections_10K);
+////    auto labels_xml = ParseXMLContent(labels_document);
+////
+////    auto label_data = ExtractFieldLabels(labels_xml);
+////
+////    auto instance_document = LocateInstanceDocument(document_sections_10K);
+////    auto instance_xml = ParseXMLContent(instance_document);
+////
+////    auto gaap_data = ExtractGAAPFields(instance_xml);
+////
+////    bool result = FindAllLabels(gaap_data, label_data);
+////
+////    ASSERT_TRUE(result);
+////}
+////
+////TEST_F(ExtractDocumentContent, VerifyCanMatchGAAPDataWithUserLabelMissingValues2_10K)
+////{
+////    auto file_content_10K = LoadXMLDataFileForUse(MISSING_VALUES2_10K);
+////
+////    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
+////
+////    auto labels_document = LocateLabelDocument(document_sections_10K);
+////    auto labels_xml = ParseXMLContent(labels_document);
+////
+////    auto label_data = ExtractFieldLabels(labels_xml);
+////
+////    auto instance_document = LocateInstanceDocument(document_sections_10K);
+////    auto instance_xml = ParseXMLContent(instance_document);
+////
+////    auto gaap_data = ExtractGAAPFields(instance_xml);
+////
+////    bool result = FindAllLabels(gaap_data, label_data);
+////
+////    ASSERT_TRUE(result);
+////}
+////
+////TEST_F(ExtractDocumentContent, VerifyCanMatchGAAPDataWithContext_10Q)
+////{
+////    auto file_content_10Q = LoadXMLDataFileForUse(FILE_WITH_XML_10Q);
+////    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
+////
+////    auto instance_document = LocateInstanceDocument(document_sections_10Q);
+////    auto instance_xml = ParseXMLContent(instance_document);
+////
+////    auto gaap_data = ExtractGAAPFields(instance_xml);
+////
+////    auto context_data = ExtractContextDefinitions(instance_xml);
+////
+////    bool result = FindAllContexts(gaap_data, context_data);
+////
+////    ASSERT_TRUE(result);
+////}
+////
+////TEST_F(ExtractDocumentContent, VerifyCanMatchGAAPDataWithContextSomeNamespace_10Q)
+////{
+////    auto file_content_10Q = LoadXMLDataFileForUse(FILE_SOME_NAMESPACE_10Q);
+////
+////    auto document_sections_10Q{LocateDocumentSections(file_content_10Q)};
+////
+////    auto instance_document = LocateInstanceDocument(document_sections_10Q);
+////    auto instance_xml = ParseXMLContent(instance_document);
+////
+////    auto gaap_data = ExtractGAAPFields(instance_xml);
+////
+////    auto context_data = ExtractContextDefinitions(instance_xml);
+////
+////    bool result = FindAllContexts(gaap_data, context_data);
+////
+////    ASSERT_TRUE(result);
+////}
+////
+////TEST_F(ExtractDocumentContent, VerifyCanMatchGAAPDataWithContext_10K)
+////{
+////    auto file_content_10K = LoadXMLDataFileForUse(FILE_WITH_XML_10K);
+////
+////    auto document_sections_10K{LocateDocumentSections(file_content_10K)};
+////
+////    auto instance_document = LocateInstanceDocument(document_sections_10K);
+////    auto instance_xml = ParseXMLContent(instance_document);
+////
+////    auto gaap_data = ExtractGAAPFields(instance_xml);
+////
+////    auto context_data = ExtractContextDefinitions(instance_xml);
+////
+////    bool result = FindAllContexts(gaap_data, context_data);
+////
+////    ASSERT_TRUE(result);
+////}
+////
+////
+////class ValidateFolderFilters : public Test
+////{
+////public:
+////
+////};
+////
+////TEST_F(ValidateFolderFilters, VerifyFindAllXBRL)
+////{
+////    int files_with_XML{0};
+////
+////    auto test_file([&files_with_XML](const auto& dir_ent)
+////    {
+////        if (dir_ent.status().type() == fs::file_type::regular)
+////        {
+////            auto file_content = LoadXMLDataFileForUse(dir_ent.path().string().c_str());
+////
+////            FileHasXBRL filter;
+////            bool has_XML = filter(EE::SEC_Header_fields{}, file_content);
+////            if (has_XML)
+////            {
+////                ++files_with_XML;
+////            }
+////        }
+////    });
+////
+////    std::for_each(fs::recursive_directory_iterator(EDGAR_DIRECTORY), fs::recursive_directory_iterator(), test_file);
+////
+////    ASSERT_EQ(files_with_XML, 159);
+////}
+////
+////TEST_F(ValidateFolderFilters, VerifyFindAll10Q)
+////{
+////    int files_with_form{0};
+////
+////    auto test_file([&files_with_form](const auto& dir_ent)
+////    {
+////        if (dir_ent.status().type() == fs::file_type::regular)
+////        {
+////            auto file_content = LoadXMLDataFileForUse(dir_ent.path().string().c_str());
+////
+////            SEC_Header SEC_data;
+////            SEC_data.UseData(file_content);
+////            SEC_data.ExtractHeaderFields();
+////
+////            FileHasXBRL filter1;
+////            std::vector<sview> forms{"10-Q"};
+////            FileHasFormType filter2{forms};
+////
+////            bool has_form = ApplyFilters(SEC_data.GetFields(), file_content, filter1, filter2);
+////            if (has_form)
+////            {
+////                ++files_with_form;
+////            }
+////        }
+////    });
+////
+////    std::for_each(fs::recursive_directory_iterator(EDGAR_DIRECTORY), fs::recursive_directory_iterator(), test_file);
+////
+////    ASSERT_EQ(files_with_form, 157);
+////}
+////
+////TEST_F(ValidateFolderFilters, VerifyFindAll10K)
+////{
+////    int files_with_form{0};
+////
+////    auto test_file([&files_with_form](const auto& dir_ent)
+////    {
+////        if (dir_ent.status().type() == fs::file_type::regular)
+////        {
+////            auto file_content = LoadXMLDataFileForUse(dir_ent.path().string().c_str());
+////
+////            SEC_Header SEC_data;
+////            SEC_data.UseData(file_content);
+////            SEC_data.ExtractHeaderFields();
+////
+////            FileHasXBRL filter1;
+////            std::vector<sview> forms{"10-K"};
+////            FileHasFormType filter2{forms};
+////
+////            bool has_form = ApplyFilters(SEC_data.GetFields(), file_content, filter1, filter2);
+////            if (has_form)
+////            {
+////                ++files_with_form;
+////            }
+////        }
+////    });
+////
+////    std::for_each(fs::recursive_directory_iterator(EDGAR_DIRECTORY), fs::recursive_directory_iterator(), test_file);
+////
+////    ASSERT_EQ(files_with_form, 1);
+////}
+////
+////TEST_F(ValidateFolderFilters, VerifyFindAllInDateRange)
+////{
+////    int files_with_form{0};
+////
+////    auto test_file([&files_with_form](const auto& dir_ent)
+////    {
+////        if (dir_ent.status().type() == fs::file_type::regular)
+////        {
+////            auto file_content = LoadXMLDataFileForUse(dir_ent.path().string().c_str());
+////
+////            SEC_Header SEC_data;
+////            SEC_data.UseData(file_content);
+////            SEC_data.ExtractHeaderFields();
+////
+////            FileHasXBRL filter1;
+////            FileIsWithinDateRange filter2{bg::from_simple_string("2013-Jan-1"), bg::from_simple_string("2013-09-30")};
+////
+////            bool has_form = ApplyFilters(SEC_data.GetFields(), file_content, filter1, filter2);
+////            if (has_form)
+////            {
+////                ++files_with_form;
+////            }
+////        }
+////    });
+////
+////    std::for_each(fs::recursive_directory_iterator(EDGAR_DIRECTORY), fs::recursive_directory_iterator(), test_file);
+////
+////    ASSERT_EQ(files_with_form, 151);
+////}
+////
+////TEST_F(ValidateFolderFilters, VerifyFindAllInDateRangeNoMatches)
+////{
+////    int files_with_form{0};
+////
+////    auto test_file([&files_with_form](const auto& dir_ent)
+////    {
+////        if (dir_ent.status().type() == fs::file_type::regular)
+////        {
+////            auto file_content = LoadXMLDataFileForUse(dir_ent.path().string().c_str());
+////
+////            SEC_Header SEC_data;
+////            SEC_data.UseData(file_content);
+////            SEC_data.ExtractHeaderFields();
+////
+////            FileHasXBRL filter1;
+////            FileIsWithinDateRange filter2{bg::from_simple_string("2015-Jan-1"), bg::from_simple_string("2015-09-30")};
+////
+////            bool has_form = ApplyFilters(SEC_data.GetFields(), file_content, filter1, filter2);
+////            if (has_form)
+////            {
+////                ++files_with_form;
+////            }
+////        }
+////    });
+////
+////    std::for_each(fs::recursive_directory_iterator(EDGAR_DIRECTORY), fs::recursive_directory_iterator(), test_file);
+////
+////    ASSERT_EQ(files_with_form, 0);
+////}
+////
+////TEST_F(ValidateFolderFilters, VerifyComboFiltersWithMatches)
+////{
+////    int files_with_form{0};
+////
+////    auto test_file([&files_with_form](const auto& dir_ent)
+////    {
+////        if (dir_ent.status().type() == fs::file_type::regular)
+////        {
+////            auto file_content = LoadXMLDataFileForUse(dir_ent.path().string().c_str());
+////
+////            SEC_Header SEC_data;
+////            SEC_data.UseData(file_content);
+////            SEC_data.ExtractHeaderFields();
+////
+////            FileHasXBRL filter1;
+////            std::vector<sview> forms{"10-Q"};
+////            FileHasFormType filter2{forms};
+////            FileIsWithinDateRange filter3{bg::from_simple_string("2013-03-1"), bg::from_simple_string("2013-03-31")};
+////
+////            bool has_form = ApplyFilters(SEC_data.GetFields(), file_content, filter1, filter2, filter3);
+////            if (has_form)
+////            {
+////                ++files_with_form;
+////            }
+////        }
+////    });
+////
+////    std::for_each(fs::recursive_directory_iterator(EDGAR_DIRECTORY), fs::recursive_directory_iterator(), test_file);
+////
+////    ASSERT_EQ(files_with_form, 5);
+////}
+////
+////TEST_F(ValidateFolderFilters, VerifyFindFormsInFileNameList)
+////{
+////    std::vector<std::string> list_of_files_to_process;
+////
+////    std::ifstream input_file{TEST_FILE_LIST};
+////
+////    // Tell the stream to use our facet, so only '\n' is treated as a space.
+////
+////    input_file.imbue(std::locale(input_file.getloc(), new line_only_whitespace()));
+////
+////    std::istream_iterator<std::string> itor{input_file};
+////    std::istream_iterator<std::string> itor_end;
+////    std::copy(
+////        itor,
+////        itor_end,
+////        std::back_inserter(list_of_files_to_process)
+////    );
+////    input_file.close();
+////    
+////    std::vector<sview> forms1{"10-Q"};
+////    auto qs = std::count_if(std::begin(list_of_files_to_process), std::end(list_of_files_to_process), [&forms1](const auto &fname) { return FormIsInFileName(forms1, fname); });
+////    EXPECT_EQ(qs, 114);
+////
+////    std::vector<sview> forms2{"10-K"};
+////    auto ks = std::count_if(std::begin(list_of_files_to_process), std::end(list_of_files_to_process), [&forms2](const auto &fname) { return FormIsInFileName(forms2, fname); });
+////    EXPECT_EQ(ks, 25);
+////
+////    std::vector<sview> forms3{"10-K", "10-Q"};
+////    auto kqs = std::count_if(std::begin(list_of_files_to_process), std::end(list_of_files_to_process), [&forms3](const auto &fname) { return FormIsInFileName(forms3, fname); });
+////    ASSERT_EQ(kqs, 139);
+////}
+////
 
 int main(int argc, char** argv)
 {

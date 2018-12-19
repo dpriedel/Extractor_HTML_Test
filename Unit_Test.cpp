@@ -40,10 +40,10 @@
 #include <algorithm>
 #include <chrono>
 #include <experimental/filesystem>
-#include <experimental/string>
 #include <fstream>
 #include <iostream>
 #include <numeric>
+#include <string>
 #include <system_error>
 #include <thread>
 
@@ -349,68 +349,24 @@ TEST_F(Iterators, HTMLIteratorFileWithHTML_10K)
 TEST_F(Iterators, AnchorIteratorFileWithHTML_10Q)
 {
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
-//    auto documents = LocateDocumentSections(file_content_10Q);
-//
-//    auto all_anchors = FindAllDocumentAnchors(documents);
-//    std::cout << "\nAll anchors: " << all_anchors.size() << '\n';
-//    for (const auto& anchor : all_anchors)
-//    {
-//        std::cout
-//            << "HREF: " << anchor.href
-//            << "\tNAME: " << anchor.name
-//            << "\tTEXT: " << anchor.text
-//            << "\tCONTENT: " << anchor.anchor_content << '\n';
-//    }
     HTML_FromFile html{file_content_10Q};
 
     AnchorsFromHTML anchors(*html.begin());
 
     auto how_many = std::distance(std::begin(anchors), std::end(anchors));
-    std::cout << '\n' <<  how_many << '\n';
-//    for (const auto& anchor : anchors)
-//    {
-//        std::cout
-//            << "HREF: " << anchor.href
-//            << "\tNAME: " << anchor.name
-//            << "\tTEXT: " << anchor.text
-//            << "\tCONTENT: " << anchor.anchor_content << '\n';
-//    }
     ASSERT_TRUE(how_many == 22);
 }
 
 TEST_F(Iterators, AnchorIteratorFileWithXML_10Q)
 {
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_XML_10Q);
-
-//    auto documents = LocateDocumentSections(file_content_10Q);
-//
-//    auto all_anchors = FindAllDocumentAnchors(documents);
-//    std::cout << "\nAll anchors: " << all_anchors.size() << '\n';
-////    for (const auto& anchor : all_anchors)
-////    {
-////        std::cout
-////            << "HREF: " << anchor.href
-////            << "\tNAME: " << anchor.name
-////            << "\tTEXT: " << anchor.text
-////            << "\tCONTENT: " << anchor.anchor_content << '\n';
-////    }
-
     HTML_FromFile htmls{file_content_10Q};
     int total = 0;
     for (const auto& html : htmls)
     {
         AnchorsFromHTML anchors(html);
         total += std::distance(std::begin(anchors), std::end(anchors));
-//        for (const auto& anchor : anchors)
-//        {
-//            std::cout
-//                << "HREF: " << anchor.href
-//                << "\tNAME: " << anchor.name
-//                << "\tTEXT: " << anchor.text
-//                << "\tCONTENT: " << anchor.anchor_content << '\n';
-//        }
     }
-    std::cout << '\n' <<  total << '\n';
     ASSERT_TRUE(total == 2215);
 }
 
@@ -428,7 +384,7 @@ TEST_F(IdentifyHTMLFilesToUse, ConfirmFileHasHTML)
     ASSERT_TRUE(use_file);
 }
 
-TEST_F(IdentifyHTMLFilesToUse, ConfirmFileHasXML)
+TEST_F(IdentifyHTMLFilesToUse, DISABLED_ConfirmFileHasXML)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_XML_10Q);
 
@@ -440,66 +396,97 @@ TEST_F(IdentifyHTMLFilesToUse, ConfirmFileHasXML)
 class FindAnchorsForFinancialStatements : public Test
 {
 public:
-    std::vector<sview> documents;
 };
+
+TEST_F(FindAnchorsForFinancialStatements, FindTopLevelAnchor_10Q)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
+
+    HTML_FromFile htmls{file_content_10Q};
+
+    auto look_for_top_level([] (auto html)
+    {
+        AnchorsFromHTML anchors(html);
+        auto financial_anchor = std::find_if(anchors.begin(), anchors.end(), FinancialStatementFilter);
+        return financial_anchor != anchors.end();
+    });
+
+    auto financial_content = std::find_if(htmls.begin(),
+            htmls.end(),
+            look_for_top_level
+            );
+    ASSERT_TRUE(financial_content != htmls.end());
+}
+
+TEST_F(FindAnchorsForFinancialStatements, FindTopLevelAnchorMinimalHTML_10Q)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
+
+    HTML_FromFile htmls{file_content_10Q};
+
+    auto look_for_top_level([] (auto html)
+    {
+        AnchorsFromHTML anchors(html);
+        auto financial_anchor = std::find_if(anchors.begin(), anchors.end(), FinancialStatementFilter);
+        return financial_anchor != anchors.end();
+    });
+
+    auto financial_content = std::find_if(htmls.begin(),
+            htmls.end(),
+            look_for_top_level
+            );
+    ASSERT_TRUE(financial_content != htmls.end());
+}
+
+TEST_F(FindAnchorsForFinancialStatements, FindTopLevelAnchorNoHTML_10Q)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_NO_HTML_10Q);
+
+    auto financial_content = FindFinancialContent(file_content_10Q);
+
+    ASSERT_TRUE(financial_content.empty());
+}
 
 TEST_F(FindAnchorsForFinancialStatements, FindAnchors_10Q)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
 
-    AnchorList all_anchors;
-    HTML_FromFile htmls{file_content_10Q};
-    for (const auto& html : htmls)
+    AnchorList statement_anchors;
+
+    auto financial_content = FindFinancialContent(file_content_10Q);
+    if (! financial_content.empty())
     {
-        AnchorsFromHTML anchors(html);
-        std::copy(anchors.begin(),
+        AnchorsFromHTML anchors(financial_content);
+        std::copy_if(anchors.begin(),
                 anchors.end(),
-                std::back_inserter(all_anchors)
+                std::back_inserter(statement_anchors),
+                FinancialAnchorFilter
                 );
     }
-    std::cout << "\nAll anchors: \n";
-    for (const auto& anchor : all_anchors)
-    {
-        std::cout
-            << "HREF: " << anchor.href
-            << "\tNAME: " << anchor.name
-            << "\tTEXT: " << anchor.text
-            << "\tCONTENT: " << anchor.anchor_content << '\n';
-    }
-    auto statement_anchors = FilterFinancialAnchors(all_anchors);
-
+    std::cout << "statement anchors: " << statement_anchors.size() << '\n';
     ASSERT_TRUE(statement_anchors.size() == 4);
 }
-//
-//TEST_F(FindAnchorsForFinancialStatements, FindAnchorsMinimalHTML_10Q)
-//{
-//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
-//    documents = LocateDocumentSections(file_content_10Q);
-//
-//    auto all_anchors = FindAllDocumentAnchors(documents);
-//    std::cout << "\nAll anchors: \n";
-//    for (const auto& anchor : all_anchors)
-//    {
-//        std::cout
-//            << "HREF: " << anchor.href
-//            << "\tNAME: " << anchor.name
-//            << "\tTEXT: " << anchor.text
-//            << "\tCONTENT: " << anchor.anchor_content << '\n';
-//    }
-//    auto statement_anchors = FilterFinancialAnchors(all_anchors);
-//    std::cout << "\nSelected Anchors: \n";
-//    for (const auto& anchor : statement_anchors)
-//    {
-//        std::cout
-//            << "HREF: " << anchor.href
-//            << "\tNAME: " << anchor.name
-//            << "\tTEXT: " << anchor.text
-//            << "\tCONTENT: " << anchor.anchor_content << '\n';
-//    }
-//
-//    ASSERT_TRUE(statement_anchors.size() == 3);
-//}
-//
+
+TEST_F(FindAnchorsForFinancialStatements, FindAnchorsMinimalHTML_10Q)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
+
+    AnchorList statement_anchors;
+
+    auto financial_content = FindFinancialContent(file_content_10Q);
+    if (! financial_content.empty())
+    {
+        AnchorsFromHTML anchors(financial_content);
+        std::copy_if(anchors.begin(),
+                anchors.end(),
+                std::back_inserter(statement_anchors),
+                FinancialAnchorFilter
+                );
+    }
+    std::cout << "statement anchors: " << statement_anchors.size() << '\n';
+    ASSERT_TRUE(statement_anchors.size() == 3);
+}
+
 //TEST_F(FindAnchorsForFinancialStatements, FindAnchorDestinations_10Q)
 //{
 //    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);

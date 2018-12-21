@@ -521,7 +521,7 @@ public:
 //    ASSERT_TRUE(multipliers.size() == 4);
 //}
 //
-TEST_F(FindFinancialStatements_10Q, FindFinancialTables_10Q)
+TEST_F(FindFinancialStatements_10Q, FindTables_10Q)
 {
     TablesFromHTML tables{financial_content};
 
@@ -530,15 +530,14 @@ TEST_F(FindFinancialStatements_10Q, FindFinancialTables_10Q)
     ASSERT_TRUE(how_many == 86);
 }
 
-//TEST_F(FindFinancialStatements_10Q, FindBalanceSheet_10Q)
-//{
-//    auto multipliers = FindDollarMultipliers(destination_anchors);
-//    auto financial_tables = LocateFinancialTables(multipliers);
-//    auto balance_sheet = ExtractBalanceSheet(financial_tables);
-//
-//    ASSERT_TRUE(! balance_sheet.the_data_.empty());
-//}
-//
+TEST_F(FindFinancialStatements_10Q, FindBalanceSheet_10Q)
+{
+    TablesFromHTML tables{financial_content};
+    auto balance_sheet = std::find_if(tables.begin(), tables.end(), BalanceSheetFilter);
+
+    ASSERT_TRUE(balance_sheet != tables.end());
+}
+
 //TEST_F(FindFinancialStatements_10Q, FindStatementOfOperations_10Q)
 //{
 //    auto multipliers = FindDollarMultipliers(destination_anchors);

@@ -19,7 +19,7 @@
 #
 MAKE=gmake
 
-BOOSTDIR := /extra/boost/boost-1.68_gcc-8
+BOOSTDIR := /extra/boost/boost-1.69_gcc-8
 GCCDIR := /extra/gcc/gcc-8
 GTESTDIR := /usr/local/include
 CPP := $(GCCDIR)/bin/g++
@@ -48,7 +48,9 @@ SRCS2 := $(SDIR2)/ExtractEDGAR_XBRLApp.cpp \
 		$(SDIR2)/EDGAR_HTML_FileFilter.cpp \
 		$(SDIR2)/EDGAR_XBRL_FileFilter.cpp \
 		$(SDIR2)/ExtractEDGAR_Utils.cpp \
-		$(SDIR2)/SEC_Header.cpp
+		$(SDIR2)/SEC_Header.cpp \
+		$(SDIR2)/HTML_FromFile.cpp \
+		$(SDIR2)/AnchorsFromHTML.cpp
 
 SRCS := $(SRCS1) $(SRCS2)
 

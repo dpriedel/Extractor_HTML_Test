@@ -84,6 +84,7 @@ using Poco::AutoPtr;
 #include "HTML_FromFile.h"
 #include "SEC_Header.h"
 #include "AnchorsFromHTML.h"
+#include "TablesFromFile.h"
 
 // some specific files for Testing.
 
@@ -334,6 +335,7 @@ TEST_F(Iterators, HTMLIteratorFileWithMinimalHTML_10Q)
     HTML_FromFile html{file_content_10Q};
 
     auto how_many = std::distance(std::begin(html), std::end(html));
+
     ASSERT_TRUE(how_many == 0);
 }
 
@@ -402,40 +404,18 @@ TEST_F(FindAnchorsForFinancialStatements, FindTopLevelAnchor_10Q)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
 
-    HTML_FromFile htmls{file_content_10Q};
+    auto financial_content = FindFinancialContent(file_content_10Q);
 
-    auto look_for_top_level([] (auto html)
-    {
-        AnchorsFromHTML anchors(html);
-        auto financial_anchor = std::find_if(anchors.begin(), anchors.end(), FinancialStatementFilter);
-        return financial_anchor != anchors.end();
-    });
-
-    auto financial_content = std::find_if(htmls.begin(),
-            htmls.end(),
-            look_for_top_level
-            );
-    ASSERT_TRUE(financial_content != htmls.end());
+    ASSERT_TRUE(! financial_content.empty());
 }
 
 TEST_F(FindAnchorsForFinancialStatements, FindTopLevelAnchorMinimalHTML_10Q)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
 
-    HTML_FromFile htmls{file_content_10Q};
+    auto financial_content = FindFinancialContent(file_content_10Q);
 
-    auto look_for_top_level([] (auto html)
-    {
-        AnchorsFromHTML anchors(html);
-        auto financial_anchor = std::find_if(anchors.begin(), anchors.end(), FinancialStatementFilter);
-        return financial_anchor != anchors.end();
-    });
-
-    auto financial_content = std::find_if(htmls.begin(),
-            htmls.end(),
-            look_for_top_level
-            );
-    ASSERT_TRUE(financial_content != htmls.end());
+    ASSERT_TRUE(! financial_content.empty());
 }
 
 TEST_F(FindAnchorsForFinancialStatements, FindTopLevelAnchorNoHTML_10Q)
@@ -520,27 +500,20 @@ TEST_F(FindAnchorsForFinancialStatements, FindAnchorsMinimalHTML_10Q)
 //    ASSERT_TRUE(destination_anchors.size() == 3);
 //}
 //
-//class FindFinancialStatements_10Q : public Test
-//{
-//public:
-//
-//    std::string file_content_10Q; 
-//    std::vector<sview> documents;
-//    AnchorList all_anchors;
-//    AnchorList statement_anchors;
-//    AnchorList destination_anchors;
-//
-//    void SetUp() override
-//    {
-//        file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
-//        documents = LocateDocumentSections(file_content_10Q);
-//
-//        all_anchors = FindAllDocumentAnchors(documents);
-//        statement_anchors = FilterFinancialAnchors(all_anchors);
-//        destination_anchors = FindAnchorDestinations(statement_anchors, all_anchors);
-//    }
-//};
-//
+class FindFinancialStatements_10Q : public Test
+{
+public:
+
+    std::string file_content_10Q; 
+    sview financial_content;
+
+    void SetUp() override
+    {
+        file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
+        financial_content = FindFinancialContent(file_content_10Q);
+    }
+};
+
 //TEST_F(FindFinancialStatements_10Q , FindDollarMultipliers_10Q)
 //{
 //    auto multipliers = FindDollarMultipliers(destination_anchors);
@@ -548,14 +521,15 @@ TEST_F(FindAnchorsForFinancialStatements, FindAnchorsMinimalHTML_10Q)
 //    ASSERT_TRUE(multipliers.size() == 4);
 //}
 //
-////TEST_F(FindFinancialStatements_10Q, FindFinancialTables_10Q)
-////{
-////    auto multipliers = FindDollarMultipliers(destination_anchors);
-////    auto financial_tables = LocateFinancialTables(multipliers);
-////
-////    ASSERT_TRUE(financial_tables.size() == 4);
-////}
-////
+TEST_F(FindFinancialStatements_10Q, FindFinancialTables_10Q)
+{
+    TablesFromHTML tables{financial_content};
+
+    auto how_many = std::distance(std::begin(tables), std::end(tables));
+
+    ASSERT_TRUE(how_many == 86);
+}
+
 //TEST_F(FindFinancialStatements_10Q, FindBalanceSheet_10Q)
 //{
 //    auto multipliers = FindDollarMultipliers(destination_anchors);

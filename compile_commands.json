@@ -108,11 +108,11 @@
             "-I/extra/gcc/cpp-json/include/",
             "-march=native",
             "-o",
-            "Debug_e2e/TableFromFile.o",
-            "../ExtractEDGAR_XBRL/src/TableFromFile.cpp"
+            "Debug_e2e/TablesFromFile.o",
+            "../ExtractEDGAR_XBRL/src/TablesFromFile.cpp"
         ],
         "directory": "/home/dpriedel/projects/github/ExtractEDGAR_HTML_Test",
-        "file": "../ExtractEDGAR_XBRL/src/TableFromFile.cpp"
+        "file": "../ExtractEDGAR_XBRL/src/TablesFromFile.cpp"
     },
     {
         "arguments": [

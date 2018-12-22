@@ -50,7 +50,8 @@ SRCS2 := $(SDIR2)/ExtractEDGAR_XBRLApp.cpp \
 		$(SDIR2)/ExtractEDGAR_Utils.cpp \
 		$(SDIR2)/SEC_Header.cpp \
 		$(SDIR2)/HTML_FromFile.cpp \
-		$(SDIR2)/AnchorsFromHTML.cpp
+		$(SDIR2)/AnchorsFromHTML.cpp \
+		$(SDIR2)/TablesFromFile.cpp
 
 SRCS := $(SRCS1) $(SRCS2)
 
@@ -65,7 +66,7 @@ OUTDIR=Debug_e2e
 
 CFG_LIB := -lpthread -lstdc++fs \
 		-L$(BOOSTDIR)/lib \
-		-lboost_date_time-mt-d -lboost_iostreams-mt-d -lboost_regex-mt-d \
+		-lboost_date_time-mt-d-x64 -lboost_iostreams-mt-d-x64 -lboost_regex-mt-d-x64 \
 		-L/usr/local/lib -lPocoFoundationd -lPocoUtild \
 		-L/usr/local/lib -lgmock -lgmock_main -lgtest \
 		-lgumbo \

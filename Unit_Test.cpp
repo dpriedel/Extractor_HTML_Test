@@ -39,7 +39,7 @@
 
 #include <algorithm>
 #include <chrono>
-#include <experimental/filesystem>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <numeric>
@@ -66,7 +66,7 @@
 #include <Poco/Net/NetException.h>
 // #include "Poco/SimpleFileChannel.h"
 
-namespace fs = std::experimental::filesystem;
+namespace fs = std::filesystem;
 
 using namespace testing;
 
@@ -538,116 +538,113 @@ TEST_F(FindFinancialStatements_10Q, FindBalanceSheet_10Q)
     ASSERT_TRUE(balance_sheet != tables.end());
 }
 
-//TEST_F(FindFinancialStatements_10Q, FindStatementOfOperations_10Q)
-//{
-//    auto multipliers = FindDollarMultipliers(destination_anchors);
-//    auto financial_tables = LocateFinancialTables(multipliers);
-//    auto ops_sheet = ExtractStatementOfOperations(financial_tables);
-//
-//    ASSERT_TRUE(! ops_sheet.the_data_.empty());
-//}
-//
-//TEST_F(FindFinancialStatements_10Q, FindCashFlowStatement_10Q)
-//{
-//    auto multipliers = FindDollarMultipliers(destination_anchors);
-//    auto financial_tables = LocateFinancialTables(multipliers);
-//    auto cash_flow = ExtractCashFlowStatement(financial_tables);
-//
-//    ASSERT_TRUE(! cash_flow.the_data_.empty());
-//}
-//
-//TEST_F(FindFinancialStatements_10Q, FindStockholderEquity_10Q)
-//{
-//    auto multipliers = FindDollarMultipliers(destination_anchors);
-//    auto financial_tables = LocateFinancialTables(multipliers);
-//    auto sh_equity = ExtractStatementOfStockholdersEquity(financial_tables);
-//
-//    ASSERT_TRUE(! sh_equity.the_data_.empty());
-//}
-//
-//class ProcessEntireFile_10Q : public Test
-//{
-//public:
-//
-//};
-//
-//TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections)
-//{
-//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
-//
-//    auto all_sections = ExtractFinancialStatements(file_content_10Q);
-//
-//    ASSERT_TRUE(all_sections.is_complete());
-//}
-//
-//TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections2)
-//{
-//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS2);
-//
-//    auto all_sections = ExtractFinancialStatements(file_content_10Q);
-//    std::cout << "\n\nBalance Sheet\n";
-//    std::cout.write(all_sections.balance_sheet_.the_data_.data(), 500);
-//    std::cout << "\n\nCash Flow\n";
-//    std::cout.write(all_sections.cash_flows_.the_data_.data(), 500);
-//    std::cout << "\n\nStmt of Operations\n";
-//    std::cout.write(all_sections.statement_of_operations_.the_data_.data(), 500);
-//    std::cout << "\n\nShareholder Equity\n";
-//    std::cout.write(all_sections.stockholders_equity_.the_data_.data(), std::min(500UL, all_sections.stockholders_equity_.the_data_.size()));
-//
-//    ASSERT_TRUE(all_sections.is_complete());
-//}
-//
-//TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections3)
-//{
-//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS3);
-//
-//    auto all_sections = ExtractFinancialStatements(file_content_10Q);
-//    std::cout << "\n\nBalance Sheet\n";
-//    std::cout.write(all_sections.balance_sheet_.the_data_.data(), 500);
-//    std::cout << "\n\nCash Flow\n";
-//    std::cout.write(all_sections.cash_flows_.the_data_.data(), 500);
-//    std::cout << "\n\nStmt of Operations\n";
-//    std::cout.write(all_sections.statement_of_operations_.the_data_.data(), 500);
-//    std::cout << "\n\nShareholder Equity\n";
-//    std::cout.write(all_sections.stockholders_equity_.the_data_.data(), std::min(500UL, all_sections.stockholders_equity_.the_data_.size()));
-//
-//    ASSERT_TRUE(all_sections.is_complete());
-//}
-//
-//TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections4)
-//{
-//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS4);
-//
-//    auto all_sections = ExtractFinancialStatements(file_content_10Q);
-//    std::cout << "\n\nBalance Sheet\n";
-//    std::cout.write(all_sections.balance_sheet_.the_data_.data(), 500);
-//    std::cout << "\n\nCash Flow\n";
-//    std::cout.write(all_sections.cash_flows_.the_data_.data(), 500);
-//    std::cout << "\n\nStmt of Operations\n";
-//    std::cout.write(all_sections.statement_of_operations_.the_data_.data(), 500);
-//    std::cout << "\n\nShareholder Equity\n";
-//    std::cout.write(all_sections.stockholders_equity_.the_data_.data(), std::min(500UL, all_sections.stockholders_equity_.the_data_.size()));
-//
-//    ASSERT_TRUE(all_sections.is_complete());
-//}
-//
-//TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSectionsMinimalHTMLData)
-//{
-//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
-//
-//    auto all_sections = ExtractFinancialStatements(file_content_10Q);
-//
-//    std::cout << "\n\nBalance Sheet\n";
-//    std::cout.write(all_sections.balance_sheet_.the_data_.data(), 500);
-//    std::cout << "\n\nCash Flow\n";
-//    std::cout.write(all_sections.cash_flows_.the_data_.data(), 500);
-//    std::cout << "\n\nStmt of Operations\n";
-//    std::cout.write(all_sections.statement_of_operations_.the_data_.data(), 500);
-//    std::cout << "\n\nShareholder Equity\n";
-//    std::cout.write(all_sections.stockholders_equity_.the_data_.data(), std::min(500UL, all_sections.stockholders_equity_.the_data_.size()));
-//    ASSERT_TRUE(all_sections.is_complete());
-//}
-//
+TEST_F(FindFinancialStatements_10Q, FindStatementOfOperations_10Q)
+{
+    TablesFromHTML tables{financial_content};
+    auto statement_of_ops = std::find_if(tables.begin(), tables.end(), StatementOfOperationsFilter);
+
+    ASSERT_TRUE(statement_of_ops != tables.end());
+}
+
+TEST_F(FindFinancialStatements_10Q, FindCashFlowStatement_10Q)
+{
+    TablesFromHTML tables{financial_content};
+    auto cash_flows = std::find_if(tables.begin(), tables.end(), CashFlowsFilter);
+
+    ASSERT_TRUE(cash_flows != tables.end());
+}
+
+TEST_F(FindFinancialStatements_10Q, FindStockholderEquity_10Q)
+{
+    TablesFromHTML tables{financial_content};
+    auto stockholder_equity = std::find_if(tables.begin(), tables.end(), StockholdersEquityFilter);
+
+    ASSERT_TRUE(stockholder_equity != tables.end());
+}
+
+class ProcessEntireFile_10Q : public Test
+{
+public:
+
+};
+
+TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
+
+    auto all_sections = ExtractFinancialStatements(file_content_10Q);
+
+    ASSERT_TRUE(all_sections.has_data());
+}
+
+TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections2)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS2);
+
+    auto all_sections = ExtractFinancialStatements(file_content_10Q);
+    std::cout << "\n\nBalance Sheet\n";
+    std::cout.write(all_sections.balance_sheet_.the_data_.data(), 500);
+    std::cout << "\n\nCash Flow\n";
+    std::cout.write(all_sections.cash_flows_.the_data_.data(), 500);
+    std::cout << "\n\nStmt of Operations\n";
+    std::cout.write(all_sections.statement_of_operations_.the_data_.data(), 500);
+    std::cout << "\n\nShareholder Equity\n";
+    std::cout.write(all_sections.stockholders_equity_.the_data_.data(), std::min(500UL, all_sections.stockholders_equity_.the_data_.size()));
+
+    ASSERT_TRUE(all_sections.has_data());
+}
+
+TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections3)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS3);
+
+    auto all_sections = ExtractFinancialStatements(file_content_10Q);
+    std::cout << "\n\nBalance Sheet\n";
+    std::cout.write(all_sections.balance_sheet_.the_data_.data(), 500);
+    std::cout << "\n\nCash Flow\n";
+    std::cout.write(all_sections.cash_flows_.the_data_.data(), 500);
+    std::cout << "\n\nStmt of Operations\n";
+    std::cout.write(all_sections.statement_of_operations_.the_data_.data(), 500);
+    std::cout << "\n\nShareholder Equity\n";
+    std::cout.write(all_sections.stockholders_equity_.the_data_.data(), std::min(500UL, all_sections.stockholders_equity_.the_data_.size()));
+
+    ASSERT_TRUE(all_sections.has_data());
+}
+
+TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections4)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS4);
+
+    auto all_sections = ExtractFinancialStatements(file_content_10Q);
+    std::cout << "\n\nBalance Sheet\n";
+    std::cout.write(all_sections.balance_sheet_.the_data_.data(), 500);
+    std::cout << "\n\nCash Flow\n";
+    std::cout.write(all_sections.cash_flows_.the_data_.data(), 500);
+    std::cout << "\n\nStmt of Operations\n";
+    std::cout.write(all_sections.statement_of_operations_.the_data_.data(), 500);
+    std::cout << "\n\nShareholder Equity\n";
+    std::cout.write(all_sections.stockholders_equity_.the_data_.data(), std::min(500UL, all_sections.stockholders_equity_.the_data_.size()));
+
+    ASSERT_TRUE(all_sections.has_data());
+}
+
+TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSectionsMinimalHTMLData)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
+
+    auto all_sections = ExtractFinancialStatements(file_content_10Q);
+
+    std::cout << "\n\nBalance Sheet\n";
+    std::cout.write(all_sections.balance_sheet_.the_data_.data(), 500);
+    std::cout << "\n\nCash Flow\n";
+    std::cout.write(all_sections.cash_flows_.the_data_.data(), 500);
+    std::cout << "\n\nStmt of Operations\n";
+    std::cout.write(all_sections.statement_of_operations_.the_data_.data(), 500);
+    std::cout << "\n\nShareholder Equity\n";
+    std::cout.write(all_sections.stockholders_equity_.the_data_.data(), std::min(500UL, all_sections.stockholders_equity_.the_data_.size()));
+    ASSERT_TRUE(all_sections.has_data());
+}
+
 //class ProblemFiles_10Q : public Test
 //{
 //

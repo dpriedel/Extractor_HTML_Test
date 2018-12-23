@@ -571,8 +571,9 @@ public:
 TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
+    auto financial_content = FindFinancialContent(file_content_10Q);
 
-    auto all_sections = ExtractFinancialStatements(file_content_10Q);
+    auto all_sections = ExtractFinancialStatements(financial_content);
 
     ASSERT_TRUE(all_sections.has_data());
 }
@@ -580,8 +581,9 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections)
 TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections2)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS2);
+    auto financial_content = FindFinancialContent(file_content_10Q);
 
-    auto all_sections = ExtractFinancialStatements(file_content_10Q);
+    auto all_sections = ExtractFinancialStatements(financial_content);
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(all_sections.balance_sheet_.the_data_.data(), 500);
     std::cout << "\n\nCash Flow\n";
@@ -597,8 +599,9 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections2)
 TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections3)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS3);
+    auto financial_content = FindFinancialContent(file_content_10Q);
 
-    auto all_sections = ExtractFinancialStatements(file_content_10Q);
+    auto all_sections = ExtractFinancialStatements(financial_content);
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(all_sections.balance_sheet_.the_data_.data(), 500);
     std::cout << "\n\nCash Flow\n";
@@ -614,8 +617,9 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections3)
 TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections4)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS4);
+    auto financial_content = FindFinancialContent(file_content_10Q);
 
-    auto all_sections = ExtractFinancialStatements(file_content_10Q);
+    auto all_sections = ExtractFinancialStatements(financial_content);
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(all_sections.balance_sheet_.the_data_.data(), 500);
     std::cout << "\n\nCash Flow\n";
@@ -631,8 +635,9 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections4)
 TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSectionsMinimalHTMLData)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
+    auto financial_content = FindFinancialContent(file_content_10Q);
 
-    auto all_sections = ExtractFinancialStatements(file_content_10Q);
+    auto all_sections = ExtractFinancialStatements(financial_content);
 
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(all_sections.balance_sheet_.the_data_.data(), 500);
@@ -645,201 +650,242 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSectionsMinimalHTMLData)
     ASSERT_TRUE(all_sections.has_data());
 }
 
-//class ProblemFiles_10Q : public Test
-//{
-//
-//};
-//
-//TEST_F(ProblemFiles_10Q, FindAnchors_10Q)
-//{
-//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
-//    auto documents = LocateDocumentSections(file_content_10Q);
-//
-//    auto all_anchors = FindAllDocumentAnchors(documents);
-//    std::cout << "\nAll anchors: \n";
-//    for (const auto& anchor : all_anchors)
-//    {
-//        std::cout << anchor.href << '\t' << anchor.name << '\t' << anchor.text << '\t' << anchor.anchor_content << '\n';
-//    }
-//    auto statement_anchors = FilterFinancialAnchors(all_anchors);
-//    std::cout << "\nFinancial anchors: \n";
-//    for (const auto& anchor : statement_anchors)
-//    {
-//        std::cout << anchor.href << '\t' << anchor.name << '\t' << anchor.text << '\t' << anchor.anchor_content << '\n';
-//    }
-//
-//    ASSERT_TRUE(statement_anchors.size() == 4);
-//}
-//
-//TEST_F(ProblemFiles_10Q, FileWithMinimalData)
-//{
-//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
-//
-//    auto documents = LocateDocumentSections(file_content_10Q);
-//
-//    auto all_anchors = FindAllDocumentAnchors(documents);
-////    std::cout << "\nAll anchors: \n";
-////    for (const auto& anchor : all_anchors)
-////    {
-////        std::cout << anchor.href << '\t' << anchor.name << '\t' << anchor.text << '\t' << anchor.anchor_content << '\n';
-////    }
-//    auto statement_anchors = FilterFinancialAnchors(all_anchors);
-////    std::cout << "\nFinancial anchors: \n";
-////    for (const auto& anchor : statement_anchors)
-////    {
-////        std::cout << anchor.href << '\t' << anchor.name << '\t' << anchor.text << '\t' << anchor.anchor_content << '\n';
-////    }
-//
-//    EXPECT_TRUE(statement_anchors.size() == 3);
-//
-//    auto destination_anchors = FindAnchorDestinations(statement_anchors, all_anchors);
-//    EXPECT_TRUE(destination_anchors.size() == 3);
-//
-//    auto multipliers = FindDollarMultipliers(destination_anchors);
-//    EXPECT_TRUE(multipliers.size() == 3);
-//
-//    auto financial_tables = LocateFinancialTables(multipliers);
-//
-//    auto balance_sheet = ExtractBalanceSheet(financial_tables);
-//    EXPECT_FALSE(balance_sheet.empty());
-//
-//    auto stmt_of_ops = ExtractStatementOfOperations(financial_tables);
-//    EXPECT_FALSE(stmt_of_ops.empty());
-//
-//    auto cash_flows = ExtractCashFlowStatement(financial_tables);
-//    EXPECT_FALSE(cash_flows.empty());
-//
-////    auto all_sections = ExtractFinancialStatements(file_content_10Q);
-////
-////    ASSERT_TRUE(all_sections.is_complete());
-//}
-//
-//class NoAnchors_10Q : public Test
-//{
-//
-//};
-//
-//TEST_F(NoAnchors_10Q, FileWithNoAnchors1)
-//{
-//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS);
-//    auto documents = LocateDocumentSections(file_content_10Q);
-//    auto all_anchors = FindAllDocumentAnchors(documents);
-//    auto statement_anchors = FilterFinancialAnchors(all_anchors);
-//
-//    EXPECT_TRUE(statement_anchors.size() < 3);
-//
-//    auto empty_multipliers = CreateMultiplierListWhenNoAnchors(file_content_10Q);
-//    auto all_tables = LocateFinancialTables(empty_multipliers);
-//
-//    FinancialStatements the_tables;
-//    the_tables.balance_sheet_ = ExtractBalanceSheet(all_tables);
-//    the_tables.statement_of_operations_ = ExtractStatementOfOperations(all_tables);
-//    the_tables.cash_flows_ = ExtractCashFlowStatement(all_tables);
-//    the_tables.stockholders_equity_ = ExtractStatementOfStockholdersEquity(all_tables);
-//
-//    std::cout << "\n\nBalance Sheet\n";
-//    std::cout.write(the_tables.balance_sheet_.the_data_.data(), 500);
-//    std::cout << "\n\nCash Flow\n";
-//    std::cout.write(the_tables.cash_flows_.the_data_.data(), 500);
-//    std::cout << "\n\nStmt of Operations\n";
-//    std::cout.write(the_tables.statement_of_operations_.the_data_.data(), 500);
-//    std::cout << "\n\nShareholder Equity\n";
-//    std::cout.write(the_tables.stockholders_equity_.the_data_.data(), std::min(500UL, the_tables.stockholders_equity_.the_data_.size()));
-//
-//    ASSERT_TRUE(the_tables.is_complete());
-//}
-//
-//TEST_F(NoAnchors_10Q, FileWithNoAnchors2)
-//{
-//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS2);
-//    auto documents = LocateDocumentSections(file_content_10Q);
-//    auto all_anchors = FindAllDocumentAnchors(documents);
-//    auto statement_anchors = FilterFinancialAnchors(all_anchors);
-//
-//    EXPECT_TRUE(statement_anchors.size() < 3);
-//
-//    auto empty_multipliers = CreateMultiplierListWhenNoAnchors(file_content_10Q);
-//    auto all_tables = LocateFinancialTables(empty_multipliers);
-//
-//    FinancialStatements the_tables;
-//    the_tables.balance_sheet_ = ExtractBalanceSheet(all_tables);
-//    the_tables.statement_of_operations_ = ExtractStatementOfOperations(all_tables);
-//    the_tables.cash_flows_ = ExtractCashFlowStatement(all_tables);
-//    the_tables.stockholders_equity_ = ExtractStatementOfStockholdersEquity(all_tables);
-//
-//    ASSERT_TRUE(the_tables.is_complete());
-//}
-//
-//TEST_F(NoAnchors_10Q, FileWithNoAnchors3)
-//{
-//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS3);
-//    auto documents = LocateDocumentSections(file_content_10Q);
-//    auto all_anchors = FindAllDocumentAnchors(documents);
-//    auto statement_anchors = FilterFinancialAnchors(all_anchors);
-//
-//    EXPECT_TRUE(statement_anchors.size() < 3);
-//
-//    auto empty_multipliers = CreateMultiplierListWhenNoAnchors(file_content_10Q);
-//    auto financial_tables = LocateFinancialTables(empty_multipliers);
-//
-//    FinancialStatements the_tables;
-//
-//    the_tables.balance_sheet_ = ExtractBalanceSheet(financial_tables);
-//    std::cout << "\n\nBalance Sheet\n";
-//    std::cout.write(the_tables.balance_sheet_.the_data_.data(), 500);
-//    
-//    the_tables.statement_of_operations_ = ExtractStatementOfOperations(financial_tables);
-//    std::cout << "\n\nStmt of Operations\n";
-//    std::cout.write(the_tables.statement_of_operations_.the_data_.data(), 500);
-//    
-//    the_tables.cash_flows_ = ExtractCashFlowStatement(financial_tables);
-//    std::cout << "\n\nCash Flow\n";
-//    std::cout.write(the_tables.cash_flows_.the_data_.data(), 500);
-//    
-//    the_tables.stockholders_equity_ = ExtractStatementOfStockholdersEquity(financial_tables);
-//    std::cout << "\n\nShareholder Equity\n";
-//    std::cout.write(the_tables.stockholders_equity_.the_data_.data(), std::min(500UL, the_tables.stockholders_equity_.the_data_.size()));
-//
-//    ASSERT_TRUE(the_tables.is_complete());
-//}
-//
-//class ProblemWithRegexs_10Q : public Test
-//{
-//
-//};
-//
-//TEST_F(ProblemWithRegexs_10Q, UseRegexProblemFile1)
-//{
-//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_PROBLEM_REGEX1);
-//
-//    auto documents = LocateDocumentSections(file_content_10Q);
-//    auto all_anchors = FindAllDocumentAnchors(documents);
-//    auto statement_anchors = FilterFinancialAnchors(all_anchors);
-//    auto destination_anchors = FindAnchorDestinations(statement_anchors, all_anchors);
-//    auto multipliers = FindDollarMultipliers(destination_anchors);
-//    auto financial_tables = LocateFinancialTables(multipliers);
-//
-//    FinancialStatements the_tables;
-//
-//    the_tables.balance_sheet_ = ExtractBalanceSheet(financial_tables);
-//    std::cout << "\n\nBalance Sheet\n";
-//    std::cout.write(the_tables.balance_sheet_.the_data_.data(), 500);
-//    
-//    the_tables.statement_of_operations_ = ExtractStatementOfOperations(financial_tables);
-//    std::cout << "\n\nStmt of Operations\n";
-//    std::cout.write(the_tables.statement_of_operations_.the_data_.data(), 500);
-//    
-//    the_tables.cash_flows_ = ExtractCashFlowStatement(financial_tables);
-//    std::cout << "\n\nCash Flow\n";
-//    std::cout.write(the_tables.cash_flows_.the_data_.data(), 500);
-//    
-//    the_tables.stockholders_equity_ = ExtractStatementOfStockholdersEquity(financial_tables);
-//    std::cout << "\n\nShareholder Equity\n";
-//    std::cout.write(the_tables.stockholders_equity_.the_data_.data(), std::min(500UL, the_tables.stockholders_equity_.the_data_.size()));
-//
-//    ASSERT_TRUE(the_tables.is_complete());
-//}
-//
+class ProblemFiles_10Q : public Test
+{
+
+};
+
+TEST_F(ProblemFiles_10Q, FindAnchors_10Q)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
+
+    auto financial_content = FindFinancialContent(file_content_10Q);
+
+    AnchorList statement_anchors;
+
+    if (! financial_content.empty())
+    {
+        AnchorsFromHTML anchors(financial_content);
+        std::cout << "statement anchors: " << std::distance(anchors.begin(), anchors.end()) << '\n';
+        for (const auto& anchor : anchors)
+        {
+            std::cout << anchor.href << '\t' << anchor.name << '\t' << anchor.text << '\t' << anchor.anchor_content << '\n';
+        }
+        std::copy_if(anchors.begin(),
+                anchors.end(),
+                std::back_inserter(statement_anchors),
+                FinancialAnchorFilter
+                );
+
+        std::cout << "\nFinancial anchors: \n";
+        for (const auto& anchor : statement_anchors)
+        {
+            std::cout << anchor.href << '\t' << anchor.name << '\t' << anchor.text << '\t' << anchor.anchor_content << '\n';
+        }
+    }
+    ASSERT_TRUE(statement_anchors.size() == 4);
+}
+
+TEST_F(ProblemFiles_10Q, FileWithMinimalData)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
+
+    auto financial_content = FindFinancialContent(file_content_10Q);
+
+    AnchorList statement_anchors;
+
+    AnchorsFromHTML anchors(financial_content);
+
+    std::copy_if(anchors.begin(),
+            anchors.end(),
+            std::back_inserter(statement_anchors),
+            FinancialAnchorFilter
+            );
+
+    EXPECT_TRUE(statement_anchors.size() == 3);
+
+    TablesFromHTML tables{financial_content};
+
+    auto balance_sheet = std::find_if(tables.begin(), tables.end(), BalanceSheetFilter);
+    EXPECT_TRUE(balance_sheet != tables.end());
+
+    auto statement_of_ops = std::find_if(tables.begin(), tables.end(), StatementOfOperationsFilter);
+    EXPECT_TRUE(statement_of_ops != tables.end());
+
+    auto cash_flows = std::find_if(tables.begin(), tables.end(), CashFlowsFilter);
+    EXPECT_TRUE(cash_flows != tables.end());
+
+    auto stockholder_equity = std::find_if(tables.begin(), tables.end(), StockholdersEquityFilter);
+    EXPECT_TRUE(stockholder_equity == tables.end());
+}
+
+class NoAnchors_10Q : public Test
+{
+
+};
+
+TEST_F(NoAnchors_10Q, FileWithNoAnchors1)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS);
+    auto financial_content = FindFinancialContent(file_content_10Q);
+    // let's see if we can find our data anyways
+
+    if (financial_content.empty())
+    {
+        financial_content = file_content_10Q;
+    }
+
+    AnchorList statement_anchors;
+
+    AnchorsFromHTML anchors(financial_content);
+
+    std::copy_if(anchors.begin(),
+            anchors.end(),
+            std::back_inserter(statement_anchors),
+            FinancialAnchorFilter
+            );
+
+    EXPECT_TRUE(statement_anchors.size() < 3);
+
+    TablesFromHTML tables{financial_content};
+    auto how_many_tables = std::distance(tables.begin(), tables.end());
+    std::cout << "how_many_tables: " << how_many_tables << '\n';
+    EXPECT_TRUE(how_many_tables == 68);
+
+    auto balance_sheet = std::find_if(tables.begin(), tables.end(), BalanceSheetFilter);
+    EXPECT_TRUE(balance_sheet != tables.end());
+
+    auto statement_of_ops = std::find_if(tables.begin(), tables.end(), StatementOfOperationsFilter);
+    EXPECT_TRUE(statement_of_ops != tables.end());
+
+    auto cash_flows = std::find_if(tables.begin(), tables.end(), CashFlowsFilter);
+    EXPECT_TRUE(cash_flows != tables.end());
+
+    auto stockholder_equity = std::find_if(tables.begin(), tables.end(), StockholdersEquityFilter);
+    EXPECT_TRUE(stockholder_equity == tables.end());
+
+    auto the_tables = ExtractFinancialStatements(financial_content);
+
+    std::cout << "\n\nBalance Sheet\n";
+    std::cout.write(the_tables.balance_sheet_.the_data_.data(), 500);
+    std::cout << "\n\nCash Flow\n";
+    std::cout.write(the_tables.cash_flows_.the_data_.data(), 500);
+    std::cout << "\n\nStmt of Operations\n";
+    std::cout.write(the_tables.statement_of_operations_.the_data_.data(), 500);
+    std::cout << "\n\nShareholder Equity\n";
+    std::cout.write(the_tables.stockholders_equity_.the_data_.data(),
+            std::min(500UL, the_tables.stockholders_equity_.the_data_.size()));
+
+    ASSERT_TRUE(the_tables.has_data());
+}
+
+TEST_F(NoAnchors_10Q, FileWithNoAnchors2)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS2);
+    auto financial_content = FindFinancialContent(file_content_10Q);
+    // let's see if we can find our data anyways
+
+    if (financial_content.empty())
+    {
+        financial_content = file_content_10Q;
+    }
+
+    AnchorList statement_anchors;
+
+    AnchorsFromHTML anchors(financial_content);
+
+    std::copy_if(anchors.begin(),
+            anchors.end(),
+            std::back_inserter(statement_anchors),
+            FinancialAnchorFilter
+            );
+
+    EXPECT_TRUE(statement_anchors.size() < 3);
+
+    auto the_tables = ExtractFinancialStatements(financial_content);
+
+    ASSERT_TRUE(the_tables.has_data());
+}
+
+TEST_F(NoAnchors_10Q, FileWithNoAnchors3)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS3);
+    auto financial_content = FindFinancialContent(file_content_10Q);
+    // let's see if we can find our data anyways
+
+    if (financial_content.empty())
+    {
+        financial_content = file_content_10Q;
+    }
+
+    AnchorList statement_anchors;
+
+    AnchorsFromHTML anchors(financial_content);
+
+    std::copy_if(anchors.begin(),
+            anchors.end(),
+            std::back_inserter(statement_anchors),
+            FinancialAnchorFilter
+            );
+
+    EXPECT_TRUE(statement_anchors.size() < 3);
+
+    auto the_tables = ExtractFinancialStatements(financial_content);
+
+    std::cout << "\n\nBalance Sheet\n";
+    std::cout.write(the_tables.balance_sheet_.the_data_.data(), 500);
+    
+    std::cout << "\n\nStmt of Operations\n";
+    std::cout.write(the_tables.statement_of_operations_.the_data_.data(), 500);
+    
+    std::cout << "\n\nCash Flow\n";
+    std::cout.write(the_tables.cash_flows_.the_data_.data(), 500);
+    
+    std::cout << "\n\nShareholder Equity\n";
+    std::cout.write(the_tables.stockholders_equity_.the_data_.data(),
+            std::min(500UL, the_tables.stockholders_equity_.the_data_.size()));
+
+    ASSERT_TRUE(the_tables.has_data());
+}
+
+class ProblemWithRegexs_10Q : public Test
+{
+
+};
+
+TEST_F(ProblemWithRegexs_10Q, UseRegexProblemFile1)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_PROBLEM_REGEX1);
+    auto financial_content = FindFinancialContent(file_content_10Q);
+    // let's see if we can find our data anyways
+
+    if (financial_content.empty())
+    {
+        financial_content = file_content_10Q;
+    }
+
+    auto the_tables = ExtractFinancialStatements(financial_content);
+
+    std::cout << "\n\nBalance Sheet\n";
+    std::cout.write(the_tables.balance_sheet_.the_data_.data(), 500);
+    
+    std::cout << "\n\nStmt of Operations\n";
+    std::cout.write(the_tables.statement_of_operations_.the_data_.data(), 500);
+    
+    std::cout << "\n\nCash Flow\n";
+    std::cout.write(the_tables.cash_flows_.the_data_.data(), 500);
+    
+    std::cout << "\n\nShareholder Equity\n";
+    std::cout.write(the_tables.stockholders_equity_.the_data_.data(),
+            std::min(500UL, the_tables.stockholders_equity_.the_data_.size()));
+
+    ASSERT_TRUE(the_tables.has_data());
+}
+
+class ValidateCanNavigateDocumentStructure : public Test
+{
+};
+
 ////TEST_F(ValidateCanNavigateDocumentStructure, FindSECHeader_10K)
 ////{
 ////    auto file_content_10K = LoadXMLDataFileForUse(FILE_WITH_XML_10K);
@@ -849,15 +895,15 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSectionsMinimalHTMLData)
 ////    ASSERT_NO_THROW(SEC_data.UseData(file_content_10K));
 ////}
 ////
-////TEST_F(ValidateCanNavigateDocumentStructure, SECHeaderFindAllFields_10Q)
-////{
-////    auto file_content_10Q = LoadXMLDataFileForUse(FILE_WITH_XML_10Q);
-////
-////    SEC_Header SEC_data;
-////    SEC_data.UseData(file_content_10Q);
-////    ASSERT_NO_THROW(SEC_data.ExtractHeaderFields());
-////}
-////
+TEST_F(ValidateCanNavigateDocumentStructure, SECHeaderFindAllFields_10Q)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
+
+    SEC_Header SEC_data;
+    SEC_data.UseData(file_content_10Q);
+    ASSERT_NO_THROW(SEC_data.ExtractHeaderFields());
+}
+
 ////TEST_F(ValidateCanNavigateDocumentStructure, FindsAllDocumentSections_10Q)
 ////{
 ////    auto file_content_10Q = LoadXMLDataFileForUse(FILE_WITH_XML_10Q);

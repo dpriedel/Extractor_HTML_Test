@@ -584,14 +584,15 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections2)
     auto financial_content = FindFinancialContent(file_content_10Q);
 
     auto all_sections = ExtractFinancialStatements(financial_content);
+    all_sections.ExtractTableContent();
     std::cout << "\n\nBalance Sheet\n";
-    std::cout.write(all_sections.balance_sheet_.the_data_.data(), 500);
+    std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
     std::cout << "\n\nCash Flow\n";
-    std::cout.write(all_sections.cash_flows_.the_data_.data(), 500);
+    std::cout.write(all_sections.cash_flows_.parsed_data_.data(), 500);
     std::cout << "\n\nStmt of Operations\n";
-    std::cout.write(all_sections.statement_of_operations_.the_data_.data(), 500);
+    std::cout.write(all_sections.statement_of_operations_.parsed_data_.data(), 500);
     std::cout << "\n\nShareholder Equity\n";
-    std::cout.write(all_sections.stockholders_equity_.the_data_.data(), std::min(500UL, all_sections.stockholders_equity_.the_data_.size()));
+    std::cout.write(all_sections.stockholders_equity_.parsed_data_.data(), std::min(500UL, all_sections.stockholders_equity_.the_data_.size()));
 
     ASSERT_TRUE(all_sections.has_data());
 }

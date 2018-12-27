@@ -404,7 +404,7 @@ TEST_F(FindAnchorsForFinancialStatements, FindTopLevelAnchor_10Q)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
 
-    auto financial_content = FindFinancialContent(file_content_10Q);
+    auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
 
     ASSERT_TRUE(! financial_content.empty());
 }
@@ -413,7 +413,7 @@ TEST_F(FindAnchorsForFinancialStatements, FindTopLevelAnchorMinimalHTML_10Q)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
 
-    auto financial_content = FindFinancialContent(file_content_10Q);
+    auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
 
     ASSERT_TRUE(! financial_content.empty());
 }
@@ -422,7 +422,7 @@ TEST_F(FindAnchorsForFinancialStatements, FindTopLevelAnchorNoHTML_10Q)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_NO_HTML_10Q);
 
-    auto financial_content = FindFinancialContent(file_content_10Q);
+    auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
 
     ASSERT_TRUE(financial_content.empty());
 }
@@ -433,7 +433,7 @@ TEST_F(FindAnchorsForFinancialStatements, FindAnchors_10Q)
 
     AnchorList statement_anchors;
 
-    auto financial_content = FindFinancialContent(file_content_10Q);
+    auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
     if (! financial_content.empty())
     {
         AnchorsFromHTML anchors(financial_content);
@@ -453,7 +453,7 @@ TEST_F(FindAnchorsForFinancialStatements, FindAnchorsMinimalHTML_10Q)
 
     AnchorList statement_anchors;
 
-    auto financial_content = FindFinancialContent(file_content_10Q);
+    auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
     if (! financial_content.empty())
     {
         AnchorsFromHTML anchors(financial_content);
@@ -510,7 +510,7 @@ public:
     void SetUp() override
     {
         file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
-        financial_content = FindFinancialContent(file_content_10Q);
+        financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
     }
 };
 
@@ -571,7 +571,7 @@ public:
 TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
-    auto financial_content = FindFinancialContent(file_content_10Q);
+    auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
 
     auto all_sections = ExtractFinancialStatements(financial_content);
 
@@ -581,7 +581,7 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections)
 TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections2)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS2);
-    auto financial_content = FindFinancialContent(file_content_10Q);
+    auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
 
     auto all_sections = ExtractFinancialStatements(financial_content);
     all_sections.ExtractTableContent();
@@ -600,7 +600,7 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections2)
 TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections3)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS3);
-    auto financial_content = FindFinancialContent(file_content_10Q);
+    auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
 
     auto all_sections = ExtractFinancialStatements(financial_content);
     std::cout << "\n\nBalance Sheet\n";
@@ -618,7 +618,7 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections3)
 TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections4)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS4);
-    auto financial_content = FindFinancialContent(file_content_10Q);
+    auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
 
     auto all_sections = ExtractFinancialStatements(financial_content);
     std::cout << "\n\nBalance Sheet\n";
@@ -636,7 +636,7 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections4)
 TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSectionsMinimalHTMLData)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
-    auto financial_content = FindFinancialContent(file_content_10Q);
+    auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
 
     auto all_sections = ExtractFinancialStatements(financial_content);
 
@@ -660,7 +660,7 @@ TEST_F(ProblemFiles_10Q, FindAnchors_10Q)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
 
-    auto financial_content = FindFinancialContent(file_content_10Q);
+    auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
 
     AnchorList statement_anchors;
 
@@ -691,7 +691,7 @@ TEST_F(ProblemFiles_10Q, FileWithMinimalData)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
 
-    auto financial_content = FindFinancialContent(file_content_10Q);
+    auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
 
     AnchorList statement_anchors;
 
@@ -728,7 +728,8 @@ class NoAnchors_10Q : public Test
 TEST_F(NoAnchors_10Q, FileWithNoAnchors1)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS);
-    auto financial_content = FindFinancialContent(file_content_10Q);
+    auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
+    EXPECT_TRUE(financial_content.empty());
     // let's see if we can find our data anyways
 
     if (financial_content.empty())
@@ -783,7 +784,9 @@ TEST_F(NoAnchors_10Q, FileWithNoAnchors1)
 TEST_F(NoAnchors_10Q, FileWithNoAnchors2)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS2);
-    auto financial_content = FindFinancialContent(file_content_10Q);
+    auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
+    EXPECT_TRUE(financial_content.empty());
+
     // let's see if we can find our data anyways
 
     if (financial_content.empty())
@@ -811,7 +814,8 @@ TEST_F(NoAnchors_10Q, FileWithNoAnchors2)
 TEST_F(NoAnchors_10Q, FileWithNoAnchors3)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS3);
-    auto financial_content = FindFinancialContent(file_content_10Q);
+    auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
+    EXPECT_TRUE(financial_content.empty());
     // let's see if we can find our data anyways
 
     if (financial_content.empty())
@@ -857,7 +861,7 @@ class ProblemWithRegexs_10Q : public Test
 TEST_F(ProblemWithRegexs_10Q, UseRegexProblemFile1)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_PROBLEM_REGEX1);
-    auto financial_content = FindFinancialContent(file_content_10Q);
+    auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
     // let's see if we can find our data anyways
 
     if (financial_content.empty())
@@ -903,6 +907,45 @@ TEST_F(ValidateCanNavigateDocumentStructure, SECHeaderFindAllFields_10Q)
     SEC_Header SEC_data;
     SEC_data.UseData(file_content_10Q);
     ASSERT_NO_THROW(SEC_data.ExtractHeaderFields());
+}
+
+class ProcessEntireFileAndExtractData_10Q : public Test
+{
+public:
+
+};
+
+TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_WITH_ANCHORS)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
+    auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
+
+    auto all_sections = ExtractFinancialStatements(financial_content);
+
+    EXPECT_TRUE(all_sections.has_data());
+
+    all_sections.ExtractTableContent();
+
+    EE::EDGAR_Labels extracted_data;
+    ASSERT_NO_THROW(extracted_data = all_sections.CollectValues());
+
+    std::cout << "\n\nBalance Sheet\n";
+    std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
+    
+    std::cout << "\n\nStmt of Operations\n";
+    std::cout.write(all_sections.statement_of_operations_.parsed_data_.data(), 500);
+    
+    std::cout << "\n\nCash Flow\n";
+    std::cout.write(all_sections.cash_flows_.parsed_data_.data(), 500);
+    
+    std::cout << "\n\nShareholder Equity\n";
+    std::cout.write(all_sections.stockholders_equity_.parsed_data_.data(),
+            std::min(500UL, all_sections.stockholders_equity_.parsed_data_.size()));
+
+    for (const auto& [key, value] : extracted_data)
+    {
+        std::cout << "\nkey: " << key << " value: " << value << '\n';
+    }
 }
 
 

@@ -101,6 +101,7 @@ constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS4{"/vol_DA/EDGAR/Archives/e
 constexpr const char* FILE_WITH_XML_10K{"/vol_DA/EDGAR/Archives/edgar/data/google-10k.txt"};
 constexpr const char* FILE_WITH_HTML_10Q_MINIMAL_DATA{"/vol_DA/EDGAR/Archives/edgar/data/841360/0001086380-13-000030.txt"};
 constexpr const char* FILE_WITH_HTML_10Q_PROBLEM_REGEX1{"/vol_DA/EDGAR/Archives/edgar/data/1377936/0001104659-13-075719.txt"};
+constexpr const char* FILE_WITH_HTML_10Q_PROBLEM_WITH_ASSETS1{"/vol_DA/EDGAR/Archives/edgar/data/68270/0000068270-13-000059.txt"};
 constexpr const char* FILE_WITH_NO_HTML_10Q{"/vol_DA/EDGAR/Edgar_forms/855931/10-Q/0001130319-01-500242.txt"};
 //constexpr const char* EDGAR_DIRECTORY{"/vol_DA/EDGAR/Archives/edgar/data"};
 //constexpr const char* FILE_NO_NAMESPACE_10Q{"/vol_DA/EDGAR/Archives/edgar/data/68270/0000068270-13-000059.txt"};
@@ -326,7 +327,10 @@ TEST_F(Iterators, HTMLIteratorFileWithHTML_10Q)
     HTML_FromFile html{file_content_10Q};
 
     auto how_many = std::distance(std::begin(html), std::end(html));
-    ASSERT_TRUE(how_many == 5);
+    EXPECT_TRUE(how_many == 5);
+
+    auto htmls = Find_HTML_Documents(file_content_10Q);
+    ASSERT_TRUE(htmls.size() == 5);
 }
 
 TEST_F(Iterators, HTMLIteratorFileWithMinimalHTML_10Q)
@@ -336,7 +340,10 @@ TEST_F(Iterators, HTMLIteratorFileWithMinimalHTML_10Q)
 
     auto how_many = std::distance(std::begin(html), std::end(html));
 
-    ASSERT_TRUE(how_many == 0);
+    EXPECT_TRUE(how_many == 0);
+
+    auto htmls = Find_HTML_Documents(file_content_10Q);
+    ASSERT_TRUE(htmls.size() == 0);
 }
 
 TEST_F(Iterators, HTMLIteratorFileWithHTML_10K)
@@ -345,7 +352,10 @@ TEST_F(Iterators, HTMLIteratorFileWithHTML_10K)
     HTML_FromFile html{file_content_10K};
 
     auto how_many = std::distance(std::begin(html), std::end(html));
-    ASSERT_TRUE(how_many == 107);
+    EXPECT_TRUE(how_many == 107);
+
+    auto htmls = Find_HTML_Documents(file_content_10K);
+    ASSERT_TRUE(htmls.size() == 107);
 }
 
 TEST_F(Iterators, AnchorIteratorFileWithHTML_10Q)
@@ -961,6 +971,34 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_WITH_ANCHORS)
     }
 }
 
+TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_ASSETS_PROBLEM1)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_PROBLEM_WITH_ASSETS1);
+    auto htmls = Find_HTML_Documents(file_content_10Q);
+    auto financial_content = FindFinancialContentUsingAnchors(htmls);
+    std::cout << financial_content.size() << '\n';
+
+    auto all_sections = ExtractFinancialStatements(financial_content);
+
+    EXPECT_TRUE(all_sections.has_data());
+
+    std::cout << "\n\nBalance Sheet\n";
+    std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
+    
+    std::cout << "\n\nStmt of Operations\n";
+    std::cout.write(all_sections.statement_of_operations_.parsed_data_.data(), 500);
+    
+    std::cout << "\n\nCash Flow\n";
+    std::cout.write(all_sections.cash_flows_.parsed_data_.data(), 500);
+    
+    std::cout << "\n\nShareholder Equity\n";
+    std::cout.write(all_sections.stockholders_equity_.parsed_data_.data(),
+            std::min(500UL, all_sections.stockholders_equity_.parsed_data_.size()));
+    all_sections.PrepareTableContent();
+
+    EE::EDGAR_Labels extracted_data = all_sections.CollectValues();
+
+}
 
 int main(int argc, char** argv)
 {

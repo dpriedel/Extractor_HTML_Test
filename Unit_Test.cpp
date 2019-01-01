@@ -405,6 +405,58 @@ TEST_F(IdentifyHTMLFilesToUse, DISABLED_ConfirmFileHasXML)
     ASSERT_FALSE(use_file);
 }
 
+class LocateDocumentWithFinancialContent : public Test
+{
+
+};
+
+TEST_F(LocateDocumentWithFinancialContent, FileHasHTML_10Q)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
+    HTML_FromFile htmls{file_content_10Q};
+
+    auto document = std::find_if(std::begin(htmls), std::end(htmls), FinancialDocumentFilter);
+    ASSERT_TRUE(document != htmls.end());
+}
+
+TEST_F(LocateDocumentWithFinancialContent, FileHasXML_10Q)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_XML_10Q);
+    HTML_FromFile htmls{file_content_10Q};
+
+    auto document = std::find_if(std::begin(htmls), std::end(htmls), FinancialDocumentFilter);
+    ASSERT_TRUE(document != htmls.end());
+}
+
+TEST_F(LocateDocumentWithFinancialContent, FileHasNoUsableAnchors_10Q)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
+    HTML_FromFile htmls{file_content_10Q};
+
+    auto document = std::find_if(std::begin(htmls), std::end(htmls), FinancialDocumentFilter);
+    ASSERT_TRUE(document != htmls.end());
+}
+
+TEST_F(LocateDocumentWithFinancialContent, FileHasMinimalData_10Q)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
+    HTML_FromFile htmls{file_content_10Q};
+
+    auto document = std::find_if(std::begin(htmls), std::end(htmls), FinancialDocumentFilter);
+    ASSERT_TRUE(document != htmls.end());
+}
+
+TEST_F(LocateDocumentWithFinancialContent, FileWithNoHTML_10Q)
+{
+    // this should find nothing because our iterator will be 'empty'
+
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_NO_HTML_10Q);
+    HTML_FromFile htmls{file_content_10Q};
+
+    auto document = std::find_if(std::begin(htmls), std::end(htmls), FinancialDocumentFilter);
+    ASSERT_TRUE(document == htmls.end());
+}
+
 //class FindAnchorsForFinancialStatements : public Test
 //{
 //public:
@@ -510,20 +562,12 @@ TEST_F(IdentifyHTMLFilesToUse, DISABLED_ConfirmFileHasXML)
 //    ASSERT_TRUE(destination_anchors.size() == 3);
 //}
 //
-//class FindIndividualFinancialStatements_10Q : public Test
-//{
-//public:
-//
-//    std::string file_content_10Q; 
-//    sview financial_content;
-//
-//    void SetUp() override
-//    {
-//        file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
-//        financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
-//    }
-//};
-//
+class FindIndividualFinancialStatements_10Q : public Test
+{
+public:
+
+};
+
 ////TEST_F(FindIndividualFinancialStatements_10Q , FindDollarMultipliers_10Q)
 ////{
 ////    auto multipliers = FindDollarMultipliers(destination_anchors);
@@ -540,67 +584,82 @@ TEST_F(IdentifyHTMLFilesToUse, DISABLED_ConfirmFileHasXML)
 //    ASSERT_TRUE(how_many == 86);
 //}
 //
-//TEST_F(FindIndividualFinancialStatements_10Q, FindBalanceSheet_10Q)
-//{
-//    TablesFromHTML tables{financial_content};
-//    auto balance_sheet = std::find_if(tables.begin(), tables.end(), BalanceSheetFilter);
-//
-//    ASSERT_TRUE(balance_sheet != tables.end());
-//}
-//
-//TEST_F(FindIndividualFinancialStatements_10Q, FindStatementOfOperations_10Q)
-//{
-//    TablesFromHTML tables{financial_content};
-//    auto statement_of_ops = std::find_if(tables.begin(), tables.end(), StatementOfOperationsFilter);
-//
-//    ASSERT_TRUE(statement_of_ops != tables.end());
-//}
-//
-//TEST_F(FindIndividualFinancialStatements_10Q, FindCashFlowStatement_10Q)
-//{
-//    TablesFromHTML tables{financial_content};
-//    auto cash_flows = std::find_if(tables.begin(), tables.end(), CashFlowsFilter);
-//
-//    ASSERT_TRUE(cash_flows != tables.end());
-//}
-//
-//TEST_F(FindIndividualFinancialStatements_10Q, FindCashFlowStatement2_10Q)
-//{
-//    // use a different file here
-//
-//    file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS2);
-//    financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
-//    TablesFromHTML tables{financial_content};
-//    auto cash_flows = std::find_if(tables.begin(), tables.end(), CashFlowsFilter);
-//
-//    ASSERT_TRUE(cash_flows != tables.end());
-//    std::cout.write((*cash_flows).data(), 500);
-//}
-//
-//TEST_F(FindIndividualFinancialStatements_10Q, FindStockholderEquity_10Q)
-//{
-//    TablesFromHTML tables{financial_content};
-//    auto stockholder_equity = std::find_if(tables.begin(), tables.end(), StockholdersEquityFilter);
-//
-//    ASSERT_TRUE(stockholder_equity != tables.end());
-//}
-//
-//class ProcessEntireFile_10Q : public Test
-//{
-//public:
-//
-//};
-//
-//TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections)
-//{
-//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
-//    auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
-//
-//    auto all_sections = ExtractFinancialStatements(financial_content);
-//
-//    ASSERT_TRUE(all_sections.has_data());
-//}
-//
+TEST_F(FindIndividualFinancialStatements_10Q, FindBalanceSheetFileWithHTML_10Q)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
+    auto document = FindFinancialDocument(file_content_10Q);
+
+    TablesFromHTML tables{document};
+    auto balance_sheet = std::find_if(tables.begin(), tables.end(), BalanceSheetFilter);
+
+    ASSERT_TRUE(balance_sheet != tables.end());
+}
+
+TEST_F(FindIndividualFinancialStatements_10Q, FindStatementOfOperations_10Q)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
+    auto document = FindFinancialDocument(file_content_10Q);
+
+    TablesFromHTML tables{document};
+    auto statement_of_ops = std::find_if(tables.begin(), tables.end(), StatementOfOperationsFilter);
+
+    ASSERT_TRUE(statement_of_ops != tables.end());
+}
+
+TEST_F(FindIndividualFinancialStatements_10Q, FindCashFlowStatement_10Q)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
+    auto document = FindFinancialDocument(file_content_10Q);
+
+    TablesFromHTML tables{document};
+    auto cash_flows = std::find_if(tables.begin(), tables.end(), CashFlowsFilter);
+
+    ASSERT_TRUE(cash_flows != tables.end());
+}
+
+TEST_F(FindIndividualFinancialStatements_10Q, FindCashFlowStatement2_10Q)
+{
+    // use a different file here
+
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS2);
+    auto document = FindFinancialDocument(file_content_10Q);
+
+    TablesFromHTML tables{document};
+    auto cash_flows = std::find_if(tables.begin(), tables.end(), CashFlowsFilter);
+
+    ASSERT_TRUE(cash_flows != tables.end());
+    std::cout.write((*cash_flows).data(), 500);
+}
+
+TEST_F(FindIndividualFinancialStatements_10Q, FindStockholderEquity_10Q)
+{
+    // TODO: if can't find separate table, look into Balance sheet
+
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
+    auto document = FindFinancialDocument(file_content_10Q);
+
+    TablesFromHTML tables{document};
+    auto stockholder_equity = std::find_if(tables.begin(), tables.end(), StockholdersEquityFilter);
+
+    ASSERT_TRUE(stockholder_equity == tables.end());
+}
+
+class ProcessEntireFile_10Q : public Test
+{
+public:
+
+};
+
+TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
+    auto financial_content = FindFinancialDocument(file_content_10Q);
+
+    auto all_sections = ExtractFinancialStatements(financial_content);
+
+    ASSERT_TRUE(all_sections.has_data());
+}
+
 //TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections2)
 //{
 //    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS2);

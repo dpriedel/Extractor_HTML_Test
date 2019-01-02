@@ -1034,11 +1034,12 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_ASSETS_PROBLEM1)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_PROBLEM_WITH_ASSETS1);
     auto financial_content = FindFinancialDocument(file_content_10Q);
-    std::cout << financial_content.size() << '\n';
 
     auto all_sections = ExtractFinancialStatements(financial_content);
 
     EXPECT_TRUE(all_sections.has_data());
+
+    all_sections.PrepareTableContent();
 
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
@@ -1055,6 +1056,10 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_ASSETS_PROBLEM1)
     all_sections.PrepareTableContent();
 
     EE::EDGAR_Labels extracted_data = all_sections.CollectValues();
+    for (const auto& [key, value] : extracted_data)
+    {
+        std::cout << "\nkey: " << key << " value: " << value << '\n';
+    }
 
 }
 

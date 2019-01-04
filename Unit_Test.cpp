@@ -969,6 +969,28 @@ TEST_F(ProblemWithRegexs_10Q, UseRegexProblemFile1)
     ASSERT_TRUE(the_tables.has_data());
 }
 
+TEST_F(ProblemWithRegexs_10Q, ProblemMatchingCurrentAssets)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_XML_10Q);
+    auto financial_content = FindFinancialDocument(file_content_10Q);
+
+    auto all_sections = ExtractFinancialStatements(financial_content);
+
+    EXPECT_TRUE(all_sections.has_data());
+    all_sections.PrepareTableContent();
+
+    std::cout << "\n\nBalance Sheet\n";
+    std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
+
+    EE::EDGAR_Labels extracted_data;
+    ASSERT_NO_THROW(extracted_data = all_sections.CollectValues());
+
+    for (const auto& [key, value] : extracted_data)
+    {
+        std::cout << "\nkey: " << key << " value: " << value << '\n';
+    }
+}
+
 class ValidateCanNavigateDocumentStructure : public Test
 {
 };

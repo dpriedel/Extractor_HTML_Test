@@ -103,6 +103,7 @@ constexpr const char* FILE_WITH_HTML_10Q_MINIMAL_DATA{"/vol_DA/EDGAR/Archives/ed
 constexpr const char* FILE_WITH_HTML_10Q_PROBLEM_REGEX1{"/vol_DA/EDGAR/Archives/edgar/data/1377936/0001104659-13-075719.txt"};
 constexpr const char* FILE_WITH_HTML_10Q_PROBLEM_WITH_ASSETS1{"/vol_DA/EDGAR/Archives/edgar/data/68270/0000068270-13-000059.txt"};
 constexpr const char* FILE_WITH_NO_HTML_10Q{"/vol_DA/EDGAR/Edgar_forms/855931/10-Q/0001130319-01-500242.txt"};
+constexpr const char* FILE_WITH_NO_HTML2_10Q{"/vol_DA/EDGAR/Archives/edgar/data/1421907/0001165527-13-000854.txt"};
 //constexpr const char* EDGAR_DIRECTORY{"/vol_DA/EDGAR/Archives/edgar/data"};
 //constexpr const char* FILE_NO_NAMESPACE_10Q{"/vol_DA/EDGAR/Archives/edgar/data/68270/0000068270-13-000059.txt"};
 //constexpr const char* FILE_SOME_NAMESPACE_10Q{"/vol_DA/EDGAR/Archives/edgar/data/1552979/0001214782-13-000386.txt"};

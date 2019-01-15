@@ -983,7 +983,7 @@ TEST_F(ProblemWithRegexs_10Q, ProblemMatchingCurrentAssets)
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
 
-    EE::EDGAR_Labels extracted_data;
+    EE::EDGAR_Values extracted_data;
     ASSERT_NO_THROW(extracted_data = all_sections.CollectValues());
 
     for (const auto& [key, value] : extracted_data)
@@ -1031,7 +1031,7 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_WITH_ANCHORS)
 
     all_sections.PrepareTableContent();
 
-    EE::EDGAR_Labels extracted_data;
+    EE::EDGAR_Values extracted_data;
     ASSERT_NO_THROW(extracted_data = all_sections.CollectValues());
 
     std::cout << "\n\nBalance Sheet\n";
@@ -1078,12 +1078,36 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_ASSETS_PROBLEM1)
             std::min(500UL, all_sections.stockholders_equity_.parsed_data_.size()));
     all_sections.PrepareTableContent();
 
-    EE::EDGAR_Labels extracted_data = all_sections.CollectValues();
+    EE::EDGAR_Values extracted_data = all_sections.CollectValues();
     for (const auto& [key, value] : extracted_data)
     {
         std::cout << "\nkey: " << key << " value: " << value << '\n';
     }
 
+}
+
+TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_WITH_ANCHORS_Collect1)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
+    auto financial_content = FindFinancialDocument(file_content_10Q);
+
+    auto all_sections = ExtractFinancialStatements(financial_content);
+
+    EXPECT_TRUE(all_sections.has_data());
+
+    all_sections.PrepareTableContent();
+
+    auto extracted_data = all_sections.CollectValues();
+
+    std::cout << "\n\nBalance Sheet\n";
+    std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
+    
+    for (const auto& [key, value] : extracted_data)
+    {
+        std::cout << "\nkey: " << key << " value: " << value << '\n';
+    }
+    std::cout << "Found: " << extracted_data.size() << " values.\n";
+    ASSERT_TRUE(extracted_data.size() == 80);
 }
 
 int main(int argc, char** argv)

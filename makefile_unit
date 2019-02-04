@@ -67,7 +67,8 @@ OUTDIR := Debug_unit
 
 CFG_LIB := -lpthread -lstdc++fs -L$(BOOSTDIR)/lib \
 		-lboost_date_time-mt-d-x64 -lboost_iostreams-mt-d-x64 -lboost_regex-mt-d-x64 \
-		-L/usr/local/lib -lPocoFoundationd -lPocoUtild \
+		-lboost_log-mt-x64 -lboost_log_setup-mt-x64 \
+		-L/usr/local/lib \
 		-lgmock -lgmock_main -lgtest \
 		-lgumbo \
 		-lgq \
@@ -81,7 +82,7 @@ OBJS2=$(addprefix $(OUTDIR)/, $(addsuffix .o, $(basename $(notdir $(SRCS2)))))
 OBJS=$(OBJS1) $(OBJS2)
 DEPS=$(OBJS:.o=.d)
 
-COMPILE=$(CPP) -c  -x c++  -O0  -g3 -std=c++17 -D NOCERTTEST -D_DEBUG -fPIC -o $@ $(CFG_INC) $< -march=native -MMD -MP
+COMPILE=$(CPP) -c  -x c++  -O0  -g3 -std=c++17 -DBOOST_ENABLE_ASSERT_HANDLER -DBOOST_LOG_DYN_LINK -D_DEBUG -fPIC -o $@ $(CFG_INC) $< -march=native -MMD -MP
 LINK := $(CPP)  -g -o $(OUTFILE) $(OBJS) $(CFG_LIB) -Wl,-E $(RPATH_LIB)
 
 endif #	DEBUG configuration

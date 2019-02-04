@@ -30,13 +30,6 @@
     /* You should have received a copy of the GNU General Public License */
     /* along with ExtractEDGAR_HTML.  If not, see <http://www.gnu.org/licenses/>. */
 
-
-// =====================================================================================
-//        Class:
-//  Description:
-// =====================================================================================
-
-
 #include <algorithm>
 #include <chrono>
 #include <filesystem>
@@ -48,36 +41,19 @@
 #include <thread>
 
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/log/core.hpp>
+#include <boost/log/trivial.hpp>
+#include <boost/log/expressions.hpp>
+
+namespace logging = boost::log;
 
 #include <gmock/gmock.h>
 
-#include <range/v3/all.hpp>
-
-#include "Poco/AutoPtr.h"
-#include "Poco/Channel.h"
-#include "Poco/ConsoleChannel.h"
-#include "Poco/Logger.h"
-#include "Poco/Message.h"
-#include "Poco/Util/AbstractConfiguration.h"
-#include "Poco/Util/Application.h"
-#include "Poco/Util/HelpFormatter.h"
-#include "Poco/Util/Option.h"
-#include "Poco/Util/OptionSet.h"
-#include <Poco/Net/NetException.h>
-// #include "Poco/SimpleFileChannel.h"
+//#include <range/v3/all.hpp>
 
 namespace fs = std::filesystem;
 
 using namespace testing;
-
-
-using Poco::Util::Application;
-using Poco::Util::Option;
-using Poco::Util::OptionSet;
-using Poco::Util::HelpFormatter;
-using Poco::Util::AbstractConfiguration;
-using Poco::Util::OptionCallback;
-using Poco::AutoPtr;
 
 #include "EDGAR_HTML_FileFilter.h"
 #include "ExtractEDGAR_Utils.h"
@@ -138,188 +114,6 @@ struct line_only_whitespace : std::ctype<char>
 
 // some utility functions for testing.
 
-
-//  need these to feed into testing framework.
-
-int G_ARGC = 0;
-char** G_ARGV = nullptr;
-
-Poco::Logger* THE_LOGGER = nullptr;
-
-// using one of the example Poco programs to get going
-
-class HTML_Extract_Unit_Test: public Application
-    /// This sample demonstrates some of the features of the Util::Application class,
-    /// such as configuration file handling and command line arguments processing.
-    ///
-    /// Try HTML_Extract_Unit_Test --help (on Unix platforms) or HTML_Extract_Unit_Test /help (elsewhere) for
-    /// more information.
-{
-public:
-    HTML_Extract_Unit_Test(): _helpRequested(false)
-    {
-    }
-
-protected:
-    void initialize(Application& self) override
-    {
-        loadConfiguration(); // load default configuration files, if present
-        Application::initialize(self);
-        // add your own initialization code here
-    }
-
-    void uninitialize() override
-    {
-        // add your own uninitialization code here
-        Application::uninitialize();
-    }
-
-    void reinitialize(Application& self) override
-    {
-        Application::reinitialize(self);
-        // add your own reinitialization code here
-    }
-
-    void defineOptions(OptionSet& options) override
-    {
-        Application::defineOptions(options);
-
-        options.addOption(
-            Option("help", "h", "display help information on command line arguments")
-                .required(false)
-                .repeatable(false)
-                .callback(OptionCallback<HTML_Extract_Unit_Test>(this, &HTML_Extract_Unit_Test::handleHelp)));
-
-        options.addOption(
-            Option("gtest_filter", "", "select which tests to run.")
-                .required(false)
-                .repeatable(true)
-                .argument("name=value")
-                .callback(OptionCallback<HTML_Extract_Unit_Test>(this, &HTML_Extract_Unit_Test::handleDefine)));
-
-        /* options.addOption( */
-        /*  Option("define", "D", "define a configuration property") */
-        /*      .required(false) */
-        /*      .repeatable(true) */
-        /*      .argument("name=value") */
-        /*      .callback(OptionCallback<HTML_Extract_Unit_Test>(this, &HTML_Extract_Unit_Test::handleDefine))); */
-
-        /* options.addOption( */
-        /*  Option("config-file", "f", "load configuration data from a file") */
-        /*      .required(false) */
-        /*      .repeatable(true) */
-        /*      .argument("file") */
-        /*      .callback(OptionCallback<HTML_Extract_Unit_Test>(this, &HTML_Extract_Unit_Test::handleConfig))); */
-
-        /* options.addOption( */
-        /*  Option("bind", "b", "bind option value to test.property") */
-        /*      .required(false) */
-        /*      .repeatable(false) */
-        /*      .argument("value") */
-        /*      .binding("test.property")); */
-    }
-
-    void handleHelp(const std::string& name, const std::string& value)
-    {
-        _helpRequested = true;
-        displayHelp();
-        stopOptionsProcessing();
-    }
-
-    void handleDefine(const std::string& name, const std::string& value)
-    {
-        defineProperty(value);
-    }
-
-    void handleConfig(const std::string& name, const std::string& value)
-    {
-        loadConfiguration(value);
-    }
-
-    void displayHelp()
-    {
-        HelpFormatter helpFormatter(options());
-        helpFormatter.setCommand(commandName());
-        helpFormatter.setUsage("OPTIONS");
-        helpFormatter.setHeader("Test Driver application for ExtractEDGAR_XBRL.");
-        helpFormatter.format(std::cout);
-    }
-
-    void defineProperty(const std::string& def)
-    {
-        std::string name;
-        std::string value;
-        std::string::size_type pos = def.find('=');
-        if (pos != std::string::npos)
-        {
-            name.assign(def, 0, pos);
-            value.assign(def, pos + 1, def.length() - pos);
-        }
-        else
-        {
-            name = def;
-        }
-        config().setString(name, value);
-    }
-
-    int main(const ArgVec& args) override
-    {
-        setLogger(*THE_LOGGER);
-        if (!_helpRequested)
-        {
-            logger().information("Command line:");
-            std::ostringstream ostr;
-            for (ArgVec::const_iterator it = argv().begin(); it != argv().end(); ++it)
-            {
-                ostr << *it << ' ';
-            }
-            logger().information(ostr.str());
-            logger().information("Arguments to main():");
-            for (ArgVec::const_iterator it = args.begin(); it != args.end(); ++it)
-            {
-                logger().information(*it);
-            }
-            logger().information("Application properties:");
-            printProperties("");
-
-            //  run our tests
-
-            testing::InitGoogleMock(&G_ARGC, G_ARGV);
-            return RUN_ALL_TESTS();
-        }
-        return Application::EXIT_OK;
-    }
-
-    void printProperties(const std::string& base)
-    {
-        AbstractConfiguration::Keys keys;
-        config().keys(base, keys);
-        if (keys.empty())
-        {
-            if (config().hasProperty(base))
-            {
-                std::string msg;
-                msg.append(base);
-                msg.append(" = ");
-                msg.append(config().getString(base));
-                logger().information(msg);
-            }
-        }
-        else
-        {
-            for (AbstractConfiguration::Keys::const_iterator it = keys.begin(); it != keys.end(); ++it)
-            {
-                std::string fullKey = base;
-                if (!fullKey.empty()) fullKey += '.';
-                fullKey.append(*it);
-                printProperties(fullKey);
-            }
-        }
-    }
-
-private:
-    bool _helpRequested;
-};
 
 class Iterators : public Test
 {
@@ -1335,31 +1129,25 @@ TEST_F(ProcessEntireFileAndExtractData_10K, XML_10K_Collect1)
     ASSERT_TRUE(all_sections.ListValues().size() == 97);
 }
 
+/* 
+ * ===  FUNCTION  ======================================================================
+ *         Name:  InitLogging
+ *  Description:  
+ * =====================================================================================
+ */
+void InitLogging ()
+{
+    logging::core::get()->set_filter
+    (
+        logging::trivial::severity >= logging::trivial::trace
+    );
+}		/* -----  end of function InitLogging  ----- */
+
 int main(int argc, char** argv)
 {
-    G_ARGC = argc;
-    G_ARGV = argv;
 
-    int result = 0;
+    InitLogging();
 
-    HTML_Extract_Unit_Test the_app;
-    try
-    {
-        the_app.init(argc, argv);
-
-        THE_LOGGER = &Poco::Logger::get("TestLogger");
-        AutoPtr<Poco::Channel> pChannel(new Poco::ConsoleChannel);
-        // pChannel->setProperty("path", "/tmp/Testing.log");
-        THE_LOGGER->setChannel(pChannel);
-        THE_LOGGER->setLevel(Poco::Message::PRIO_DEBUG);
-
-        result = the_app.run();
-    }
-    catch (Poco::Exception& exc)
-    {
-        the_app.logger().log(exc);
-        result =  Application::EXIT_CONFIG;
-    }
-
-    return result;
+    InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }

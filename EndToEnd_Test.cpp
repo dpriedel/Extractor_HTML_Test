@@ -112,13 +112,22 @@ TEST_F(SingleFileEndToEnd_XBRL, VerifyCanLoadDataToDBForFileWithXML_10QXBRL)
 
 	try
 	{
-        ExtractEDGAR_XBRLApp myApp(&tokens);
+        ExtractEDGAR_XBRLApp myApp(tokens);
 
 		decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
         BOOST_LOG_TRIVIAL(info) << catenate("\n\nTest: ", test_info->name(), " test case: ",
                 test_info->test_case_name(), "\n\n");
 
-        myApp.Run();
+        bool startup_OK = myApp.Startup();
+        if (startup_OK)
+        {
+            myApp.Run();
+            myApp.Shutdown();
+        }
+        else
+        {
+            std::cout << "Problems starting program.  No processing done.\n";
+        }
 	}
 
     // catch any problems trying to setup application
@@ -150,13 +159,22 @@ TEST_F(SingleFileEndToEnd_XBRL, VerifyLoadsNoDataToDBForFileWithXML_10QHTML)
 
 	try
 	{
-        ExtractEDGAR_XBRLApp myApp(&tokens);
+        ExtractEDGAR_XBRLApp myApp(tokens);
 
 		decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
         BOOST_LOG_TRIVIAL(info) << catenate("\n\nTest: ", test_info->name(), " test case: ",
                 test_info->test_case_name(), "\n\n");
 
-        myApp.Run();
+        bool startup_OK = myApp.Startup();
+        if (startup_OK)
+        {
+            myApp.Run();
+            myApp.Shutdown();
+        }
+        else
+        {
+            std::cout << "Problems starting program.  No processing done.\n";
+        }
 	}
 
     // catch any problems trying to setup application
@@ -218,13 +236,22 @@ TEST_F(SingleFileEndToEnd_HTML, VerifyCanLoadDataToDBForFileWithHTML_10QHTML)
 
 	try
 	{
-        ExtractEDGAR_XBRLApp myApp(&tokens);
+        ExtractEDGAR_XBRLApp myApp(tokens);
 
 		decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
         BOOST_LOG_TRIVIAL(info) << catenate("\n\nTest: ", test_info->name(), " test case: ",
                 test_info->test_case_name(), "\n\n");
 
-        myApp.Run();
+        bool startup_OK = myApp.Startup();
+        if (startup_OK)
+        {
+            myApp.Run();
+            myApp.Shutdown();
+        }
+        else
+        {
+            std::cout << "Problems starting program.  No processing done.\n";
+        }
 	}
 
     // catch any problems trying to setup application
@@ -505,13 +532,22 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
 
 	try
 	{
-        ExtractEDGAR_XBRLApp myApp(&tokens);
+        ExtractEDGAR_XBRLApp myApp(tokens);
 
 		decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
         BOOST_LOG_TRIVIAL(info) << catenate("\n\nTest: ", test_info->name(), " test case: ",
                 test_info->test_case_name(), "\n\n");
 
-        myApp.Run();
+        bool startup_OK = myApp.Startup();
+        if (startup_OK)
+        {
+            myApp.Run();
+            myApp.Shutdown();
+        }
+        else
+        {
+            std::cout << "Problems starting program.  No processing done.\n";
+        }
 	}
 
     // catch any problems trying to setup application

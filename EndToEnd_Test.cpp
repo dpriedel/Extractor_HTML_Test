@@ -41,6 +41,12 @@
 #include <filesystem>
 #include <pqxx/pqxx>
 
+#include <boost/log/core.hpp>
+#include <boost/log/trivial.hpp>
+#include <boost/log/expressions.hpp>
+
+namespace logging = boost::log;
+
 #include <gmock/gmock.h>
 
 #include "EDGAR_HTML_FileFilter.h"
@@ -57,9 +63,6 @@ const fs::path NO_SHARES_OUT{"/vol_DA/EDGAR/Edgar_forms/1023453/10-K/0001144204-
 const fs::path MISSING_VALUES_LIST{"../ExtractEDGAR_XBRL_Test/missing_values_files.txt"};
 
 constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS{"/vol_DA/EDGAR/Archives/edgar/data/1420525/0001420525-09-000028.txt"};
-
-int G_ARGC = 0;
-char** G_ARGV = nullptr;
 
 using namespace testing;
 
@@ -107,30 +110,27 @@ TEST_F(SingleFileEndToEnd_XBRL, VerifyCanLoadDataToDBForFileWithXML_10QXBRL)
 		"-f", FILE_WITH_XML_10Q.string()
 	};
 
-    ExtractEDGAR_XBRLApp myApp;
 	try
 	{
-        myApp.init(tokens);
+        ExtractEDGAR_XBRLApp myApp(&tokens);
 
 		decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
-		myApp.logger().information(std::string("\n\nTest: ") + test_info->name() + " test case: "
-                + test_info->test_case_name() + "\n\n");
+        BOOST_LOG_TRIVIAL(info) << catenate("\n\nTest: ", test_info->name(), " test case: ",
+                test_info->test_case_name(), "\n\n");
 
-        myApp.run();
+        myApp.Run();
 	}
 
     // catch any problems trying to setup application
 
 	catch (const std::exception& theProblem)
 	{
-		// poco_fatal(myApp->logger(), theProblem.what());
-
-		myApp.logger().error(std::string("Something fundamental went wrong: ") + theProblem.what());
+        BOOST_LOG_TRIVIAL(error) << catenate("Something fundamental went wrong: ", theProblem.what());
 		throw;	//	so test framework will get it too.
 	}
 	catch (...)
 	{		// handle exception: unspecified
-		myApp.logger().error("Something totally unexpected happened.");
+        BOOST_LOG_TRIVIAL(error) << "Something totally unexpected happened.";
 		throw;
 	}
 	ASSERT_EQ(CountRows(), 194);
@@ -148,30 +148,27 @@ TEST_F(SingleFileEndToEnd_XBRL, VerifyLoadsNoDataToDBForFileWithXML_10QHTML)
 		"-f", FILE_WITH_XML_10Q.string()
 	};
 
-    ExtractEDGAR_XBRLApp myApp;
 	try
 	{
-        myApp.init(tokens);
+        ExtractEDGAR_XBRLApp myApp(&tokens);
 
 		decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
-		myApp.logger().information(std::string("\n\nTest: ") + test_info->name() + " test case: "
-                + test_info->test_case_name() + "\n\n");
+        BOOST_LOG_TRIVIAL(info) << catenate("\n\nTest: ", test_info->name(), " test case: ",
+                test_info->test_case_name(), "\n\n");
 
-        myApp.run();
+        myApp.Run();
 	}
 
     // catch any problems trying to setup application
 
 	catch (const std::exception& theProblem)
 	{
-		// poco_fatal(myApp->logger(), theProblem.what());
-
-		myApp.logger().error(std::string("Something fundamental went wrong: ") + theProblem.what());
+        BOOST_LOG_TRIVIAL(error) << catenate("Something fundamental went wrong: ", theProblem.what());
 		throw;	//	so test framework will get it too.
 	}
 	catch (...)
 	{		// handle exception: unspecified
-		myApp.logger().error("Something totally unexpected happened.");
+        BOOST_LOG_TRIVIAL(error) << "Something totally unexpected happened.";
 		throw;
 	}
 	ASSERT_EQ(CountRows(), 0);
@@ -219,30 +216,27 @@ TEST_F(SingleFileEndToEnd_HTML, VerifyCanLoadDataToDBForFileWithHTML_10QHTML)
 		"-f", FILE_WITH_HTML_10Q_WITH_ANCHORS
 	};
 
-    ExtractEDGAR_XBRLApp myApp;
 	try
 	{
-        myApp.init(tokens);
+        ExtractEDGAR_XBRLApp myApp(&tokens);
 
 		decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
-		myApp.logger().information(std::string("\n\nTest: ") + test_info->name() + " test case: "
-                + test_info->test_case_name() + "\n\n");
+        BOOST_LOG_TRIVIAL(info) << catenate("\n\nTest: ", test_info->name(), " test case: ",
+                test_info->test_case_name(), "\n\n");
 
-        myApp.run();
+        myApp.Run();
 	}
 
     // catch any problems trying to setup application
 
 	catch (const std::exception& theProblem)
 	{
-		// poco_fatal(myApp->logger(), theProblem.what());
-
-		myApp.logger().error(std::string("Something fundamental went wrong: ") + theProblem.what());
+        BOOST_LOG_TRIVIAL(error) << catenate("Something fundamental went wrong: ", theProblem.what());
 		throw;	//	so test framework will get it too.
 	}
 	catch (...)
 	{		// handle exception: unspecified
-		myApp.logger().error("Something totally unexpected happened.");
+        BOOST_LOG_TRIVIAL(error) << "Something totally unexpected happened.";
 		throw;
 	}
 
@@ -509,30 +503,27 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
 		"--form-dir", EDGAR_DIRECTORY.string()
     };
 
-    ExtractEDGAR_XBRLApp myApp;
 	try
 	{
-        myApp.init(tokens);
+        ExtractEDGAR_XBRLApp myApp(&tokens);
 
 		decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
-		myApp.logger().information(std::string("\n\nTest: ") + test_info->name() + " test case: "
-                + test_info->test_case_name() + "\n\n");
+        BOOST_LOG_TRIVIAL(info) << catenate("\n\nTest: ", test_info->name(), " test case: ",
+                test_info->test_case_name(), "\n\n");
 
-        myApp.run();
+        myApp.Run();
 	}
 
     // catch any problems trying to setup application
 
 	catch (const std::exception& theProblem)
 	{
-		// poco_fatal(myApp->logger(), theProblem.what());
-
-		myApp.logger().error(std::string("Something fundamental went wrong: ") + theProblem.what());
+        BOOST_LOG_TRIVIAL(error) << catenate("Something fundamental went wrong: ", theProblem.what());
 		throw;	//	so test framework will get it too.
 	}
 	catch (...)
 	{		// handle exception: unspecified
-		myApp.logger().error("Something totally unexpected happened.");
+        BOOST_LOG_TRIVIAL(error) << "Something totally unexpected happened.";
 		throw;
 	}
 	ASSERT_EQ(CountFilings(), 1);
@@ -1352,9 +1343,25 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
 //// }
 //
 
-int main(int argc, char** argv) {
-	G_ARGC = argc;
-	G_ARGV = argv;
-	testing::InitGoogleMock(&argc, argv);
+/* 
+ * ===  FUNCTION  ======================================================================
+ *         Name:  InitLogging
+ *  Description:  
+ * =====================================================================================
+ */
+void InitLogging ()
+{
+    logging::core::get()->set_filter
+    (
+        logging::trivial::severity >= logging::trivial::trace
+    );
+}		/* -----  end of function InitLogging  ----- */
+
+int main(int argc, char** argv)
+{
+
+    InitLogging();
+
+	InitGoogleMock(&argc, argv);
    return RUN_ALL_TESTS();
 }

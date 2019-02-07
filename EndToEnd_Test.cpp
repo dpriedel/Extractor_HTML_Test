@@ -41,11 +41,7 @@
 #include <filesystem>
 #include <pqxx/pqxx>
 
-#include <boost/log/core.hpp>
-#include <boost/log/trivial.hpp>
-#include <boost/log/expressions.hpp>
-
-namespace logging = boost::log;
+#include "spdlog/spdlog.h"
 
 #include <gmock/gmock.h>
 
@@ -115,8 +111,8 @@ TEST_F(SingleFileEndToEnd_XBRL, VerifyCanLoadDataToDBForFileWithXML_10QXBRL)
         ExtractEDGAR_XBRLApp myApp(tokens);
 
 		decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
-        BOOST_LOG_TRIVIAL(info) << catenate("\n\nTest: ", test_info->name(), " test case: ",
-                test_info->test_case_name(), "\n\n");
+        spdlog::info(catenate("\n\nTest: ", test_info->name(), " test case: ",
+                test_info->test_case_name(), "\n\n"));
 
         bool startup_OK = myApp.Startup();
         if (startup_OK)
@@ -134,12 +130,12 @@ TEST_F(SingleFileEndToEnd_XBRL, VerifyCanLoadDataToDBForFileWithXML_10QXBRL)
 
 	catch (const std::exception& theProblem)
 	{
-        BOOST_LOG_TRIVIAL(error) << catenate("Something fundamental went wrong: ", theProblem.what());
+        spdlog::error(catenate("Something fundamental went wrong: ", theProblem.what()));
 		throw;	//	so test framework will get it too.
 	}
 	catch (...)
 	{		// handle exception: unspecified
-        BOOST_LOG_TRIVIAL(error) << "Something totally unexpected happened.";
+        spdlog::error("Something totally unexpected happened.");
 		throw;
 	}
 	ASSERT_EQ(CountRows(), 194);
@@ -162,8 +158,8 @@ TEST_F(SingleFileEndToEnd_XBRL, VerifyLoadsNoDataToDBForFileWithXML_10QHTML)
         ExtractEDGAR_XBRLApp myApp(tokens);
 
 		decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
-        BOOST_LOG_TRIVIAL(info) << catenate("\n\nTest: ", test_info->name(), " test case: ",
-                test_info->test_case_name(), "\n\n");
+        spdlog::info(catenate("\n\nTest: ", test_info->name(), " test case: ",
+                test_info->test_case_name(), "\n\n"));
 
         bool startup_OK = myApp.Startup();
         if (startup_OK)
@@ -181,12 +177,12 @@ TEST_F(SingleFileEndToEnd_XBRL, VerifyLoadsNoDataToDBForFileWithXML_10QHTML)
 
 	catch (const std::exception& theProblem)
 	{
-        BOOST_LOG_TRIVIAL(error) << catenate("Something fundamental went wrong: ", theProblem.what());
+        spdlog::error(catenate("Something fundamental went wrong: ", theProblem.what()));
 		throw;	//	so test framework will get it too.
 	}
 	catch (...)
 	{		// handle exception: unspecified
-        BOOST_LOG_TRIVIAL(error) << "Something totally unexpected happened.";
+        spdlog::error("Something totally unexpected happened.");
 		throw;
 	}
 	ASSERT_EQ(CountRows(), 0);
@@ -239,8 +235,8 @@ TEST_F(SingleFileEndToEnd_HTML, VerifyCanLoadDataToDBForFileWithHTML_10QHTML)
         ExtractEDGAR_XBRLApp myApp(tokens);
 
 		decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
-        BOOST_LOG_TRIVIAL(info) << catenate("\n\nTest: ", test_info->name(), " test case: ",
-                test_info->test_case_name(), "\n\n");
+        spdlog::info(catenate("\n\nTest: ", test_info->name(), " test case: ",
+                test_info->test_case_name(), "\n\n"));
 
         bool startup_OK = myApp.Startup();
         if (startup_OK)
@@ -258,12 +254,12 @@ TEST_F(SingleFileEndToEnd_HTML, VerifyCanLoadDataToDBForFileWithHTML_10QHTML)
 
 	catch (const std::exception& theProblem)
 	{
-        BOOST_LOG_TRIVIAL(error) << catenate("Something fundamental went wrong: ", theProblem.what());
+        spdlog::error(catenate("Something fundamental went wrong: ", theProblem.what()));
 		throw;	//	so test framework will get it too.
 	}
 	catch (...)
 	{		// handle exception: unspecified
-        BOOST_LOG_TRIVIAL(error) << "Something totally unexpected happened.";
+        spdlog::error("Something totally unexpected happened.");
 		throw;
 	}
 
@@ -535,8 +531,8 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
         ExtractEDGAR_XBRLApp myApp(tokens);
 
 		decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
-        BOOST_LOG_TRIVIAL(info) << catenate("\n\nTest: ", test_info->name(), " test case: ",
-                test_info->test_case_name(), "\n\n");
+        spdlog::info(catenate("\n\nTest: ", test_info->name(), " test case: ",
+                test_info->test_case_name(), "\n\n"));
 
         bool startup_OK = myApp.Startup();
         if (startup_OK)
@@ -554,12 +550,12 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
 
 	catch (const std::exception& theProblem)
 	{
-        BOOST_LOG_TRIVIAL(error) << catenate("Something fundamental went wrong: ", theProblem.what());
+        spdlog::error(catenate("Something fundamental went wrong: ", theProblem.what()));
 		throw;	//	so test framework will get it too.
 	}
 	catch (...)
 	{		// handle exception: unspecified
-        BOOST_LOG_TRIVIAL(error) << "Something totally unexpected happened.";
+        spdlog::error("Something totally unexpected happened.");
 		throw;
 	}
 	ASSERT_EQ(CountFilings(), 1);
@@ -1387,10 +1383,11 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
  */
 void InitLogging ()
 {
-    logging::core::get()->set_filter
-    (
-        logging::trivial::severity >= logging::trivial::trace
-    );
+    //    nothing to do for now.
+//    logging::core::get()->set_filter
+//    (
+//        logging::trivial::severity >= logging::trivial::trace
+//    );
 }		/* -----  end of function InitLogging  ----- */
 
 int main(int argc, char** argv)

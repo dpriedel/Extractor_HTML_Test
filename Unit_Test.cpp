@@ -41,11 +41,6 @@
 #include <thread>
 
 #include <boost/algorithm/string/predicate.hpp>
-#include <boost/log/core.hpp>
-#include <boost/log/trivial.hpp>
-#include <boost/log/expressions.hpp>
-
-namespace logging = boost::log;
 
 #include <gmock/gmock.h>
 
@@ -1137,10 +1132,10 @@ TEST_F(ProcessEntireFileAndExtractData_10K, XML_10K_Collect1)
  */
 void InitLogging ()
 {
-    logging::core::get()->set_filter
-    (
-        logging::trivial::severity >= logging::trivial::trace
-    );
+//    logging::core::get()->set_filter
+//    (
+//        logging::trivial::severity >= logging::trivial::trace
+//    );
 }		/* -----  end of function InitLogging  ----- */
 
 int main(int argc, char** argv)

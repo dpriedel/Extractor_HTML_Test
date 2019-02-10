@@ -558,7 +558,7 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections2)
     std::cout << "\n\nStmt of Operations\n";
     std::cout.write(all_sections.statement_of_operations_.parsed_data_.data(), 500);
     std::cout << "\n\nShareholder Equity\n";
-    std::cout.write(all_sections.stockholders_equity_.parsed_data_.data(), std::min(500UL, all_sections.stockholders_equity_.the_data_.size()));
+    std::cout.write(all_sections.stockholders_equity_.parsed_data_.data(), std::min(500UL, all_sections.stockholders_equity_.parsed_data_.size()));
 
     ASSERT_TRUE(all_sections.has_data());
 }
@@ -607,13 +607,13 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSectionsMinimalHTMLData)
     auto all_sections = ExtractFinancialStatements(financial_content);
 
     std::cout << "\n\nBalance Sheet\n";
-    std::cout.write(all_sections.balance_sheet_.the_data_.data(), 500);
+    std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
     std::cout << "\n\nCash Flow\n";
-    std::cout.write(all_sections.cash_flows_.the_data_.data(), 500);
+    std::cout.write(all_sections.cash_flows_.parsed_data_.data(), 500);
     std::cout << "\n\nStmt of Operations\n";
-    std::cout.write(all_sections.statement_of_operations_.the_data_.data(), 500);
+    std::cout.write(all_sections.statement_of_operations_.parsed_data_.data(), 500);
     std::cout << "\n\nShareholder Equity\n";
-    std::cout.write(all_sections.stockholders_equity_.the_data_.data(), std::min(500UL, all_sections.stockholders_equity_.the_data_.size()));
+    std::cout.write(all_sections.stockholders_equity_.parsed_data_.data(), std::min(500UL, all_sections.stockholders_equity_.parsed_data_.size()));
     ASSERT_TRUE(all_sections.has_data());
 }
 
@@ -804,17 +804,17 @@ TEST_F(NoAnchors_10Q, FileWithNoAnchors3)
     auto the_tables = ExtractFinancialStatements(financial_content);
 
     std::cout << "\n\nBalance Sheet\n";
-    std::cout.write(the_tables.balance_sheet_.the_data_.data(), 500);
+    std::cout.write(the_tables.balance_sheet_.parsed_data_.data(), 500);
     
     std::cout << "\n\nStmt of Operations\n";
-    std::cout.write(the_tables.statement_of_operations_.the_data_.data(), 500);
+    std::cout.write(the_tables.statement_of_operations_.parsed_data_.data(), 500);
     
     std::cout << "\n\nCash Flow\n";
-    std::cout.write(the_tables.cash_flows_.the_data_.data(), 500);
+    std::cout.write(the_tables.cash_flows_.parsed_data_.data(), 500);
     
     std::cout << "\n\nShareholder Equity\n";
-    std::cout.write(the_tables.stockholders_equity_.the_data_.data(),
-            std::min(500UL, the_tables.stockholders_equity_.the_data_.size()));
+    std::cout.write(the_tables.stockholders_equity_.parsed_data_.data(),
+            std::min(500UL, the_tables.stockholders_equity_.parsed_data_.size()));
 
     ASSERT_TRUE(the_tables.has_data());
 }
@@ -836,17 +836,17 @@ TEST_F(ProblemWithRegexs_10Q, UseRegexProblemFile1)
     auto the_tables = ExtractFinancialStatements(financial_content);
 
     std::cout << "\n\nBalance Sheet\n";
-    std::cout.write(the_tables.balance_sheet_.the_data_.data(), 500);
+    std::cout.write(the_tables.balance_sheet_.parsed_data_.data(), 500);
     
     std::cout << "\n\nStmt of Operations\n";
-    std::cout.write(the_tables.statement_of_operations_.the_data_.data(), 500);
+    std::cout.write(the_tables.statement_of_operations_.parsed_data_.data(), 500);
     
     std::cout << "\n\nCash Flow\n";
-    std::cout.write(the_tables.cash_flows_.the_data_.data(), 500);
+    std::cout.write(the_tables.cash_flows_.parsed_data_.data(), 500);
     
     std::cout << "\n\nShareholder Equity\n";
-    std::cout.write(the_tables.stockholders_equity_.the_data_.data(),
-            std::min(500UL, the_tables.stockholders_equity_.the_data_.size()));
+    std::cout.write(the_tables.stockholders_equity_.parsed_data_.data(),
+            std::min(500UL, the_tables.stockholders_equity_.parsed_data_.size()));
 
     ASSERT_TRUE(the_tables.has_data());
 }
@@ -860,17 +860,17 @@ TEST_F(ProblemWithRegexs_10Q, DISABLED_UseRegexProblemFile2)
     auto the_tables = FindAndExtractFinancialStatements(file_content_10Q);
 
     std::cout << "\n\nBalance Sheet\n";
-    std::cout.write(the_tables.balance_sheet_.the_data_.data(), 500);
+    std::cout.write(the_tables.balance_sheet_.parsed_data_.data(), 500);
     
     std::cout << "\n\nStmt of Operations\n";
-    std::cout.write(the_tables.statement_of_operations_.the_data_.data(), 500);
+    std::cout.write(the_tables.statement_of_operations_.parsed_data_.data(), 500);
     
     std::cout << "\n\nCash Flow\n";
-    std::cout.write(the_tables.cash_flows_.the_data_.data(), 500);
+    std::cout.write(the_tables.cash_flows_.parsed_data_.data(), 500);
     
     std::cout << "\n\nShareholder Equity\n";
-    std::cout.write(the_tables.stockholders_equity_.the_data_.data(),
-            std::min(500UL, the_tables.stockholders_equity_.the_data_.size()));
+    std::cout.write(the_tables.stockholders_equity_.parsed_data_.data(),
+            std::min(500UL, the_tables.stockholders_equity_.parsed_data_.size()));
 
     ASSERT_TRUE(the_tables.has_data());
 }
@@ -889,10 +889,10 @@ TEST_F(ProblemWithRegexs_10Q, DISABLED_ProblemMatchingCurrentAssets)
     std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
 
     std::cout << "\n\nStmt of Operations\n";
-    std::cout.write(all_sections.statement_of_operations_.the_data_.data(), 500);
+    std::cout.write(all_sections.statement_of_operations_.parsed_data_.data(), 500);
     
     std::cout << "\n\nCash Flow\n";
-    std::cout.write(all_sections.cash_flows_.the_data_.data(), 500);
+    std::cout.write(all_sections.cash_flows_.parsed_data_.data(), 500);
     
     ASSERT_NO_THROW(all_sections.CollectValues());
 
@@ -1015,7 +1015,7 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_WITH_ANCHORS_Collect1)
 //    {
 //        std::cout << "\nkey: " << key << " value: " << value << '\n';
 //    }
-    std::cout << "Found: " << all_sections.ListValues().size() << " values.\n";
+    std::cout << "\nFound: " << all_sections.ListValues().size() << " values.\n";
     ASSERT_TRUE(all_sections.ListValues().size() == 80);
 }
 
@@ -1040,7 +1040,7 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, XML_10Q_Collect1)
 //    {
 //        std::cout << "\nkey: " << key << " value: " << value << '\n';
 //    }
-    std::cout << "Found: " << all_sections.ListValues().size() << " values.\n";
+    std::cout << "\nFound: " << all_sections.ListValues().size() << " values.\n";
     ASSERT_TRUE(all_sections.ListValues().size() == 51);
 }
 
@@ -1058,13 +1058,13 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, XML_10Q_Collect2)
     all_sections.CollectValues();
 
     std::cout << "\n\nParsed Balance Sheet\n";
-    std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 1500);
+    std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
     
 //    for (const auto& [key, value] : all_sections.ListValues())
 //    {
 //        std::cout << "\nkey: " << key << " value: " << value << '\n';
 //    }
-    std::cout << "Found: " << all_sections.ListValues().size() << " values.\n";
+    std::cout << "\nFound: " << all_sections.ListValues().size() << " values.\n";
     ASSERT_TRUE(all_sections.ListValues().size() == 59);
 }
 
@@ -1088,7 +1088,7 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_NO_ANCHORS_10Q_Collect1)
 //    {
 //        std::cout << "\nkey: " << key << " value: " << value << '\n';
 //    }
-    std::cout << "Found: " << all_sections.ListValues().size() << " values.\n";
+    std::cout << "\nFound: " << all_sections.ListValues().size() << " values.\n";
     ASSERT_TRUE(all_sections.ListValues().size() == 28);
 }
 
@@ -1120,7 +1120,7 @@ TEST_F(ProcessEntireFileAndExtractData_10K, XML_10K_Collect1)
 //    {
 //        std::cout << "\nkey: " << key << " value: " << value << '\n';
 //    }
-    std::cout << "Found: " << all_sections.ListValues().size() << " values.\n";
+    std::cout << "\nFound: " << all_sections.ListValues().size() << " values.\n";
     ASSERT_TRUE(all_sections.ListValues().size() == 97);
 }
 

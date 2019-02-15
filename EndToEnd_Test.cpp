@@ -263,8 +263,7 @@ TEST_F(SingleFileEndToEnd_HTML, VerifyCanLoadDataToDBForFileWithHTML_10QHTML)
 		throw;
 	}
 
-    // looking for just 1 row from each section
-	ASSERT_EQ(CountRows(), 4);
+	ASSERT_EQ(CountRows(), 80);
 }
 //TEST_F(SingleFileEndToEnd, VerifyCanLoadDataToDBForFileWithXML_NoNamespace_10Q)
 //{

@@ -343,25 +343,25 @@ TEST_F(FindAnchorsForFinancialStatements, FindAnchorDestinations_10Q)
 
     AnchorsFromHTML anchors(financial_document);
 
-    auto balance_sheet_href = std::find_if(anchors.begin(), anchors.end(), BalanceSheetAnchorFilter);
-    auto stmt_of_ops_href = std::find_if(anchors.begin(), anchors.end(), StatementOfOperationsAnchorFilter);
-    auto cash_flows_href = std::find_if(anchors.begin(), anchors.end(), CashFlowsAnchorFilter);
-    auto sholder_equity_href = std::find_if(anchors.begin(), anchors.end(), StockholdersEquityAnchorFilter);
-    
-    EXPECT_TRUE(balance_sheet_href != anchors.end());
-    EXPECT_TRUE(stmt_of_ops_href != anchors.end());
-    EXPECT_TRUE(cash_flows_href != anchors.end());
-    EXPECT_TRUE(sholder_equity_href != anchors.end());
+//    auto balance_sheet_href = std::find_if(anchors.begin(), anchors.end(), BalanceSheetAnchorFilter);
+//    auto stmt_of_ops_href = std::find_if(anchors.begin(), anchors.end(), StatementOfOperationsAnchorFilter);
+//    auto cash_flows_href = std::find_if(anchors.begin(), anchors.end(), CashFlowsAnchorFilter);
+//    auto sholder_equity_href = std::find_if(anchors.begin(), anchors.end(), StockholdersEquityAnchorFilter);
+//    
+//    EXPECT_TRUE(balance_sheet_href != anchors.end());
+//    EXPECT_TRUE(stmt_of_ops_href != anchors.end());
+//    EXPECT_TRUE(cash_flows_href != anchors.end());
+//    EXPECT_TRUE(sholder_equity_href != anchors.end());
 
-    auto balance_sheet_dest = FindDestinationAnchor(*balance_sheet_href, anchors);
-    auto stmt_of_ops_dest = FindDestinationAnchor(*stmt_of_ops_href, anchors);
-    auto cash_flows_dest = FindDestinationAnchor(*cash_flows_href, anchors);
-    auto sholder_equity_dest = FindDestinationAnchor(*sholder_equity_href, anchors);
-    
-    EXPECT_TRUE(balance_sheet_dest != anchors.end());
-    EXPECT_TRUE(stmt_of_ops_dest != anchors.end());
-    EXPECT_TRUE(cash_flows_dest != anchors.end());
-    EXPECT_TRUE(sholder_equity_dest != anchors.end());
+//    auto balance_sheet_dest = FindDestinationAnchor(*balance_sheet_href, anchors);
+//    auto stmt_of_ops_dest = FindDestinationAnchor(*stmt_of_ops_href, anchors);
+//    auto cash_flows_dest = FindDestinationAnchor(*cash_flows_href, anchors);
+//    auto sholder_equity_dest = FindDestinationAnchor(*sholder_equity_href, anchors);
+//    
+//    EXPECT_TRUE(balance_sheet_dest != anchors.end());
+//    EXPECT_TRUE(stmt_of_ops_dest != anchors.end());
+//    EXPECT_TRUE(cash_flows_dest != anchors.end());
+//    EXPECT_TRUE(sholder_equity_dest != anchors.end());
 }
 
 //TEST_F(FindAnchorsForFinancialStatements, FindAnchorDestinationsMinimalHTML_10Q)
@@ -435,8 +435,8 @@ TEST_F(FindIndividualFinancialStatements_10Q, FindBalanceSheetWithAnchorsHTML5_1
 //            << "\n\tTEXT: " << anchor.text_
 //            << "\n\tCONTENT: " << anchor.anchor_content_ << '\n';
 //    }
-    auto balance_sheet_href = std::find_if(anchors.begin(), anchors.end(), BalanceSheetAnchorFilter);
-    EXPECT_TRUE(balance_sheet_href != anchors.end());
+//    auto balance_sheet_href = std::find_if(anchors.begin(), anchors.end(), BalanceSheetAnchorFilter);
+//    EXPECT_TRUE(balance_sheet_href != anchors.end());
 }
 
 TEST_F(FindIndividualFinancialStatements_10Q, FindStatementOfOperationsWithAnchorsHTML5_10Q)
@@ -456,8 +456,8 @@ TEST_F(FindIndividualFinancialStatements_10Q, FindStatementOfOperationsWithAncho
 //            << "\n\tTEXT: " << anchor.text_
 //            << "\n\tCONTENT: " << anchor.anchor_content_ << '\n';
 //    }
-    auto stmt_of_ops_href = std::find_if(anchors.begin(), anchors.end(), StatementOfOperationsAnchorFilter);
-    EXPECT_TRUE(stmt_of_ops_href != anchors.end());
+//    auto stmt_of_ops_href = std::find_if(anchors.begin(), anchors.end(), StatementOfOperationsAnchorFilter);
+//    EXPECT_TRUE(stmt_of_ops_href != anchors.end());
 }
 
 TEST_F(FindIndividualFinancialStatements_10Q, FindCashFlowsWithAnchorsHTML5_10Q)
@@ -477,8 +477,8 @@ TEST_F(FindIndividualFinancialStatements_10Q, FindCashFlowsWithAnchorsHTML5_10Q)
 //            << "\n\tTEXT: " << anchor.text_
 //            << "\n\tCONTENT: " << anchor.anchor_content_ << '\n';
 //    }
-    auto cash_flows_href = std::find_if(anchors.begin(), anchors.end(), CashFlowsAnchorFilter);
-    EXPECT_TRUE(cash_flows_href != anchors.end());
+//    auto cash_flows_href = std::find_if(anchors.begin(), anchors.end(), CashFlowsAnchorFilter);
+//    EXPECT_TRUE(cash_flows_href != anchors.end());
 }
 
 TEST_F(FindIndividualFinancialStatements_10Q, FindStatementOfOperations_10Q)
@@ -1028,8 +1028,6 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, XML_10Q_Collect1)
 
     EXPECT_TRUE(all_sections.has_data());
 
-    all_sections.CollectValues();
-
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
     
@@ -1104,8 +1102,6 @@ TEST_F(ProcessEntireFileAndExtractData_10K, XML_10K_Collect1)
     auto all_sections = FindAndExtractFinancialStatements(file_content_10K);
 
     EXPECT_TRUE(all_sections.has_data());
-
-    all_sections.CollectValues();
 
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);

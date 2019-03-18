@@ -90,6 +90,7 @@ constexpr const char* FILE_WITH_NO_HTML2_10Q{"/vol_DA/EDGAR/Archives/edgar/data/
 //constexpr const char* MISSING_VALUES1_10K{"/vol_DA/EDGAR/Edgar_forms/1004980/10-K/0001193125-12-065537.txt"};
 //constexpr const char* MISSING_VALUES2_10K{"/vol_DA/EDGAR/Edgar_forms/1002638/10-K/0001193125-09-179839.txt"};
 
+constexpr const char* FILE_WITH_HTML_10Q_FIND_SHARES1{"/vol_DA/EDGAR/Archives/edgar/data/29989/0000029989-13-000015.txt"};
 constexpr const char* FILE_WITH_HTML_NO_HREFS1_10K{"/vol_DA/EDGAR/Edgar_forms/906345/10-K/0000906345-04-000036.txt"};
 // This ctype facet does NOT classify spaces and tabs as whitespace
 // from cppreference example
@@ -234,7 +235,7 @@ TEST_F(LocateDocumentWithFinancialContent, FileHasNoUsableAnchors_10Q)
     ASSERT_TRUE(document != htmls.end());
 }
 
-TEST_F(LocateDocumentWithFinancialContent, FileHasMinimalData_10Q)
+TEST_F(LocateDocumentWithFinancialContent, FindContentInFileHasMinimalData_10Q)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
     HTML_FromFile htmls{file_content_10Q};
@@ -243,7 +244,7 @@ TEST_F(LocateDocumentWithFinancialContent, FileHasMinimalData_10Q)
     ASSERT_TRUE(document != htmls.end());
 }
 
-TEST_F(LocateDocumentWithFinancialContent, FileWithNoHTML_10Q)
+TEST_F(LocateDocumentWithFinancialContent, FindNoHTMLInFileWithNoHTML_10Q)
 {
     // this should find nothing because our iterator will be 'empty'
 
@@ -268,7 +269,7 @@ TEST_F(FindAnchorsForFinancialStatements, FindTopLevelAnchor_10Q)
     ASSERT_TRUE(! financial_content.empty());
 }
 
-TEST_F(FindAnchorsForFinancialStatements, FindTopLevelAnchorMinimalHTML_10Q)
+TEST_F(FindAnchorsForFinancialStatements, FindTopLevelAnchorInFileWithMinimalHTML_10Q)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
 
@@ -277,7 +278,7 @@ TEST_F(FindAnchorsForFinancialStatements, FindTopLevelAnchorMinimalHTML_10Q)
     ASSERT_TRUE(! financial_content.empty());
 }
 
-TEST_F(FindAnchorsForFinancialStatements, FindTopLevelAnchorNoHTML_10Q)
+TEST_F(FindAnchorsForFinancialStatements, DontFindTopLevelAnchorInFileWithNoHTML_10Q)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_NO_HTML_10Q);
 
@@ -343,24 +344,35 @@ TEST_F(FindAnchorsForFinancialStatements, FindAnchorDestinations_10Q)
 
     AnchorsFromHTML anchors(financial_document);
 
-//    auto balance_sheet_href = std::find_if(anchors.begin(), anchors.end(), BalanceSheetAnchorFilter);
-//    auto stmt_of_ops_href = std::find_if(anchors.begin(), anchors.end(), StatementOfOperationsAnchorFilter);
-//    auto cash_flows_href = std::find_if(anchors.begin(), anchors.end(), CashFlowsAnchorFilter);
+    static const boost::regex regex_balance_sheet{R"***((?:balance\s+sheet)|(?:financial.*?position))***",
+        boost::regex_constants::normal | boost::regex_constants::icase};
+    auto balance_sheet_href = std::find_if(anchors.begin(), anchors.end(), MakeAnchorFilterForStatementType(regex_balance_sheet));
+
+    static const boost::regex regex_operations{R"***((?:statement|statements)\s+?of.*?(?:oper|loss|income|earning))***",
+        boost::regex_constants::normal | boost::regex_constants::icase};
+
+    auto stmt_of_ops_href = std::find_if(anchors.begin(), anchors.end(), MakeAnchorFilterForStatementType(regex_operations));
+    
+    static const boost::regex regex_cash_flow{R"***((?:cash\s+flow)|(?:statement.+?cash)|(?:cashflow))***",
+        boost::regex_constants::normal | boost::regex_constants::icase};
+
+    auto cash_flows_href = std::find_if(anchors.begin(), anchors.end(), MakeAnchorFilterForStatementType(regex_cash_flow));
+    
 //    auto sholder_equity_href = std::find_if(anchors.begin(), anchors.end(), StockholdersEquityAnchorFilter);
-//    
-//    EXPECT_TRUE(balance_sheet_href != anchors.end());
-//    EXPECT_TRUE(stmt_of_ops_href != anchors.end());
-//    EXPECT_TRUE(cash_flows_href != anchors.end());
+    
+    EXPECT_TRUE(balance_sheet_href != anchors.end());
+    EXPECT_TRUE(stmt_of_ops_href != anchors.end());
+    EXPECT_TRUE(cash_flows_href != anchors.end());
 //    EXPECT_TRUE(sholder_equity_href != anchors.end());
 
-//    auto balance_sheet_dest = FindDestinationAnchor(*balance_sheet_href, anchors);
-//    auto stmt_of_ops_dest = FindDestinationAnchor(*stmt_of_ops_href, anchors);
-//    auto cash_flows_dest = FindDestinationAnchor(*cash_flows_href, anchors);
+    auto balance_sheet_dest = FindDestinationAnchor(*balance_sheet_href, anchors);
+    auto stmt_of_ops_dest = FindDestinationAnchor(*stmt_of_ops_href, anchors);
+    auto cash_flows_dest = FindDestinationAnchor(*cash_flows_href, anchors);
 //    auto sholder_equity_dest = FindDestinationAnchor(*sholder_equity_href, anchors);
-//    
-//    EXPECT_TRUE(balance_sheet_dest != anchors.end());
-//    EXPECT_TRUE(stmt_of_ops_dest != anchors.end());
-//    EXPECT_TRUE(cash_flows_dest != anchors.end());
+    
+    EXPECT_TRUE(balance_sheet_dest != anchors.end());
+    EXPECT_TRUE(stmt_of_ops_dest != anchors.end());
+    EXPECT_TRUE(cash_flows_dest != anchors.end());
 //    EXPECT_TRUE(sholder_equity_dest != anchors.end());
 }
 
@@ -407,114 +419,143 @@ public:
 //    ASSERT_TRUE(how_many == 86);
 //}
 //
-TEST_F(FindIndividualFinancialStatements_10Q, DISABLED_FindBalanceSheetFileWithHTML_10Q)
+TEST_F(FindIndividualFinancialStatements_10Q, FindBalanceSheetInFileWithHTML_10Q)
 {
-//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
-//    auto document = FindFinancialDocument(file_content_10Q);
-//
-//    TablesFromHTML tables{document};
-//    auto balance_sheet = std::find_if(tables.begin(), tables.end(), BalanceSheetFilter);
-//
-//    ASSERT_TRUE(balance_sheet != tables.end());
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
+    HTML_FromFile htmls{file_content_10Q};
+
+    bool found_it = false;
+
+    for (auto html : htmls)
+    {
+        if (FinancialDocumentFilter(html))
+        {
+            TablesFromHTML tables{html};
+            auto balance_sheet = std::find_if(tables.begin(), tables.end(), BalanceSheetFilter);
+            if (balance_sheet != tables.end())
+            {
+                found_it = true;
+                break;
+            }
+        }
+    }
+
+    ASSERT_TRUE(found_it);
 }
 
 TEST_F(FindIndividualFinancialStatements_10Q, FindBalanceSheetWithAnchorsHTML5_10Q)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS5);
-    auto document = FindFinancialContentUsingAnchors(file_content_10Q);
+    auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
+    EXPECT_TRUE(! financial_content.empty());
 
-    EXPECT_TRUE(! document.empty());
+    AnchorsFromHTML anchors(financial_content);
 
-    AnchorsFromHTML anchors(document);
-//    std::cout << "\nAnchors: \n";
-//    for (const auto& anchor : anchors)
-//    {
-//        std::cout
-//            << "\n\tHREF: " << anchor.href_
-//            << "\n\tNAME: " << anchor.name_
-//            << "\n\tTEXT: " << anchor.text_
-//            << "\n\tCONTENT: " << anchor.anchor_content_ << '\n';
-//    }
-//    auto balance_sheet_href = std::find_if(anchors.begin(), anchors.end(), BalanceSheetAnchorFilter);
-//    EXPECT_TRUE(balance_sheet_href != anchors.end());
+    static const boost::regex regex_balance_sheet{R"***((?:balance\s+sheet)|(?:financial.*?position))***",
+        boost::regex_constants::normal | boost::regex_constants::icase};
+
+    auto balance_sheet = FindStatementContent<BalanceSheet>(financial_content, anchors, regex_balance_sheet,
+            BalanceSheetFilter);
+    ASSERT_TRUE(! balance_sheet.empty());
 }
 
 TEST_F(FindIndividualFinancialStatements_10Q, FindStatementOfOperationsWithAnchorsHTML5_10Q)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS5);
-    auto document = FindFinancialContentUsingAnchors(file_content_10Q);
+    auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
+    EXPECT_TRUE(! financial_content.empty());
 
-    EXPECT_TRUE(! document.empty());
+    static const boost::regex regex_operations{R"***((?:statement|statements)\s+?of.*?(?:oper|loss|income|earning))***",
+        boost::regex_constants::normal | boost::regex_constants::icase};
 
-    AnchorsFromHTML anchors(document);
-//    std::cout << "\nAnchors: \n";
-//    for (const auto& anchor : anchors)
-//    {
-//        std::cout
-//            << "\n\tHREF: " << anchor.href_
-//            << "\n\tNAME: " << anchor.name_
-//            << "\n\tTEXT: " << anchor.text_
-//            << "\n\tCONTENT: " << anchor.anchor_content_ << '\n';
-//    }
-//    auto stmt_of_ops_href = std::find_if(anchors.begin(), anchors.end(), StatementOfOperationsAnchorFilter);
-//    EXPECT_TRUE(stmt_of_ops_href != anchors.end());
+    AnchorsFromHTML anchors(financial_content);
+
+    auto statement_of_operations = FindStatementContent<StatementOfOperations>(financial_content,
+            anchors, regex_operations, StatementOfOperationsFilter);
+    ASSERT_TRUE(! statement_of_operations.empty());
 }
 
 TEST_F(FindIndividualFinancialStatements_10Q, FindCashFlowsWithAnchorsHTML5_10Q)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS5);
-    auto document = FindFinancialContentUsingAnchors(file_content_10Q);
+    auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
+    EXPECT_TRUE(! financial_content.empty());
 
-    EXPECT_TRUE(! document.empty());
+    static const boost::regex regex_cash_flow{R"***((?:cash\s+flow)|(?:statement.+?cash)|(?:cashflow))***",
+        boost::regex_constants::normal | boost::regex_constants::icase};
 
-    AnchorsFromHTML anchors(document);
-//    std::cout << "\nAnchors: \n";
-//    for (const auto& anchor : anchors)
-//    {
-//        std::cout
-//            << "\n\tHREF: " << anchor.href_
-//            << "\n\tNAME: " << anchor.name_
-//            << "\n\tTEXT: " << anchor.text_
-//            << "\n\tCONTENT: " << anchor.anchor_content_ << '\n';
-//    }
-//    auto cash_flows_href = std::find_if(anchors.begin(), anchors.end(), CashFlowsAnchorFilter);
-//    EXPECT_TRUE(cash_flows_href != anchors.end());
+    AnchorsFromHTML anchors(financial_content);
+
+    auto cash_flows = FindStatementContent<CashFlows>(financial_content, anchors, regex_cash_flow, CashFlowsFilter);
+
+    ASSERT_TRUE(! cash_flows.empty());
 }
 
-TEST_F(FindIndividualFinancialStatements_10Q, DISABLED_FindStatementOfOperations_10Q)
+TEST_F(FindIndividualFinancialStatements_10Q, FindStatementOfOperations_10Q)
 {
-//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
-//    auto document = FindFinancialDocument(file_content_10Q);
-//
-//    TablesFromHTML tables{document};
-//    auto statement_of_ops = std::find_if(tables.begin(), tables.end(), StatementOfOperationsFilter);
-//
-//    ASSERT_TRUE(statement_of_ops != tables.end());
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
+
+    HTML_FromFile htmls{file_content_10Q};
+
+    bool found_it = false;
+
+    for (auto html : htmls)
+    {
+        if (FinancialDocumentFilter(html))
+        {
+            TablesFromHTML tables{html};
+            auto statement_of_ops = std::find_if(tables.begin(), tables.end(), StatementOfOperationsFilter);
+            if (statement_of_ops != tables.end())
+            {
+                found_it = true;
+                break;
+            }
+        }
+    }
+
+    ASSERT_TRUE(found_it);
 }
 
-TEST_F(FindIndividualFinancialStatements_10Q, DISABLED_FindCashFlowStatement_10Q)
+TEST_F(FindIndividualFinancialStatements_10Q, FindCashFlowStatement_10Q)
 {
-//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
-//    auto document = FindFinancialDocument(file_content_10Q);
-//
-//    TablesFromHTML tables{document};
-//    auto cash_flows = std::find_if(tables.begin(), tables.end(), CashFlowsFilter);
-//
-//    ASSERT_TRUE(cash_flows != tables.end());
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
+    HTML_FromFile htmls{file_content_10Q};
+
+    bool found_it = false;
+
+    for (auto html : htmls)
+    {
+        if (FinancialDocumentFilter(html))
+        {
+            TablesFromHTML tables{html};
+            auto cash_flows = std::find_if(tables.begin(), tables.end(), CashFlowsFilter);
+            if (cash_flows != tables.end())
+            {
+                found_it = true;
+                break;
+            }
+        }
+    }
+
+    ASSERT_TRUE(found_it);
 }
 
-TEST_F(FindIndividualFinancialStatements_10Q, DISABLED_FindCashFlowStatement2_10Q)
+TEST_F(FindIndividualFinancialStatements_10Q, FindCashFlowStatement2_10Q)
 {
 //    // use a different file here
-//
-//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS2);
-//    auto document = FindFinancialDocument(file_content_10Q);
-//
-//    TablesFromHTML tables{document};
-//    auto cash_flows = std::find_if(tables.begin(), tables.end(), CashFlowsFilter);
-//
-//    ASSERT_TRUE(cash_flows != tables.end());
-//    std::cout.write((*cash_flows).data(), 500);
+
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS2);
+    auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
+    EXPECT_TRUE(! financial_content.empty());
+
+    AnchorsFromHTML anchors(financial_content);
+
+    static const boost::regex regex_balance_sheet{R"***((?:balance\s+sheet)|(?:financial.*?position))***",
+        boost::regex_constants::normal | boost::regex_constants::icase};
+
+    auto balance_sheet = FindStatementContent<BalanceSheet>(financial_content, anchors, regex_balance_sheet,
+            BalanceSheetFilter);
+    ASSERT_TRUE(! balance_sheet.empty());
 }
 
 TEST_F(FindIndividualFinancialStatements_10Q, DISABLED_FindStockholderEquity_10Q)
@@ -561,42 +602,42 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections2)
     ASSERT_TRUE(all_sections.has_data());
 }
 
-//TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections3)
-//{
-//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS3);
-//    auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
-//
-//    auto all_sections = ExtractFinancialStatements(financial_content);
-//    std::cout << "\n\nBalance Sheet\n";
-//    std::cout.write(all_sections.balance_sheet_.the_data_.data(), 500);
-//    std::cout << "\n\nCash Flow\n";
-//    std::cout.write(all_sections.cash_flows_.the_data_.data(), 500);
-//    std::cout << "\n\nStmt of Operations\n";
-//    std::cout.write(all_sections.statement_of_operations_.the_data_.data(), 500);
+TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections3)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS3);
+    auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
+
+    auto all_sections = ExtractFinancialStatementsUsingAnchors(financial_content);
+    std::cout << "\n\nBalance Sheet\n";
+    std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
+    std::cout << "\n\nCash Flow\n";
+    std::cout.write(all_sections.cash_flows_.parsed_data_.data(), 500);
+    std::cout << "\n\nStmt of Operations\n";
+    std::cout.write(all_sections.statement_of_operations_.parsed_data_.data(), 500);
 //    std::cout << "\n\nShareholder Equity\n";
 //    std::cout.write(all_sections.stockholders_equity_.the_data_.data(), std::min(500UL, all_sections.stockholders_equity_.the_data_.size()));
-//
-//    ASSERT_TRUE(all_sections.has_data());
-//}
-//
-//TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections4)
-//{
-//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS4);
-//    auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
-//
-//    auto all_sections = ExtractFinancialStatements(financial_content);
-//    std::cout << "\n\nBalance Sheet\n";
-//    std::cout.write(all_sections.balance_sheet_.the_data_.data(), 500);
-//    std::cout << "\n\nCash Flow\n";
-//    std::cout.write(all_sections.cash_flows_.the_data_.data(), 500);
-//    std::cout << "\n\nStmt of Operations\n";
-//    std::cout.write(all_sections.statement_of_operations_.the_data_.data(), 500);
+
+    ASSERT_TRUE(all_sections.has_data());
+}
+
+TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections4)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS4);
+    auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
+
+    auto all_sections = ExtractFinancialStatementsUsingAnchors(financial_content);
+    std::cout << "\n\nBalance Sheet\n";
+    std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
+    std::cout << "\n\nCash Flow\n";
+    std::cout.write(all_sections.cash_flows_.parsed_data_.data(), 500);
+    std::cout << "\n\nStmt of Operations\n";
+    std::cout.write(all_sections.statement_of_operations_.parsed_data_.data(), 500);
 //    std::cout << "\n\nShareholder Equity\n";
 //    std::cout.write(all_sections.stockholders_equity_.the_data_.data(), std::min(500UL, all_sections.stockholders_equity_.the_data_.size()));
-//
-//    ASSERT_TRUE(all_sections.has_data());
-//}
-//
+
+    ASSERT_TRUE(all_sections.has_data());
+}
+
 TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSectionsMinimalHTMLData)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
@@ -619,68 +660,48 @@ class ProblemFiles_10Q : public Test
 
 };
 
-//TEST_F(ProblemFiles_10Q, FindAnchors_10Q)
-//{
-//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
-//
-//    auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
-//
-//    AnchorList statement_anchors;
-//
-//    if (! financial_content.empty())
-//    {
-//        AnchorsFromHTML anchors(financial_content);
-//        std::cout << "statement anchors: " << std::distance(anchors.begin(), anchors.end()) << '\n';
-////        for (const auto& anchor : anchors)
-////        {
-////            std::cout << anchor.href << '\t' << anchor.name << '\t' << anchor.text << '\t' << anchor.anchor_content << '\n';
-////        }
-//        std::copy_if(anchors.begin(),
-//                anchors.end(),
-//                std::back_inserter(statement_anchors),
-//                FinancialAnchorFilter
-//                );
-//
-//        std::cout << "\nFinancial anchors: \n";
-//        for (const auto& anchor : statement_anchors)
-//        {
-//            std::cout << anchor.href << '\t' << anchor.name << '\t' << anchor.text << '\t' << anchor.anchor_content << '\n';
-//        }
-//    }
-//    ASSERT_TRUE(statement_anchors.size() == 4);
-//}
-//
-TEST_F(ProblemFiles_10Q, DISABLED_FileWithMinimalData)
+TEST_F(ProblemFiles_10Q, FindSectionAnchors_10Q)
 {
-//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
-//
-//    auto financial_content = FindFinancialDocument(file_content_10Q);
-//
-////    AnchorList statement_anchors;
-////
-////    AnchorsFromHTML anchors(financial_content);
-////
-////    std::copy_if(anchors.begin(),
-////            anchors.end(),
-////            std::back_inserter(statement_anchors),
-////            FinancialAnchorFilter
-////            );
-////
-////    EXPECT_TRUE(statement_anchors.size() == 3);
-////
-//    TablesFromHTML tables{financial_content};
-//
-//    auto balance_sheet = std::find_if(tables.begin(), tables.end(), BalanceSheetFilter);
-//    EXPECT_TRUE(balance_sheet != tables.end());
-//
-//    auto statement_of_ops = std::find_if(tables.begin(), tables.end(), StatementOfOperationsFilter);
-//    EXPECT_TRUE(statement_of_ops != tables.end());
-//
-//    auto cash_flows = std::find_if(tables.begin(), tables.end(), CashFlowsFilter);
-//    EXPECT_TRUE(cash_flows != tables.end());
-//
-////    auto stockholder_equity = std::find_if(tables.begin(), tables.end(), StockholdersEquityFilter);
-////    EXPECT_TRUE(stockholder_equity == tables.end());
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
+    auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
+
+    AnchorsFromHTML anchors(financial_content);
+
+    static const boost::regex regex_balance_sheet{R"***((?:balance\s+sheet)|(?:financial.*?position))***",
+        boost::regex_constants::normal | boost::regex_constants::icase};
+    auto balance_sheet_href = std::find_if(anchors.begin(), anchors.end(), MakeAnchorFilterForStatementType(regex_balance_sheet));
+
+    static const boost::regex regex_operations{R"***((?:statement|statements)\s+?of.*?(?:oper|loss|income|earning))***",
+        boost::regex_constants::normal | boost::regex_constants::icase};
+
+    auto stmt_of_ops_href = std::find_if(anchors.begin(), anchors.end(), MakeAnchorFilterForStatementType(regex_operations));
+    
+    static const boost::regex regex_cash_flow{R"***((?:cash\s+flow)|(?:statement.+?cash)|(?:cashflow))***",
+        boost::regex_constants::normal | boost::regex_constants::icase};
+
+    auto cash_flows_href = std::find_if(anchors.begin(), anchors.end(), MakeAnchorFilterForStatementType(regex_cash_flow));
+    
+//    auto sholder_equity_href = std::find_if(anchors.begin(), anchors.end(), StockholdersEquityAnchorFilter);
+    
+    EXPECT_TRUE(balance_sheet_href != anchors.end());
+    EXPECT_TRUE(stmt_of_ops_href != anchors.end());
+    EXPECT_TRUE(cash_flows_href != anchors.end());
+
+    auto balance_sheet_dest = FindDestinationAnchor(*balance_sheet_href, anchors);
+    auto stmt_of_ops_dest = FindDestinationAnchor(*stmt_of_ops_href, anchors);
+    auto cash_flows_dest = FindDestinationAnchor(*cash_flows_href, anchors);
+    
+    EXPECT_TRUE(balance_sheet_dest != anchors.end());
+    EXPECT_TRUE(stmt_of_ops_dest != anchors.end());
+    EXPECT_TRUE(cash_flows_dest != anchors.end());
+}
+
+TEST_F(ProblemFiles_10Q, FileWithMinimalData)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
+    auto financial_statements = FindAndExtractFinancialStatements(file_content_10Q);
+
+    ASSERT_TRUE(financial_statements.has_data());
 }
 
 class NoAnchors_10Q : public Test
@@ -688,60 +709,41 @@ class NoAnchors_10Q : public Test
 
 };
 
-TEST_F(NoAnchors_10Q, DISABLED_FileWithNoAnchors1)
+TEST_F(NoAnchors_10Q, FindContentInFileWithNoAnchors1)
 {
-//    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS);
-//    auto financial_content = FindFinancialDocument(file_content_10Q);
-//    EXPECT_TRUE(! financial_content.empty());
-//    // let's see if we can find our data anyways
-//
-////    if (financial_content.empty())
-////    {
-////        financial_content = file_content_10Q;
-////    }
-////
-////    AnchorList statement_anchors;
-////
-////    AnchorsFromHTML anchors(financial_content);
-////
-////    std::copy_if(anchors.begin(),
-////            anchors.end(),
-////            std::back_inserter(statement_anchors),
-////            FinancialAnchorFilter
-////            );
-////
-////    EXPECT_TRUE(statement_anchors.size() < 3);
-//
-//    TablesFromHTML tables{financial_content};
-//    auto how_many_tables = std::distance(tables.begin(), tables.end());
-////    std::cout << "how_many_tables: " << how_many_tables << '\n';
-//    EXPECT_TRUE(how_many_tables == 68);
-//
-//    auto balance_sheet = std::find_if(tables.begin(), tables.end(), BalanceSheetFilter);
-//    EXPECT_TRUE(balance_sheet != tables.end());
-//
-//    auto statement_of_ops = std::find_if(tables.begin(), tables.end(), StatementOfOperationsFilter);
-//    EXPECT_TRUE(statement_of_ops != tables.end());
-//
-//    auto cash_flows = std::find_if(tables.begin(), tables.end(), CashFlowsFilter);
-//    EXPECT_TRUE(cash_flows != tables.end());
-//
-////    auto stockholder_equity = std::find_if(tables.begin(), tables.end(), StockholdersEquityFilter);
-////    EXPECT_TRUE(stockholder_equity == tables.end());
-//
-//    auto the_tables = ExtractFinancialStatements(financial_content);
-//
-////    std::cout << "\n\nBalance Sheet\n";
-////    std::cout.write(the_tables.balance_sheet_.the_data_.data(), 500);
-////    std::cout << "\n\nCash Flow\n";
-////    std::cout.write(the_tables.cash_flows_.the_data_.data(), 500);
-////    std::cout << "\n\nStmt of Operations\n";
-////    std::cout.write(the_tables.statement_of_operations_.the_data_.data(), 500);
-////    std::cout << "\n\nShareholder Equity\n";
-////    std::cout.write(the_tables.stockholders_equity_.the_data_.data(),
-////            std::min(500UL, the_tables.stockholders_equity_.the_data_.size()));
-//
-//    ASSERT_TRUE(the_tables.has_data());
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS);
+    auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
+    EXPECT_TRUE(financial_content.empty());
+
+    // let's see if we can find our data anyways
+
+    HTML_FromFile htmls{file_content_10Q};
+
+    FinancialStatements financial_statements;
+
+    for (auto html : htmls)
+    {
+        if (FinancialDocumentFilter(html))
+        {
+            financial_statements = ExtractFinancialStatements(html);
+            if (financial_statements.has_data())
+            {
+                break;
+            }
+        }
+    }
+
+//    std::cout << "\n\nBalance Sheet\n";
+//    std::cout.write(the_tables.balance_sheet_.the_data_.data(), 500);
+//    std::cout << "\n\nCash Flow\n";
+//    std::cout.write(the_tables.cash_flows_.the_data_.data(), 500);
+//    std::cout << "\n\nStmt of Operations\n";
+//    std::cout.write(the_tables.statement_of_operations_.the_data_.data(), 500);
+//    std::cout << "\n\nShareholder Equity\n";
+//    std::cout.write(the_tables.stockholders_equity_.the_data_.data(),
+//            std::min(500UL, the_tables.stockholders_equity_.the_data_.size()));
+
+    ASSERT_TRUE(financial_statements.has_data());
 }
 
 TEST_F(NoAnchors_10Q, FileWithNoAnchors2)
@@ -865,8 +867,6 @@ TEST_F(ProblemWithRegexs_10Q, DISABLED_UseRegexProblemFile2)
 
 TEST_F(ProblemWithRegexs_10Q, ProblemMatchingCurrentAssets)
 {
-    // disabled because input file has very unusual statement of operations section.
-    //
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_XML_10Q);
 
     auto all_sections = FindAndExtractFinancialStatements(file_content_10Q);
@@ -924,8 +924,6 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_WITH_ANCHORS)
 
     EXPECT_TRUE(all_sections.has_data());
 
-    all_sections.PrepareTableContent();
-
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
     
@@ -938,6 +936,22 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_WITH_ANCHORS)
     std::cout << "\n\nShareholder Equity\n";
     std::cout.write(all_sections.stockholders_equity_.parsed_data_.data(),
             std::min(500UL, all_sections.stockholders_equity_.parsed_data_.size()));
+
+//    for (const auto& [key, value] : all_sections.ListValues())
+//    {
+//        std::cout << "\nkey: " << key << " value: " << value << '\n';
+//    }
+}
+
+TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_FIND_SHARES1)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_FIND_SHARES1);
+
+    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q);
+
+    EXPECT_TRUE(all_sections.has_data());
+
+    std::cout << "\n\nShares outstanding: " << all_sections.outstanding_shares_ << '\n';
 
 //    for (const auto& [key, value] : all_sections.ListValues())
 //    {
@@ -991,8 +1005,6 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_WITH_ANCHORS_Collect1)
 
 TEST_F(ProcessEntireFileAndExtractData_10Q, XML_10Q_Collect1)
 {
-    // disabled because input file has very unusual statement of operations section.
-    //
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_XML_10Q);
     auto all_sections = FindAndExtractFinancialStatements(file_content_10Q);
 

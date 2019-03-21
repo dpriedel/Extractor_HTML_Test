@@ -92,6 +92,8 @@ constexpr const char* FILE_WITH_NO_HTML2_10Q{"/vol_DA/EDGAR/Archives/edgar/data/
 
 constexpr const char* FILE_WITH_HTML_10Q_FIND_SHARES1{"/vol_DA/EDGAR/Archives/edgar/data/29989/0000029989-13-000015.txt"};
 constexpr const char* FILE_WITH_HTML_NO_HREFS1_10K{"/vol_DA/EDGAR/Edgar_forms/906345/10-K/0000906345-04-000036.txt"};
+constexpr const char* FILE_WITH_HTML_ANCHORS_10Q{"/home/dpriedel/projects/github/ExtractEDGAR_XBRL/YUM_bad_balsheet.html"};
+constexpr const char* FILE_WITH_HTML_10Q_WITH_SEGMENTED_ANCHORS{"/home/dpriedel/projects/github/ExtractEDGAR_HTML_Test/test_files/RubyTuesday.html"};
 // This ctype facet does NOT classify spaces and tabs as whitespace
 // from cppreference example
 
@@ -260,6 +262,31 @@ class FindAnchorsForFinancialStatements : public Test
 public:
 };
 
+TEST_F(FindAnchorsForFinancialStatements, FindSegmentedTopLevelAnchor_10Q)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_SEGMENTED_ANCHORS);
+    HTML_FromFile htmls{file_content_10Q};
+
+    // we know there is only 1 HTML document in this file.
+
+    auto financial_content = *htmls.begin();
+
+    AnchorsFromHTML anchors{financial_content};
+    
+    for (const auto& anchor : anchors)
+    {
+        std::cout
+            << "HREF: " << anchor.href_
+            << "\n\tNAME: " << anchor.name_
+            << "\n\tTEXT: " << anchor.text_
+            << "\n\tCONTENT: " << anchor.anchor_content_ << '\n';
+    }
+
+    auto found_some = std::adjacent_find(anchors.begin(), anchors.end(), [](const auto& a, const auto& b) { return a.href_ == b.href_; });
+    EXPECT_TRUE(found_some != anchors.end());
+
+}
+
 TEST_F(FindAnchorsForFinancialStatements, FindTopLevelAnchor_10Q)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
@@ -403,22 +430,6 @@ public:
 
 };
 
-////TEST_F(FindIndividualFinancialStatements_10Q , FindDollarMultipliers_10Q)
-////{
-////    auto multipliers = FindDollarMultipliers(destination_anchors);
-////
-////    ASSERT_TRUE(multipliers.size() == 4);
-////}
-////
-//TEST_F(FindIndividualFinancialStatements_10Q, FindTables_10Q)
-//{
-//    TablesFromHTML tables{financial_content};
-//
-//    auto how_many = std::distance(std::begin(tables), std::end(tables));
-//
-//    ASSERT_TRUE(how_many == 86);
-//}
-//
 TEST_F(FindIndividualFinancialStatements_10Q, FindBalanceSheetInFileWithHTML_10Q)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
@@ -571,6 +582,43 @@ TEST_F(FindIndividualFinancialStatements_10Q, DISABLED_FindStockholderEquity_10Q
 //    ASSERT_TRUE(stockholder_equity == tables.end());
 }
 
+class Multipliers : public Test
+{
+public:
+
+};
+
+TEST_F(Multipliers, FindDollarMultipliers_10Q)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_ANCHORS_10Q);
+
+    HTML_FromFile htmls{file_content_10Q};
+
+    for (auto html : htmls)
+    {
+        AnchorsFromHTML anchors(html);
+        for (const auto& anchor : anchors)
+        {
+            std::cout << "\nHREF: " << anchor.href_
+                << "\n\tName: " << anchor.name_
+                << "\n\tContent: " << anchor.anchor_content_
+                <<'\n';
+        }
+    }
+    auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
+
+    ASSERT_TRUE(! financial_content.empty());
+}
+
+//TEST_F(FindIndividualFinancialStatements_10Q, FindTables_10Q)
+//{
+//    TablesFromHTML tables{financial_content};
+//
+//    auto how_many = std::distance(std::begin(tables), std::end(tables));
+//
+//    ASSERT_TRUE(how_many == 86);
+//}
+//
 class ProcessEntireFile_10Q : public Test
 {
 public:

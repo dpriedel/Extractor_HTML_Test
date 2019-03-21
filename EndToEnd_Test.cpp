@@ -343,47 +343,56 @@ TEST_F(SingleFileEndToEnd_HTML, VerifyCanLoadDataToDBForFileWithHTML_10QHTML)
 //	ASSERT_EQ(CountRows(), 79);
 //}
 //
-//TEST_F(SingleFileEndToEnd, VerifyCanLoadDataToDBForFileWithXML_10K)
-//{
-//	//	NOTE: the program name 'the_program' in the command line below is ignored in the
-//	//	the test program.
-//
-//	std::vector<std::string> tokens{"the_program",
+TEST_F(SingleFileEndToEnd_HTML, VerifyCanLoadDataToDBForFileWithXML_10K)
+{
+	//	NOTE: the program name 'the_program' in the command line below is ignored in the
+	//	the test program.
+
+	std::vector<std::string> tokens{"the_program",
 //		"--begin-date", "2013-Oct-14",
-//		"--end-date", "2015-12-31",
-//        "--log-level", "debug",
-//		"--form", "10-K",
-//		"-f", FILE_WITH_XML_10K.string()
-//	};
-//
-//    ExtractEDGAR_XBRLApp myApp;
-//	try
-//	{
-//        myApp.init(tokens);
-//
-//		decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
-//		myApp.logger().information(std::string("\n\nTest: ") + test_info->name() + " test case: " + test_info->test_case_name() + "\n\n");
-//
-//        myApp.run();
-//	}
-//
-//    // catch any problems trying to setup application
-//
-//	catch (const std::exception& theProblem)
-//	{
-//		// poco_fatal(myApp->logger(), theProblem.what());
-//
-//		myApp.logger().error(std::string("Something fundamental went wrong: ") + theProblem.what());
-//		throw;	//	so test framework will get it too.
-//	}
-//	catch (...)
-//	{		// handle exception: unspecified
-//		myApp.logger().error("Something totally unexpected happened.");
-//		throw;
-//	}
-//	ASSERT_EQ(CountRows(), 1984);
-//}
-//
+//		"--end-date", "2015-12-30",
+        "--log-level", "debug",
+        "--mode", "HTML",
+		"--form", "10-K",
+		"-f", FILE_WITH_XML_10K.string()
+	};
+
+	try
+	{
+        ExtractEDGAR_XBRLApp myApp(tokens);
+
+		decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
+        spdlog::info(catenate("\n\nTest: ", test_info->name(), " test case: ",
+                test_info->test_case_name(), "\n\n"));
+
+        bool startup_OK = myApp.Startup();
+        if (startup_OK)
+        {
+            myApp.Run();
+            myApp.Shutdown();
+        }
+        else
+        {
+            std::cout << "Problems starting program.  No processing done.\n";
+        }
+	}
+
+    // catch any problems trying to setup application
+
+	catch (const std::exception& theProblem)
+	{
+        spdlog::error(catenate("Something fundamental went wrong: ", theProblem.what()));
+		throw;	//	so test framework will get it too.
+	}
+	catch (...)
+	{		// handle exception: unspecified
+        spdlog::error("Something totally unexpected happened.");
+		throw;
+	}
+
+	ASSERT_EQ(CountRows(), 1984);
+}
+
 //TEST_F(SingleFileEndToEnd, WorkWithBadFile2_10K)
 //{
 //	//	NOTE: the program name 'the_program' in the command line below is ignored in the

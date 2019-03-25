@@ -211,10 +211,12 @@ class SingleFileEndToEnd_HTML : public Test
 
 		    // make sure the DB is empty before we start
 
-		    auto row = trxn.exec1("SELECT count(*) FROM html_extracts.edgar_filing_data");
+		    auto row1 = trxn.exec1("SELECT count(*) FROM html_extracts.edgar_bal_sheet_data");
+		    auto row2 = trxn.exec1("SELECT count(*) FROM html_extracts.edgar_stmt_of_ops_data");
+		    auto row3 = trxn.exec1("SELECT count(*) FROM html_extracts.edgar_cash_flows_data");
 		    trxn.commit();
 			c.disconnect();
-			return row[0].as<int>();
+			return row1[0].as<int>() + row2[0].as<int>() + row3[0].as<int>();
 		}
 };
 

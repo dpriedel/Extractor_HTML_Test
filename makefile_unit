@@ -1,17 +1,17 @@
-# This file is part of ExtractEDGAR_XBRL.
+# This file is part of Extractor_Markup.
 
-# ExtractEDGAR_XBRL is free software: you can redistribute it and/or modify
+# Extractor_Markup is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 
-# ExtractEDGAR_XBRL is distributed in the hope that it will be useful,
+# Extractor_Markup is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with ExtractEDGAR_XBRL.  If not, see <http://www.gnu.org/licenses/>.
+# along with Extractor_Markup.  If not, see <http://www.gnu.org/licenses/>.
 
 # see link below for make file dependency magic
 #
@@ -33,7 +33,7 @@ endif
 
 OUTFILE := Unit_Test
 
-CFG_INC := -I/home/dpriedel/projects/github/ExtractEDGAR_XBRL/src \
+CFG_INC := -I/home/dpriedel/projects/github/Extractor_Markup/src \
 		-I$(GTESTDIR) -I$(BOOSTDIR) -I/extra/gcc/cpp-json/include/
 
 RPATH_LIB := -Wl,-rpath,$(GCCDIR)/lib64 -Wl,-rpath,$(BOOSTDIR)/lib -Wl,-rpath,/usr/local/lib
@@ -41,10 +41,10 @@ RPATH_LIB := -Wl,-rpath,$(GCCDIR)/lib64 -Wl,-rpath,$(BOOSTDIR)/lib -Wl,-rpath,/u
 SDIR1 := .
 SRCS1 := $(SDIR1)/Unit_Test.cpp
 
-SDIR2 := ../ExtractEDGAR_XBRL/src
-SRCS2 := $(SDIR2)/EDGAR_HTML_FileFilter.cpp \
-		$(SDIR2)/EDGAR_XBRL_FileFilter.cpp \
-		$(SDIR2)/ExtractEDGAR_Utils.cpp \
+SDIR2 := ../Extractor_Markup/src
+SRCS2 := $(SDIR2)/Extractor_HTML_FileFilter.cpp \
+		$(SDIR2)/Extractor_XBRL_FileFilter.cpp \
+		$(SDIR2)/Extractor_Utils.cpp \
 		$(SDIR2)/SEC_Header.cpp \
 		$(SDIR2)/HTML_FromFile.cpp \
 		$(SDIR2)/AnchorsFromHTML.cpp \

@@ -15,20 +15,20 @@
 //
 // =====================================================================================
 
-    /* This file is part of ExtractEDGAR_HTML. */
+    /* This file is part of Extractor_Markup. */
 
-    /* ExtractEDGAR_HTML is free software: you can redistribute it and/or modify */
+    /* Extractor_Markup is free software: you can redistribute it and/or modify */
     /* it under the terms of the GNU General Public License as published by */
     /* the Free Software Foundation, either version 3 of the License, or */
     /* (at your option) any later version. */
 
-    /* ExtractEDGAR_HTML is distributed in the hope that it will be useful, */
+    /* Extractor_Markup is distributed in the hope that it will be useful, */
     /* but WITHOUT ANY WARRANTY; without even the implied warranty of */
     /* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
     /* GNU General Public License for more details. */
 
     /* You should have received a copy of the GNU General Public License */
-    /* along with ExtractEDGAR_HTML.  If not, see <http://www.gnu.org/licenses/>. */
+    /* along with Extractor_Markup.  If not, see <http://www.gnu.org/licenses/>. */
 
 #include <algorithm>
 #include <chrono>
@@ -50,8 +50,8 @@ namespace fs = std::filesystem;
 
 using namespace testing;
 
-#include "EDGAR_HTML_FileFilter.h"
-#include "ExtractEDGAR_Utils.h"
+#include "Extractor_HTML_FileFilter.h"
+#include "Extractor_Utils.h"
 #include "HTML_FromFile.h"
 #include "SEC_Header.h"
 #include "AnchorsFromHTML.h"
@@ -59,41 +59,41 @@ using namespace testing;
 
 // some specific files for Testing.
 
-constexpr const char* FILE_WITH_HTML_10Q{"/vol_DA/EDGAR/Archives/edgar/data/1046672/0001102624-13-001243.txt"};
-constexpr const char* FILE_WITH_XML_10Q{"/vol_DA/EDGAR/Archives/edgar/data/1460602/0001062993-13-005017.txt"};
-constexpr const char* FILE_WITH_XML2_10Q{"/vol_DA/EDGAR/Archives/edgar/data/1341319/0001445866-13-001158.txt"};
-constexpr const char* FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS{"/vol_DA/EDGAR/Archives/edgar/data/1046672/0001102624-13-001243.txt"};
-constexpr const char* FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS2{"/vol_DA/EDGAR/Archives/edgar/data/841360/0001086380-13-000031.txt"};
-constexpr const char* FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS3{"/vol_DA/EDGAR/Archives/edgar/data/949268/0001137171-09-000933.txt"};
-constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS{"/vol_DA/EDGAR/Archives/edgar/data/1420525/0001420525-09-000028.txt"};
-constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS2{"/vol_DA/EDGAR/Archives/edgar/data/1434743/0001193125-09-235665.txt"};
-constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS3{"/vol_DA/EDGAR/Archives/edgar/data/1326688/0001104659-09-064933.txt"};
-constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS4{"/vol_DA/EDGAR/Archives/edgar/data/1466739/0001002014-13-000458.txt"};
-constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS5{"/vol_DA/EDGAR/Archives/edgar/data/1460602/0001062993-13-005017.txt"};
+constexpr const char* FILE_WITH_HTML_10Q{"/vol_DA/SEC/Archives/sec/data/1046672/0001102624-13-001243.txt"};
+constexpr const char* FILE_WITH_XML_10Q{"/vol_DA/SEC/Archives/sec/data/1460602/0001062993-13-005017.txt"};
+constexpr const char* FILE_WITH_XML2_10Q{"/vol_DA/SEC/Archives/sec/data/1341319/0001445866-13-001158.txt"};
+constexpr const char* FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS{"/vol_DA/SEC/Archives/sec/data/1046672/0001102624-13-001243.txt"};
+constexpr const char* FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS2{"/vol_DA/SEC/Archives/sec/data/841360/0001086380-13-000031.txt"};
+constexpr const char* FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS3{"/vol_DA/SEC/Archives/sec/data/949268/0001137171-09-000933.txt"};
+constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS{"/vol_DA/SEC/Archives/sec/data/1420525/0001420525-09-000028.txt"};
+constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS2{"/vol_DA/SEC/Archives/sec/data/1434743/0001193125-09-235665.txt"};
+constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS3{"/vol_DA/SEC/Archives/sec/data/1326688/0001104659-09-064933.txt"};
+constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS4{"/vol_DA/SEC/Archives/sec/data/1466739/0001002014-13-000458.txt"};
+constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS5{"/vol_DA/SEC/Archives/sec/data/1460602/0001062993-13-005017.txt"};
 //constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS{"/tmp/x1.html"};
-constexpr const char* FILE_WITH_XML_10K{"/vol_DA/EDGAR/Archives/edgar/data/google-10k.txt"};
-constexpr const char* FILE_WITH_HTML_10Q_MINIMAL_DATA{"/vol_DA/EDGAR/Archives/edgar/data/841360/0001086380-13-000030.txt"};
-constexpr const char* FILE_WITH_HTML_10Q_PROBLEM_REGEX1{"/vol_DA/EDGAR/Archives/edgar/data/1377936/0001104659-13-075719.txt"};
-constexpr const char* FILE_WITH_HTML_10Q_PROBLEM_REGEX2{"/vol_DA/EDGAR/Archives/edgar/data/4515/0000004515-13-000053.txt"};
-constexpr const char* FILE_WITH_HTML_10Q_PROBLEM_WITH_ASSETS1{"/vol_DA/EDGAR/Archives/edgar/data/68270/0000068270-13-000059.txt"};
-constexpr const char* FILE_WITH_NO_HTML_10Q{"/vol_DA/EDGAR/Edgar_forms/855931/10-Q/0001130319-01-500242.txt"};
-constexpr const char* FILE_WITH_NO_HTML2_10Q{"/vol_DA/EDGAR/Archives/edgar/data/1421907/0001165527-13-000854.txt"};
-//constexpr const char* EDGAR_DIRECTORY{"/vol_DA/EDGAR/Archives/edgar/data"};
-//constexpr const char* FILE_NO_NAMESPACE_10Q{"/vol_DA/EDGAR/Archives/edgar/data/68270/0000068270-13-000059.txt"};
-//constexpr const char* FILE_SOME_NAMESPACE_10Q{"/vol_DA/EDGAR/Archives/edgar/data/1552979/0001214782-13-000386.txt"};
-//constexpr const char* FILE_MULTIPLE_LABEL_LINKS{"/vol_DA/EDGAR/Archives/edgar/data/1540334/0001078782-13-002015.txt"};
-//constexpr const char* BAD_FILE1{"/vol_DA/EDGAR/Edgar_forms/1000228/10-K/0001000228-11-000014.txt"};
-//constexpr const char* BAD_FILE2{"/vol_DA/EDGAR/Edgar_forms/1000180/10-K/0001000180-16-000068.txt"};
-//constexpr const char* BAD_FILE3{"/vol_DA/EDGAR/Edgar_forms/1000697/10-K/0000950123-11-018381.txt"};
-//constexpr const char* NO_SHARES_OUT{"/vol_DA/EDGAR/Edgar_forms/1023453/10-K/0001144204-12-017368.txt"};
+constexpr const char* FILE_WITH_XML_10K{"/vol_DA/SEC/Archives/sec/data/google-10k.txt"};
+constexpr const char* FILE_WITH_HTML_10Q_MINIMAL_DATA{"/vol_DA/SEC/Archives/sec/data/841360/0001086380-13-000030.txt"};
+constexpr const char* FILE_WITH_HTML_10Q_PROBLEM_REGEX1{"/vol_DA/SEC/Archives/sec/data/1377936/0001104659-13-075719.txt"};
+constexpr const char* FILE_WITH_HTML_10Q_PROBLEM_REGEX2{"/vol_DA/SEC/Archives/sec/data/4515/0000004515-13-000053.txt"};
+constexpr const char* FILE_WITH_HTML_10Q_PROBLEM_WITH_ASSETS1{"/vol_DA/SEC/Archives/sec/data/68270/0000068270-13-000059.txt"};
+constexpr const char* FILE_WITH_NO_HTML_10Q{"/vol_DA/SEC/SEC_forms/855931/10-Q/0001130319-01-500242.txt"};
+constexpr const char* FILE_WITH_NO_HTML2_10Q{"/vol_DA/SEC/Archives/sec/data/1421907/0001165527-13-000854.txt"};
+//constexpr const char* sec_DIRECTORY{"/vol_DA/SEC/Archives/sec/data"};
+//constexpr const char* FILE_NO_NAMESPACE_10Q{"/vol_DA/SEC/Archives/sec/data/68270/0000068270-13-000059.txt"};
+//constexpr const char* FILE_SOME_NAMESPACE_10Q{"/vol_DA/SEC/Archives/sec/data/1552979/0001214782-13-000386.txt"};
+//constexpr const char* FILE_MULTIPLE_LABEL_LINKS{"/vol_DA/SEC/Archives/sec/data/1540334/0001078782-13-002015.txt"};
+//constexpr const char* BAD_FILE1{"/vol_DA/SEC/SEC_forms/1000228/10-K/0001000228-11-000014.txt"};
+//constexpr const char* BAD_FILE2{"/vol_DA/SEC/SEC_forms/1000180/10-K/0001000180-16-000068.txt"};
+//constexpr const char* BAD_FILE3{"/vol_DA/SEC/SEC_forms/1000697/10-K/0000950123-11-018381.txt"};
+//constexpr const char* NO_SHARES_OUT{"/vol_DA/SEC/SEC_forms/1023453/10-K/0001144204-12-017368.txt"};
 //constexpr const char* TEST_FILE_LIST{"./list_with_bad_file.txt"};
-//constexpr const char* MISSING_VALUES1_10K{"/vol_DA/EDGAR/Edgar_forms/1004980/10-K/0001193125-12-065537.txt"};
-//constexpr const char* MISSING_VALUES2_10K{"/vol_DA/EDGAR/Edgar_forms/1002638/10-K/0001193125-09-179839.txt"};
+//constexpr const char* MISSING_VALUES1_10K{"/vol_DA/SEC/SEC_forms/1004980/10-K/0001193125-12-065537.txt"};
+//constexpr const char* MISSING_VALUES2_10K{"/vol_DA/SEC/SEC_forms/1002638/10-K/0001193125-09-179839.txt"};
 
-constexpr const char* FILE_WITH_HTML_10Q_FIND_SHARES1{"/vol_DA/EDGAR/Archives/edgar/data/29989/0000029989-13-000015.txt"};
-constexpr const char* FILE_WITH_HTML_NO_HREFS1_10K{"/vol_DA/EDGAR/Edgar_forms/906345/10-K/0000906345-04-000036.txt"};
-constexpr const char* FILE_WITH_HTML_ANCHORS_10Q{"/home/dpriedel/projects/github/ExtractEDGAR_XBRL/YUM_bad_balsheet.html"};
-constexpr const char* FILE_WITH_HTML_10Q_WITH_SEGMENTED_ANCHORS{"/home/dpriedel/projects/github/ExtractEDGAR_HTML_Test/test_files/RubyTuesday.html"};
+constexpr const char* FILE_WITH_HTML_10Q_FIND_SHARES1{"/vol_DA/SEC/Archives/sec/data/29989/0000029989-13-000015.txt"};
+constexpr const char* FILE_WITH_HTML_NO_HREFS1_10K{"/vol_DA/SEC/SEC_forms/906345/10-K/0000906345-04-000036.txt"};
+constexpr const char* FILE_WITH_HTML_ANCHORS_10Q{"/home/dpriedel/projects/github/Extractsec_XBRL/YUM_bad_balsheet.html"};
+constexpr const char* FILE_WITH_HTML_10Q_WITH_SEGMENTED_ANCHORS{"/home/dpriedel/projects/github/Extractor_HTML_Test/test_files/RubyTuesday.html"};
 // This ctype facet does NOT classify spaces and tabs as whitespace
 // from cppreference example
 
@@ -190,7 +190,7 @@ TEST_F(IdentifyHTMLFilesToUse, ConfirmFileHasHTML)
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
 
     FileHasHTML filter1;
-    auto use_file = filter1(EE::SEC_Header_fields{}, file_content_10Q);
+    auto use_file = filter1(EM::SEC_Header_fields{}, file_content_10Q);
     ASSERT_TRUE(use_file);
 }
 
@@ -201,7 +201,7 @@ TEST_F(IdentifyHTMLFilesToUse, DISABLED_ConfirmFileHasXML)
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_XML_10Q);
 
     FileHasHTML filter1;
-    auto use_file = filter1(EE::SEC_Header_fields{}, file_content_10Q);
+    auto use_file = filter1(EM::SEC_Header_fields{}, file_content_10Q);
     ASSERT_FALSE(use_file);
 }
 

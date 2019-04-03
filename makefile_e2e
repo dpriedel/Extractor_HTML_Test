@@ -33,7 +33,7 @@ endif
 
 OUTFILE := EndToEnd_Test
 
-CFG_INC := -I/home/dpriedel/projects/github/ExtractEDGAR_XBRL/src \
+CFG_INC := -I/home/dpriedel/projects/github/Extractor_Markup/src \
 	-I$(GTESTDIR) \
 	-I$(BOOSTDIR) \
 	-I/extra/gcc/cpp-json/include/
@@ -43,11 +43,11 @@ RPATH_LIB := -Wl,-rpath,$(GCCDIR)/lib64 -Wl,-rpath,$(BOOSTDIR)/lib -Wl,-rpath,/u
 SDIR1 := .
 SRCS1 := $(SDIR1)/EndToEnd_Test.cpp
 
-SDIR2 := ../ExtractEDGAR_XBRL/src
-SRCS2 := $(SDIR2)/ExtractEDGAR_XBRLApp.cpp \
-		$(SDIR2)/EDGAR_HTML_FileFilter.cpp \
-		$(SDIR2)/EDGAR_XBRL_FileFilter.cpp \
-		$(SDIR2)/ExtractEDGAR_Utils.cpp \
+SDIR2 := ../Extractor_Markup/src
+SRCS2 := $(SDIR2)/ExtractorApp.cpp \
+		$(SDIR2)/Extractor_HTML_FileFilter.cpp \
+		$(SDIR2)/Extractor_XBRL_FileFilter.cpp \
+		$(SDIR2)/Extractor_Utils.cpp \
 		$(SDIR2)/SEC_Header.cpp \
 		$(SDIR2)/HTML_FromFile.cpp \
 		$(SDIR2)/AnchorsFromHTML.cpp \

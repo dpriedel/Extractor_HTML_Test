@@ -15,20 +15,20 @@
 //
 // =====================================================================================
 
-	/* This file is part of ExtractEDGAR_XBRL. */
+	/* This file is part of Extractor_Markup. */
 
-	/* CollectEDGARData is free software: you can redistribute it and/or modify */
+	/* Extractor_Markup is free software: you can redistribute it and/or modify */
 	/* it under the terms of the GNU General Public License as published by */
 	/* the Free Software Foundation, either version 3 of the License, or */
 	/* (at your option) any later version. */
 
-	/* CollectEDGARData is distributed in the hope that it will be useful, */
+	/* Extractor_Markup is distributed in the hope that it will be useful, */
 	/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
 	/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
 	/* GNU General Public License for more details. */
 
 	/* You should have received a copy of the GNU General Public License */
-	/* along with CollectEDGARData.  If not, see <http://www.gnu.org/licenses/>. */
+	/* along with Extractor_Markup.  If not, see <http://www.gnu.org/licenses/>. */
 
 
 // =====================================================================================
@@ -36,29 +36,31 @@
 //  Description:
 // =====================================================================================
 
-#include "ExtractEDGAR_XBRLApp.h"
+#include "ExtractorApp.h"
 
 #include <filesystem>
+namespace fs = std::filesystem;
+
 #include <pqxx/pqxx>
 
 #include "spdlog/spdlog.h"
 
 #include <gmock/gmock.h>
 
-#include "EDGAR_HTML_FileFilter.h"
-#include "EDGAR_XBRL_FileFilter.h"
+#include "Extractor_HTML_FileFilter.h"
+#include "Extractor_XBRL_FileFilter.h"
 
 
-const fs::path FILE_WITH_XML_10Q{"/vol_DA/EDGAR/Archives/edgar/data/1460602/0001062993-13-005017.txt"};
-const fs::path FILE_WITH_XML_10K{"/vol_DA/EDGAR/Archives/edgar/data/google-10k.txt"};
-const fs::path FILE_WITHOUT_XML{"/vol_DA/EDGAR/Archives/edgar/data/841360/0001086380-13-000030.txt"};
-const fs::path EDGAR_DIRECTORY{"/vol_DA/EDGAR/Archives/edgar/data"};
-const fs::path FILE_NO_NAMESPACE_10Q{"/vol_DA/EDGAR/Archives/edgar/data/68270/0000068270-13-000059.txt"};
-const fs::path BAD_FILE2{"/vol_DA/EDGAR/Edgar_forms/1000180/10-K/0001000180-16-000068.txt"};
-const fs::path NO_SHARES_OUT{"/vol_DA/EDGAR/Edgar_forms/1023453/10-K/0001144204-12-017368.txt"};
-const fs::path MISSING_VALUES_LIST{"../ExtractEDGAR_XBRL_Test/missing_values_files.txt"};
+const fs::path FILE_WITH_XML_10Q{"/vol_DA/SEC/Archives/sec/data/1460602/0001062993-13-005017.txt"};
+const fs::path FILE_WITH_XML_10K{"/vol_DA/SEC/Archives/sec/data/google-10k.txt"};
+const fs::path FILE_WITHOUT_XML{"/vol_DA/SEC/Archives/sec/data/841360/0001086380-13-000030.txt"};
+const fs::path SEC_DIRECTORY{"/vol_DA/SEC/Archives/sec/data"};
+const fs::path FILE_NO_NAMESPACE_10Q{"/vol_DA/SEC/Archives/sec/data/68270/0000068270-13-000059.txt"};
+const fs::path BAD_FILE2{"/vol_DA/SEC/SEC_forms/1000180/10-K/0001000180-16-000068.txt"};
+const fs::path NO_SHARES_OUT{"/vol_DA/SEC/SEC_forms/1023453/10-K/0001144204-12-017368.txt"};
+const fs::path MISSING_VALUES_LIST{"../Extractor_XBRL_Test/missing_values_files.txt"};
 
-constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS{"/vol_DA/EDGAR/Archives/edgar/data/1420525/0001420525-09-000028.txt"};
+constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS{"/vol_DA/SEC/Archives/sec/data/1420525/0001420525-09-000028.txt"};
 
 using namespace testing;
 
@@ -69,24 +71,24 @@ class SingleFileEndToEnd_XBRL : public Test
 
         void SetUp() override
         {
-		    pqxx::connection c{"dbname=edgar_extracts user=edgar_pg"};
+		    pqxx::connection c{"dbname=sec_extracts user=extractor_pg"};
 		    pqxx::work trxn{c};
 
 		    // make sure the DB is empty before we start
 
-		    trxn.exec("DELETE FROM xbrl_extracts.edgar_filing_id");
+		    trxn.exec("DELETE FROM xbrl_extracts.sec_filing_id");
 		    trxn.commit();
 			c.disconnect();
         }
 
 		int CountRows()
 		{
-		    pqxx::connection c{"dbname=edgar_extracts user=edgar_pg"};
+		    pqxx::connection c{"dbname=sec_extracts user=extractor_pg"};
 		    pqxx::work trxn{c};
 
 		    // make sure the DB is empty before we start
 
-		    auto row = trxn.exec1("SELECT count(*) FROM xbrl_extracts.edgar_filing_data");
+		    auto row = trxn.exec1("SELECT count(*) FROM xbrl_extracts.sec_filing_data");
 		    trxn.commit();
 			c.disconnect();
 			return row[0].as<int>();
@@ -108,7 +110,7 @@ TEST_F(SingleFileEndToEnd_XBRL, VerifyCanLoadDataToDBForFileWithXML_10QXBRL)
 
 	try
 	{
-        ExtractEDGAR_XBRLApp myApp(tokens);
+        ExtractorApp myApp(tokens);
 
 		decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
         spdlog::info(catenate("\n\nTest: ", test_info->name(), " test case: ",
@@ -155,7 +157,7 @@ TEST_F(SingleFileEndToEnd_XBRL, VerifyLoadsNoDataToDBForFileWithXML_10QHTML)
 
 	try
 	{
-        ExtractEDGAR_XBRLApp myApp(tokens);
+        ExtractorApp myApp(tokens);
 
 		decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
         spdlog::info(catenate("\n\nTest: ", test_info->name(), " test case: ",
@@ -194,19 +196,19 @@ class SingleFileEndToEnd_HTML : public Test
 
         void SetUp() override
         {
-		    pqxx::connection c{"dbname=edgar_extracts user=edgar_pg"};
+		    pqxx::connection c{"dbname=sec_extracts user=extractor_pg"};
 		    pqxx::work trxn{c};
 
 		    // make sure the DB is empty before we start
 
-		    trxn.exec("DELETE FROM html_extracts.edgar_filing_id");
+		    trxn.exec("DELETE FROM html_extracts.sec_filing_id");
 		    trxn.commit();
 			c.disconnect();
         }
 
 		int CountRows()
 		{
-		    pqxx::connection c{"dbname=edgar_extracts user=edgar_pg"};
+		    pqxx::connection c{"dbname=sec_extracts user=extractor_pg"};
 		    pqxx::work trxn{c};
 
 		    // make sure the DB is empty before we start
@@ -234,7 +236,7 @@ TEST_F(SingleFileEndToEnd_HTML, VerifyCanLoadDataToDBForFileWithHTML_10QHTML)
 
 	try
 	{
-        ExtractEDGAR_XBRLApp myApp(tokens);
+        ExtractorApp myApp(tokens);
 
 		decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
         spdlog::info(catenate("\n\nTest: ", test_info->name(), " test case: ",
@@ -278,7 +280,7 @@ TEST_F(SingleFileEndToEnd_HTML, VerifyCanLoadDataToDBForFileWithHTML_10QHTML)
 //		"-f", FILE_NO_NAMESPACE_10Q.string()
 //	};
 //
-//    ExtractEDGAR_XBRLApp myApp;
+//    ExtractorApp myApp;
 //	try
 //	{
 //        myApp.init(tokens);
@@ -317,7 +319,7 @@ TEST_F(SingleFileEndToEnd_HTML, VerifyCanLoadDataToDBForFileWithHTML_10QHTML)
 //		"-f", NO_SHARES_OUT.string()
 //	};
 //
-//    ExtractEDGAR_XBRLApp myApp;
+//    ExtractorApp myApp;
 //	try
 //	{
 //        myApp.init(tokens);
@@ -361,7 +363,7 @@ TEST_F(SingleFileEndToEnd_HTML, VerifyCanLoadDataToDBForFileWithXML_10K)
 
 	try
 	{
-        ExtractEDGAR_XBRLApp myApp(tokens);
+        ExtractorApp myApp(tokens);
 
 		decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
         spdlog::info(catenate("\n\nTest: ", test_info->name(), " test case: ",
@@ -406,7 +408,7 @@ TEST_F(SingleFileEndToEnd_HTML, VerifyCanLoadDataToDBForFileWithXML_10K)
 //		"-f", BAD_FILE2.string()
 //	};
 //
-//    ExtractEDGAR_XBRLApp myApp;
+//    ExtractorApp myApp;
 //	try
 //	{
 //        myApp.init(tokens);
@@ -440,22 +442,22 @@ class ProcessFolderEndtoEnd : public Test
 
         void SetUp() override
         {
-		    pqxx::connection c{"dbname=edgar_extracts user=edgar_pg"};
+		    pqxx::connection c{"dbname=sec_extracts user=extractor_pg"};
 		    pqxx::work trxn{c};
 
 		    // make sure the DB is empty before we start
 
-		    trxn.exec("DELETE FROM html_extracts.edgar_filing_id");
+		    trxn.exec("DELETE FROM html_extracts.sec_filing_id");
 		    trxn.commit();
 			c.disconnect();
         }
 
 		int CountRows()
 		{
-		    pqxx::connection c{"dbname=edgar_extracts user=edgar_pg"};
+		    pqxx::connection c{"dbname=sec_extracts user=extractor_pg"};
 		    pqxx::work trxn{c};
 
-		    auto row = trxn.exec1("SELECT count(*) FROM html_extracts.edgar_filing_data");
+		    auto row = trxn.exec1("SELECT count(*) FROM html_extracts.sec_filing_data");
 		    trxn.commit();
 			c.disconnect();
 			return row[0].as<int>();
@@ -463,10 +465,10 @@ class ProcessFolderEndtoEnd : public Test
 
 		int CountMissingValues()
 		{
-		    pqxx::connection c{"dbname=edgar_extracts user=edgar_pg"};
+		    pqxx::connection c{"dbname=sec_extracts user=extractor_pg"};
 		    pqxx::work trxn{c};
 
-		    auto row = trxn.exec1("SELECT count(*) FROM html_extracts.edgar_filing_data WHERE user_label = 'Missing Value'");
+		    auto row = trxn.exec1("SELECT count(*) FROM html_extracts.sec_filing_data WHERE user_label = 'Missing Value'");
 		    trxn.commit();
 			c.disconnect();
 			return row[0].as<int>();
@@ -474,12 +476,12 @@ class ProcessFolderEndtoEnd : public Test
 
 		int CountFilings()
 		{
-		    pqxx::connection c{"dbname=edgar_extracts user=edgar_pg"};
+		    pqxx::connection c{"dbname=sec_extracts user=extractor_pg"};
 		    pqxx::work trxn{c};
 
 		    // make sure the DB is empty before we start
 
-		    auto row = trxn.exec1("SELECT count(*) FROM html_extracts.edgar_filing_id");
+		    auto row = trxn.exec1("SELECT count(*) FROM html_extracts.sec_filing_id");
 		    trxn.commit();
 			c.disconnect();
 			return row[0].as<int>();
@@ -496,7 +498,7 @@ class ProcessFolderEndtoEnd : public Test
 //		"--form", "10-K"
 //    };
 //
-//    ExtractEDGAR_XBRLApp myApp;
+//    ExtractorApp myApp;
 //	try
 //	{
 //        myApp.init(tokens);
@@ -533,12 +535,12 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
         "--log-level", "debug",
 		"--form", "10-Q",
         "--mode", "HTML",
-		"--form-dir", EDGAR_DIRECTORY.string()
+		"--form-dir", SEC_DIRECTORY.string()
     };
 
 	try
 	{
-        ExtractEDGAR_XBRLApp myApp(tokens);
+        ExtractorApp myApp(tokens);
 
 		decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
         spdlog::info(catenate("\n\nTest: ", test_info->name(), " test case: ",
@@ -583,7 +585,7 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
 //		"--list", "./test_directory_list.txt"
 //    };
 //
-//    ExtractEDGAR_XBRLApp myApp;
+//    ExtractorApp myApp;
 //	try
 //	{
 //        myApp.init(tokens);
@@ -621,10 +623,10 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
 //		"--form", "10-Q",
 //		"--log-path", "/tmp/test4.log",
 //		"--list", "./test_directory_list.txt",
-//        "--resume-at", "/vol_DA/EDGAR/Archives/edgar/data/1326688/0001104659-09-064933.txt"
+//        "--resume-at", "/vol_DA/SEC/Archives/edgar/data/1326688/0001104659-09-064933.txt"
 //    };
 //
-//    ExtractEDGAR_XBRLApp myApp;
+//    ExtractorApp myApp;
 //	try
 //	{
 //        myApp.init(tokens);
@@ -664,7 +666,7 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
 //		"--list", "./list_with_bad_file.txt"
 //    };
 //
-//    ExtractEDGAR_XBRLApp myApp;
+//    ExtractorApp myApp;
 //	try
 //	{
 //        myApp.init(tokens);
@@ -706,7 +708,7 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
 //        "-k", "4"
 //    };
 //
-//    ExtractEDGAR_XBRLApp myApp;
+//    ExtractorApp myApp;
 //	try
 //	{
 //        myApp.init(tokens);
@@ -747,7 +749,7 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
 //        "filename-has-form"
 //    };
 //
-//    ExtractEDGAR_XBRLApp myApp;
+//    ExtractorApp myApp;
 //	try
 //	{
 //        myApp.init(tokens);
@@ -790,7 +792,7 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
 //        
 //    };
 //
-//    ExtractEDGAR_XBRLApp myApp;
+//    ExtractorApp myApp;
 //	try
 //	{
 //        myApp.init(tokens);
@@ -832,7 +834,7 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
 //		"--list", "./test_directory_list.txt"
 //    };
 //
-//    ExtractEDGAR_XBRLApp myApp;
+//    ExtractorApp myApp;
 //	try
 //	{
 //        myApp.init(tokens);
@@ -872,7 +874,7 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
 //		"--list", "./test_directory_list.txt"
 //    };
 //
-//    ExtractEDGAR_XBRLApp myApp;
+//    ExtractorApp myApp;
 //	try
 //	{
 //        myApp.init(tokens);
@@ -912,7 +914,7 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
 //		"--list", "./test_directory_list.txt"
 //    };
 //
-//    ExtractEDGAR_XBRLApp myApp;
+//    ExtractorApp myApp;
 //	try
 //	{
 //        myApp.init(tokens);
@@ -952,7 +954,7 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
 //		"--list", "./test_directory_list.txt"
 //    };
 //
-//    ExtractEDGAR_XBRLApp myApp;
+//    ExtractorApp myApp;
 //	try
 //	{
 //        myApp.init(tokens);
@@ -993,7 +995,7 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
 //		"--list", "./test_directory_list.txt"
 //    };
 //
-//    ExtractEDGAR_XBRLApp myApp;
+//    ExtractorApp myApp;
 //	try
 //	{
 //        myApp.init(tokens);
@@ -1032,7 +1034,7 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
 //		"--list", "./test_directory_list.txt"
 //    };
 //
-//    ExtractEDGAR_XBRLApp myApp;
+//    ExtractorApp myApp;
 //	try
 //	{
 //        myApp.init(tokens);
@@ -1068,10 +1070,10 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
 //	std::vector<std::string> tokens{"the_program",
 //        "--log-level", "debug",
 //		"--form", "10-K",
-//		"--form-dir", EDGAR_DIRECTORY.string()
+//		"--form-dir", SEC_DIRECTORY.string()
 //	};
 //
-//    ExtractEDGAR_XBRLApp myApp;
+//    ExtractorApp myApp;
 //	try
 //	{
 //        myApp.init(tokens);
@@ -1109,10 +1111,10 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
 //		"--end-date", "2013-3-31",
 //        "--log-level", "debug",
 //		"--form", "10-Q",
-//		"--form-dir", EDGAR_DIRECTORY.string()
+//		"--form-dir", SEC_DIRECTORY.string()
 //	};
 //
-//    ExtractEDGAR_XBRLApp myApp;
+//    ExtractorApp myApp;
 //	try
 //	{
 //        myApp.init(tokens);
@@ -1150,10 +1152,10 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
 //		"--end-date", "2013-3-31",
 //        "--log-level", "debug",
 //		"--form", "10-K,10-Q",
-//		"--form-dir", EDGAR_DIRECTORY.string()
+//		"--form-dir", SEC_DIRECTORY.string()
 //	};
 //
-//    ExtractEDGAR_XBRLApp myApp;
+//    ExtractorApp myApp;
 //	try
 //	{
 //        myApp.init(tokens);
@@ -1192,10 +1194,10 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
 //        "--log-level", "debug",
 //		"--form", "10-K,10-Q",
 //		"--CIK", "1541884",
-//		"--form-dir", EDGAR_DIRECTORY.string()
+//		"--form-dir", SEC_DIRECTORY.string()
 //	};
 //
-//    ExtractEDGAR_XBRLApp myApp;
+//    ExtractorApp myApp;
 //	try
 //	{
 //        myApp.init(tokens);
@@ -1234,10 +1236,10 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
 //        "--log-level", "debug",
 //		"--form", "10-K,10-Q",
 //		"--CIK", "0000826772,0000826774",
-//		"--form-dir", EDGAR_DIRECTORY.string()
+//		"--form-dir", SEC_DIRECTORY.string()
 //	};
 //
-//    ExtractEDGAR_XBRLApp myApp;
+//    ExtractorApp myApp;
 //	try
 //	{
 //        myApp.init(tokens);
@@ -1273,10 +1275,10 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
 //	std::vector<std::string> tokens{"the_program",
 //        "--log-level", "debug",
 //		"--form", "10-Q",
-//		"--form-dir", EDGAR_DIRECTORY.string()
+//		"--form-dir", SEC_DIRECTORY.string()
 //	};
 //
-//    ExtractEDGAR_XBRLApp myApp;
+//    ExtractorApp myApp;
 //	try
 //	{
 //        myApp.init(tokens);
@@ -1314,10 +1316,10 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
 //        "--log-level", "debug",
 //		"--form", "10-Q",
 //		"--max", "14",
-//		"--form-dir", EDGAR_DIRECTORY.string()
+//		"--form-dir", SEC_DIRECTORY.string()
 //	};
 //
-//    ExtractEDGAR_XBRLApp myApp;
+//    ExtractorApp myApp;
 //	try
 //	{
 //        myApp.init(tokens);
@@ -1366,7 +1368,7 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
 //// 		"--replace-form-files"
 //// 	};
 ////
-//// 	ExtractEDGAR_XBRLApp myApp;
+//// 	ExtractorApp myApp;
 ////     myApp.init(tokens);
 ////
 //// 	decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();

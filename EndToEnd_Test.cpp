@@ -213,9 +213,9 @@ class SingleFileEndToEnd_HTML : public Test
 
 		    // make sure the DB is empty before we start
 
-		    auto row1 = trxn.exec1("SELECT count(*) FROM html_extracts.edgar_bal_sheet_data");
-		    auto row2 = trxn.exec1("SELECT count(*) FROM html_extracts.edgar_stmt_of_ops_data");
-		    auto row3 = trxn.exec1("SELECT count(*) FROM html_extracts.edgar_cash_flows_data");
+		    auto row1 = trxn.exec1("SELECT count(*) FROM html_extracts.sec_bal_sheet_data");
+		    auto row2 = trxn.exec1("SELECT count(*) FROM html_extracts.sec_stmt_of_ops_data");
+		    auto row3 = trxn.exec1("SELECT count(*) FROM html_extracts.sec_cash_flows_data");
 		    trxn.commit();
 			c.disconnect();
 			return row1[0].as<int>() + row2[0].as<int>() + row3[0].as<int>();
@@ -394,7 +394,7 @@ TEST_F(SingleFileEndToEnd_HTML, VerifyCanLoadDataToDBForFileWithXML_10K)
 		throw;
 	}
 
-	ASSERT_EQ(CountRows(), 1984);
+	ASSERT_EQ(CountRows(), 101);
 }
 
 //TEST_F(SingleFileEndToEnd, WorkWithBadFile2_10K)
@@ -570,7 +570,7 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
         spdlog::error("Something totally unexpected happened.");
 		throw;
 	}
-	ASSERT_EQ(CountFilings(), 1);
+	ASSERT_EQ(CountFilings(), 145);
 }
 
 //TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3_10Q)

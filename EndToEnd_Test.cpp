@@ -353,8 +353,8 @@ TEST_F(SingleFileEndToEnd_HTML, VerifyCanLoadDataToDBForFileWithXML_10K)
 	//	the test program.
 
 	std::vector<std::string> tokens{"the_program",
-//		"--begin-date", "2013-Oct-14",
-//		"--end-date", "2015-12-30",
+		"--begin-date", "2013-10-14",
+		"--end-date", "2016-12-30",
         "--log-level", "debug",
         "--mode", "HTML",
 		"--form", "10-K",

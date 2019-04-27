@@ -51,16 +51,16 @@ namespace fs = std::filesystem;
 #include "Extractor_XBRL_FileFilter.h"
 
 
-const fs::path FILE_WITH_XML_10Q{"/vol_DA/SEC/Archives/sec/data/1460602/0001062993-13-005017.txt"};
-const fs::path FILE_WITH_XML_10K{"/vol_DA/SEC/Archives/sec/data/google-10k.txt"};
-const fs::path FILE_WITHOUT_XML{"/vol_DA/SEC/Archives/sec/data/841360/0001086380-13-000030.txt"};
-const fs::path SEC_DIRECTORY{"/vol_DA/SEC/Archives/sec/data"};
-const fs::path FILE_NO_NAMESPACE_10Q{"/vol_DA/SEC/Archives/sec/data/68270/0000068270-13-000059.txt"};
+const fs::path FILE_WITH_XML_10Q{"/vol_DA/SEC/Archives/edgar/data/1460602/0001062993-13-005017.txt"};
+const fs::path FILE_WITH_XML_10K{"/vol_DA/SEC/Archives/edgar/data/google-10k.txt"};
+const fs::path FILE_WITHOUT_XML{"/vol_DA/SEC/Archives/edgar/data/841360/0001086380-13-000030.txt"};
+const fs::path SEC_DIRECTORY{"/vol_DA/SEC/Archives/edgar/data"};
+const fs::path FILE_NO_NAMESPACE_10Q{"/vol_DA/SEC/Archives/edgar/data/68270/0000068270-13-000059.txt"};
 const fs::path BAD_FILE2{"/vol_DA/SEC/SEC_forms/1000180/10-K/0001000180-16-000068.txt"};
 const fs::path NO_SHARES_OUT{"/vol_DA/SEC/SEC_forms/1023453/10-K/0001144204-12-017368.txt"};
 const fs::path MISSING_VALUES_LIST{"../Extractor_XBRL_Test/missing_values_files.txt"};
 
-constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS{"/vol_DA/SEC/Archives/sec/data/1420525/0001420525-09-000028.txt"};
+constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS{"/vol_DA/SEC/Archives/edgar/data/1420525/0001420525-09-000028.txt"};
 
 using namespace testing;
 

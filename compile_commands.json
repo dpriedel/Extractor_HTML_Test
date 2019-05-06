@@ -1,7 +1,7 @@
 [
     {
         "arguments": [
-            "/extra/gcc/gcc-8/bin/g++",
+            "/extra/gcc/gcc-9/bin/g++",
             "-c",
             "-x",
             "c++",
@@ -13,7 +13,7 @@
             "-fPIC",
             "-I/home/dpriedel/projects/github/Extractor_Markup/src",
             "-I/usr/local/include",
-            "-I/extra/boost/boost-1.69_gcc-8",
+            "-I/extra/boost/boost-1.70_gcc-9",
             "-I/extra/gcc/cpp-json/include/",
             "-march=native",
             "-o",
@@ -25,7 +25,7 @@
     },
     {
         "arguments": [
-            "/extra/gcc/gcc-8/bin/g++",
+            "/extra/gcc/gcc-9/bin/g++",
             "-c",
             "-x",
             "c++",
@@ -37,7 +37,7 @@
             "-fPIC",
             "-I/home/dpriedel/projects/github/Extractor_Markup/src",
             "-I/usr/local/include",
-            "-I/extra/boost/boost-1.69_gcc-8",
+            "-I/extra/boost/boost-1.70_gcc-9",
             "-I/extra/gcc/cpp-json/include/",
             "-march=native",
             "-o",
@@ -49,7 +49,7 @@
     },
     {
         "arguments": [
-            "/extra/gcc/gcc-8/bin/g++",
+            "/extra/gcc/gcc-9/bin/g++",
             "-c",
             "-x",
             "c++",
@@ -61,7 +61,7 @@
             "-fPIC",
             "-I/home/dpriedel/projects/github/Extractor_Markup/src",
             "-I/usr/local/include",
-            "-I/extra/boost/boost-1.69_gcc-8",
+            "-I/extra/boost/boost-1.70_gcc-9",
             "-I/extra/gcc/cpp-json/include/",
             "-march=native",
             "-o",
@@ -73,7 +73,7 @@
     },
     {
         "arguments": [
-            "/extra/gcc/gcc-8/bin/g++",
+            "/extra/gcc/gcc-9/bin/g++",
             "-c",
             "-x",
             "c++",
@@ -85,7 +85,7 @@
             "-fPIC",
             "-I/home/dpriedel/projects/github/Extractor_Markup/src",
             "-I/usr/local/include",
-            "-I/extra/boost/boost-1.69_gcc-8",
+            "-I/extra/boost/boost-1.70_gcc-9",
             "-I/extra/gcc/cpp-json/include/",
             "-march=native",
             "-o",
@@ -97,7 +97,7 @@
     },
     {
         "arguments": [
-            "/extra/gcc/gcc-8/bin/g++",
+            "/extra/gcc/gcc-9/bin/g++",
             "-c",
             "-x",
             "c++",
@@ -109,7 +109,7 @@
             "-fPIC",
             "-I/home/dpriedel/projects/github/Extractor_Markup/src",
             "-I/usr/local/include",
-            "-I/extra/boost/boost-1.69_gcc-8",
+            "-I/extra/boost/boost-1.70_gcc-9",
             "-I/extra/gcc/cpp-json/include/",
             "-march=native",
             "-o",
@@ -121,7 +121,7 @@
     },
     {
         "arguments": [
-            "/extra/gcc/gcc-8/bin/g++",
+            "/extra/gcc/gcc-9/bin/g++",
             "-c",
             "-x",
             "c++",
@@ -133,7 +133,7 @@
             "-fPIC",
             "-I/home/dpriedel/projects/github/Extractor_Markup/src",
             "-I/usr/local/include",
-            "-I/extra/boost/boost-1.69_gcc-8",
+            "-I/extra/boost/boost-1.70_gcc-9",
             "-I/extra/gcc/cpp-json/include/",
             "-march=native",
             "-o",
@@ -145,7 +145,7 @@
     },
     {
         "arguments": [
-            "/extra/gcc/gcc-8/bin/g++",
+            "/extra/gcc/gcc-9/bin/g++",
             "-c",
             "-x",
             "c++",
@@ -157,7 +157,7 @@
             "-fPIC",
             "-I/home/dpriedel/projects/github/Extractor_Markup/src",
             "-I/usr/local/include",
-            "-I/extra/boost/boost-1.69_gcc-8",
+            "-I/extra/boost/boost-1.70_gcc-9",
             "-I/extra/gcc/cpp-json/include/",
             "-march=native",
             "-o",
@@ -169,7 +169,7 @@
     },
     {
         "arguments": [
-            "/extra/gcc/gcc-8/bin/g++",
+            "/extra/gcc/gcc-9/bin/g++",
             "-c",
             "-x",
             "c++",
@@ -181,7 +181,7 @@
             "-fPIC",
             "-I/home/dpriedel/projects/github/Extractor_Markup/src",
             "-I/usr/local/include",
-            "-I/extra/boost/boost-1.69_gcc-8",
+            "-I/extra/boost/boost-1.70_gcc-9",
             "-I/extra/gcc/cpp-json/include/",
             "-march=native",
             "-o",
@@ -193,7 +193,7 @@
     },
     {
         "arguments": [
-            "/extra/gcc/gcc-8/bin/g++",
+            "/extra/gcc/gcc-9/bin/g++",
             "-c",
             "-x",
             "c++",
@@ -205,7 +205,7 @@
             "-fPIC",
             "-I/home/dpriedel/projects/github/Extractor_Markup/src",
             "-I/usr/local/include",
-            "-I/extra/boost/boost-1.69_gcc-8",
+            "-I/extra/boost/boost-1.70_gcc-9",
             "-I/extra/gcc/cpp-json/include/",
             "-march=native",
             "-o",
@@ -217,7 +217,7 @@
     },
     {
         "arguments": [
-            "/extra/gcc/gcc-8/bin/g++",
+            "/extra/gcc/gcc-9/bin/g++",
             "-c",
             "-x",
             "c++",
@@ -229,7 +229,7 @@
             "-fPIC",
             "-I/home/dpriedel/projects/github/Extractor_Markup/src",
             "-I/usr/local/include",
-            "-I/extra/boost/boost-1.69_gcc-8",
+            "-I/extra/boost/boost-1.70_gcc-9",
             "-I/extra/gcc/cpp-json/include/",
             "-march=native",
             "-o",

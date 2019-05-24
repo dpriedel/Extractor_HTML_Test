@@ -65,7 +65,7 @@ ifeq "$(CFG)" "Debug"
 
 OUTDIR := Debug_unit
 
-CFG_LIB := -ltsan -lpthread \
+CFG_LIB := -lpthread \
 		-L$(GCCDIR)/lib64 \
 		-L$(BOOSTDIR)/lib \
 		-lboost_date_time-mt-d-x64 -lboost_iostreams-mt-d-x64 -lboost_regex-mt-d-x64 \

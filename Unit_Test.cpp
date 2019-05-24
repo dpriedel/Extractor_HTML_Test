@@ -78,6 +78,7 @@ constexpr const char* FILE_WITH_HTML_10Q_PROBLEM_REGEX2{"/vol_DA/SEC/Archives/ed
 constexpr const char* FILE_WITH_HTML_10Q_PROBLEM_WITH_ASSETS1{"/vol_DA/SEC/Archives/edgar/data/68270/0000068270-13-000059.txt"};
 constexpr const char* FILE_WITH_NO_HTML_10Q{"/vol_DA/SEC/SEC_forms/855931/10-Q/0001130319-01-500242.txt"};
 constexpr const char* FILE_WITH_NO_HTML2_10Q{"/vol_DA/SEC/Archives/edgar/data/1421907/0001165527-13-000854.txt"};
+constexpr const char* FILE_WITH_ANCHOR_LOOP{"/vol_DA/SEC/SEC_forms/758938/10-K/0000950124-06-005605.txt"};
 //constexpr const char* sec_DIRECTORY{"/vol_DA/SEC/Archives/edgar/data"};
 //constexpr const char* FILE_NO_NAMESPACE_10Q{"/vol_DA/SEC/Archives/edgar/data/68270/0000068270-13-000059.txt"};
 //constexpr const char* FILE_SOME_NAMESPACE_10Q{"/vol_DA/SEC/Archives/edgar/data/1552979/0001214782-13-000386.txt"};
@@ -754,6 +755,47 @@ TEST_F(ProblemFiles_10Q, FileWithMinimalData)
     auto financial_statements = FindAndExtractFinancialStatements(file_content_10Q);
 
     ASSERT_TRUE(financial_statements.has_data());
+}
+
+class ProblemFiles_10K : public Test
+{
+};
+
+
+TEST_F(ProblemFiles_10K, FindSectionAnchors_10K)
+{
+    auto file_content_10K = LoadDataFileForUse(FILE_WITH_ANCHOR_LOOP);
+    auto financial_content = FindFinancialContentUsingAnchors(file_content_10K);
+
+    AnchorsFromHTML anchors(financial_content->first);
+
+    static const boost::regex regex_balance_sheet{R"***((?:balance\s+sheet)|(?:financial.*?position))***",
+        boost::regex_constants::normal | boost::regex_constants::icase};
+    auto balance_sheet_href = std::find_if(anchors.begin(), anchors.end(), MakeAnchorFilterForStatementType(regex_balance_sheet));
+
+    static const boost::regex regex_operations{R"***((?:statement|statements)\s+?of.*?(?:oper|loss|income|earning))***",
+        boost::regex_constants::normal | boost::regex_constants::icase};
+
+    auto stmt_of_ops_href = std::find_if(anchors.begin(), anchors.end(), MakeAnchorFilterForStatementType(regex_operations));
+    
+    static const boost::regex regex_cash_flow{R"***((?:cash\s+flow)|(?:statement.+?cash)|(?:cashflow))***",
+        boost::regex_constants::normal | boost::regex_constants::icase};
+
+    auto cash_flows_href = std::find_if(anchors.begin(), anchors.end(), MakeAnchorFilterForStatementType(regex_cash_flow));
+    
+//    auto sholder_equity_href = std::find_if(anchors.begin(), anchors.end(), StockholdersEquityAnchorFilter);
+    
+    EXPECT_TRUE(balance_sheet_href != anchors.end());
+    EXPECT_TRUE(stmt_of_ops_href != anchors.end());
+    EXPECT_TRUE(cash_flows_href != anchors.end());
+
+    auto balance_sheet_dest = FindDestinationAnchor(*balance_sheet_href, anchors);
+    auto stmt_of_ops_dest = FindDestinationAnchor(*stmt_of_ops_href, anchors);
+    auto cash_flows_dest = FindDestinationAnchor(*cash_flows_href, anchors);
+    
+    EXPECT_TRUE(balance_sheet_dest != anchors.end());
+    EXPECT_TRUE(stmt_of_ops_dest != anchors.end());
+    EXPECT_TRUE(cash_flows_dest != anchors.end());
 }
 
 class NoAnchors_10Q : public Test

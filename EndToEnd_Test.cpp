@@ -570,7 +570,7 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
         spdlog::error("Something totally unexpected happened.");
 		throw;
 	}
-	ASSERT_EQ(CountFilings(), 146);
+	ASSERT_EQ(CountFilings(), 145);
 }
 
 //TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3_10Q)
@@ -987,7 +987,7 @@ TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3Async_10Q)
         spdlog::error("Something totally unexpected happened.");
 		throw;
 	}
-	ASSERT_EQ(CountFilings(), 146);
+	ASSERT_EQ(CountFilings(), 145);
 }
 
 //TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3WithLimitAsync_10Q)

@@ -91,6 +91,7 @@ constexpr const char* FILE_WITH_ANCHOR_LOOP{"/vol_DA/SEC/SEC_forms/758938/10-K/0
 //constexpr const char* MISSING_VALUES1_10K{"/vol_DA/SEC/SEC_forms/1004980/10-K/0001193125-12-065537.txt"};
 //constexpr const char* MISSING_VALUES2_10K{"/vol_DA/SEC/SEC_forms/1002638/10-K/0001193125-09-179839.txt"};
 
+constexpr const char* FILE_SHOWING_DUPLICATE_LABEL_TEXT{"/vol_DA/SEC/Archives/edgar/data/1522222/0001185185-13-002216.txt"};
 constexpr const char* FILE_WITH_HTML_10Q_FIND_SHARES1{"/vol_DA/SEC/Archives/edgar/data/29989/0000029989-13-000015.txt"};
 constexpr const char* FILE_WITH_HTML_NO_HREFS1_10K{"/vol_DA/SEC/SEC_forms/906345/10-K/0000906345-04-000036.txt"};
 constexpr const char* FILE_WITH_HTML_ANCHORS_10Q{"/home/dpriedel/projects/github/Extractsec_XBRL/YUM_bad_balsheet.html"};
@@ -1150,6 +1151,26 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_NO_ANCHORS_10Q_Collect1)
 //    }
     std::cout << "\nFound: " << all_sections.ListValues().size() << " values.\n";
     ASSERT_TRUE(all_sections.ListValues().size() == 28);
+}
+
+TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_DUPLICATE_LABEL_TEXT)
+{
+    // this is mainly a visual test
+
+    auto file_content_10Q = LoadDataFileForUse(FILE_SHOWING_DUPLICATE_LABEL_TEXT);
+
+    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q);
+
+    EXPECT_TRUE(all_sections.has_data());
+
+    std::cout << "\n\nStmt of Operations\n";
+    std::cout << all_sections.statement_of_operations_.parsed_data_ << '\n';
+    
+
+    for (const auto& [key, value] : all_sections.statement_of_operations_.values_)
+    {
+        std::cout << "\nkey: " << key << " value: " << value << '\n';
+    }
 }
 
 class ProcessEntireFileAndExtractData_10K : public Test

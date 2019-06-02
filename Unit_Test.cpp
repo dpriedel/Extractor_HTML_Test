@@ -660,6 +660,7 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections3)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS3);
     auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
+    EXPECT_TRUE(financial_content);
 
     auto all_sections = ExtractFinancialStatementsUsingAnchors(financial_content->first);
     std::cout << "\n\nBalance Sheet\n";
@@ -678,6 +679,7 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections4)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS4);
     auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
+    EXPECT_TRUE(financial_content);
 
     auto all_sections = ExtractFinancialStatementsUsingAnchors(financial_content->first);
     std::cout << "\n\nBalance Sheet\n";
@@ -718,6 +720,7 @@ TEST_F(ProblemFiles_10Q, FindSectionAnchors_10Q)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
     auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
+    EXPECT_TRUE(financial_content);
 
     AnchorsFromHTML anchors(financial_content->first);
 
@@ -763,10 +766,13 @@ class ProblemFiles_10K : public Test
 };
 
 
-TEST_F(ProblemFiles_10K, FindSectionAnchors_10K)
+TEST_F(ProblemFiles_10K, DISABLED_FindSectionAnchors_10K)
 {
+    // disabled because file does not have usable financial anchors.
+
     auto file_content_10K = LoadDataFileForUse(FILE_WITH_ANCHOR_LOOP);
     auto financial_content = FindFinancialContentUsingAnchors(file_content_10K);
+    EXPECT_TRUE(financial_content);
 
     AnchorsFromHTML anchors(financial_content->first);
 

@@ -35,8 +35,7 @@ OUTFILE := EndToEnd_Test
 
 CFG_INC := -I/home/dpriedel/projects/github/Extractor_Markup/src \
 	-I$(GTESTDIR) \
-	-I$(BOOSTDIR) \
-	-I/extra/gcc/cpp-json/include/
+	-I$(BOOSTDIR) 
 
 RPATH_LIB := -Wl,-rpath,$(GCCDIR)/lib64 -Wl,-rpath,$(BOOSTDIR)/lib -Wl,-rpath,/usr/local/lib
 
@@ -72,6 +71,8 @@ CFG_LIB := -lpthread \
 		-L/usr/local/lib -lgmock -lgmock_main -lgtest \
 		-lgumbo \
 		-lgq \
+		-lfmt \
+		-lspdlog \
 		-L/usr/lib \
 		-lpqxx -lpq \
 		-lpugixml
@@ -84,7 +85,7 @@ DEPS=$(OBJS:.o=.d)
 
 # COMPILE=$(CPP) -c  -x c++  -O0  -g3 -std=c++2a -DBOOST_ENABLE_ASSERT_HANDLER -D_DEBUG -fsanitize=address -fPIC -o $@ $(CFG_INC) $< -march=native -MMD -MP
 # LINK := $(CPP)  -g -fsanitize=address -o $(OUTFILE) $(OBJS) $(CFG_LIB) -Wl,-E $(RPATH_LIB)
-COMPILE=$(CPP) -c  -x c++  -O0  -g3 -std=c++2a -DBOOST_ENABLE_ASSERT_HANDLER -D_DEBUG -fPIC -o $@ $(CFG_INC) $< -march=native -MMD -MP
+COMPILE=$(CPP) -c  -x c++  -O0  -g3 -std=c++2a -DBOOST_ENABLE_ASSERT_HANDLER -D_DEBUG -DSPDLOG_FMT_EXTERNAL -fPIC -o $@ $(CFG_INC) $< -march=native -MMD -MP
 LINK := $(CPP)  -g -o $(OUTFILE) $(OBJS) $(CFG_LIB) -Wl,-E $(RPATH_LIB)
 
 endif #	DEBUG configuration

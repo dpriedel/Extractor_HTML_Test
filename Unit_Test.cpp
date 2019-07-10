@@ -217,7 +217,7 @@ TEST_F(LocateDocumentWithFinancialContent, FileHasHTML_10Q)
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
     HTML_FromFile htmls{file_content_10Q};
 
-    FinancialDocumentFilter document_filter{"10-Q"};
+    FinancialDocumentFilter document_filter{{"10-Q"}};
     auto document = std::find_if(std::begin(htmls), std::end(htmls), document_filter);
     ASSERT_TRUE(document != htmls.end());
 }
@@ -227,7 +227,7 @@ TEST_F(LocateDocumentWithFinancialContent, FileHasXML_10Q)
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_XML_10Q);
     HTML_FromFile htmls{file_content_10Q};
 
-    FinancialDocumentFilter document_filter{"10-Q"};
+    FinancialDocumentFilter document_filter{{"10-Q"}};
     auto document = std::find_if(std::begin(htmls), std::end(htmls), document_filter);
     ASSERT_TRUE(document != htmls.end());
 }
@@ -237,7 +237,7 @@ TEST_F(LocateDocumentWithFinancialContent, FileHasNoUsableAnchors_10Q)
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
     HTML_FromFile htmls{file_content_10Q};
 
-    FinancialDocumentFilter document_filter{"10-Q"};
+    FinancialDocumentFilter document_filter{{"10-Q"}};
     auto document = std::find_if(std::begin(htmls), std::end(htmls), document_filter);
     ASSERT_TRUE(document != htmls.end());
 }
@@ -247,7 +247,7 @@ TEST_F(LocateDocumentWithFinancialContent, FindContentInFileHasMinimalData_10Q)
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
     HTML_FromFile htmls{file_content_10Q};
 
-    FinancialDocumentFilter document_filter{"10-Q"};
+    FinancialDocumentFilter document_filter{{"10-Q"}};
     auto document = std::find_if(std::begin(htmls), std::end(htmls), document_filter);
     ASSERT_TRUE(document != htmls.end());
 }
@@ -259,7 +259,7 @@ TEST_F(LocateDocumentWithFinancialContent, FindNoHTMLInFileWithNoHTML_10Q)
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_NO_HTML_10Q);
     HTML_FromFile htmls{file_content_10Q};
 
-    FinancialDocumentFilter document_filter{"10-Q"};
+    FinancialDocumentFilter document_filter{{"10-Q"}};
     auto document = std::find_if(std::begin(htmls), std::end(htmls), document_filter);
     ASSERT_TRUE(document == htmls.end());
 }
@@ -444,7 +444,7 @@ TEST_F(FindIndividualFinancialStatements_10Q, FindBalanceSheetInFileWithHTML_10Q
 
     bool found_it = false;
 
-    FinancialDocumentFilter document_filter{"10-Q"};
+    FinancialDocumentFilter document_filter{{"10-Q"}};
     for (auto html : htmls)
     {
         if (document_filter(html))
@@ -518,7 +518,7 @@ TEST_F(FindIndividualFinancialStatements_10Q, FindStatementOfOperations_10Q)
 
     bool found_it = false;
 
-    FinancialDocumentFilter document_filter{"10-Q"};
+    FinancialDocumentFilter document_filter{{"10-Q"}};
     for (auto html : htmls)
     {
         if (document_filter(html))
@@ -543,7 +543,7 @@ TEST_F(FindIndividualFinancialStatements_10Q, FindCashFlowStatement_10Q)
 
     bool found_it = false;
 
-    FinancialDocumentFilter document_filter{"10-Q"};
+    FinancialDocumentFilter document_filter{{"10-Q"}};
     for (auto html : htmls)
     {
         if (document_filter(html))
@@ -667,7 +667,7 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections2)
 TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections3)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS3);
-    FinancialDocumentFilter document_filter{"10-Q"};
+    FinancialDocumentFilter document_filter{{"10-Q"}};
 
     HTML_FromFile htmls{file_content_10Q};
 
@@ -710,7 +710,7 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSectionsMinimalHTMLData)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
 
-//    FinancialDocumentFilter document_filter{"10-Q"};
+//    FinancialDocumentFilter document_filter{{"10-Q"}};
 //
 //    HTML_FromFile htmls{file_content_10Q};
 //
@@ -842,7 +842,7 @@ TEST_F(NoAnchors_10Q, FindContentInFileWithNoAnchors1)
 
     FinancialStatements financial_statements;
 
-    FinancialDocumentFilter document_filter{"10-Q"};
+    FinancialDocumentFilter document_filter{{"10-Q"}};
     for (auto html : htmls)
     {
         if (document_filter(html))

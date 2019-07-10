@@ -570,7 +570,7 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
         spdlog::error("Something totally unexpected happened.");
 		throw;
 	}
-	ASSERT_EQ(CountFilings(), 145);
+	ASSERT_EQ(CountFilings(), 146);
 }
 
 //TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3_10Q)
@@ -949,7 +949,7 @@ TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3Async_10Q)
 
 	std::vector<std::string> tokens{"the_program",
         "--log-level", "debug",
-		"--form", "10-Q",
+		"--form", "10-Q,10-K",
         "--mode", "HTML",
 		"-k", "6",
 		"--list", "./test_directory_list.txt"
@@ -987,7 +987,7 @@ TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3Async_10Q)
         spdlog::error("Something totally unexpected happened.");
 		throw;
 	}
-	ASSERT_EQ(CountFilings(), 145);
+	ASSERT_EQ(CountFilings(), 147);
 }
 
 //TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3WithLimitAsync_10Q)

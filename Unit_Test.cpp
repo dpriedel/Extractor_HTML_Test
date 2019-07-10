@@ -160,9 +160,9 @@ TEST_F(Iterators, HTMLIteratorFileWithHTML_10K)
 TEST_F(Iterators, AnchorIteratorFileWithHTML_10Q)
 {
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
-    HTML_FromFile html{file_content_10Q};
+    HTML_FromFile htmls{file_content_10Q};
 
-    AnchorsFromHTML anchors(*html.begin());
+    AnchorsFromHTML anchors(htmls.begin()->html_);
 
     auto how_many = std::distance(std::begin(anchors), std::end(anchors));
     ASSERT_TRUE(how_many == 22);
@@ -175,7 +175,7 @@ TEST_F(Iterators, AnchorIteratorFileWithXML_10Q)
     int total = 0;
     for (const auto& html : htmls)
     {
-        AnchorsFromHTML anchors(html);
+        AnchorsFromHTML anchors(html.html_);
         total += std::distance(std::begin(anchors), std::end(anchors));
     }
     std::cout << "Total anchors found: " << total << '\n';
@@ -217,7 +217,8 @@ TEST_F(LocateDocumentWithFinancialContent, FileHasHTML_10Q)
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
     HTML_FromFile htmls{file_content_10Q};
 
-    auto document = std::find_if(std::begin(htmls), std::end(htmls), FinancialDocumentFilter);
+    FinancialDocumentFilter document_filter{"10-Q"};
+    auto document = std::find_if(std::begin(htmls), std::end(htmls), document_filter);
     ASSERT_TRUE(document != htmls.end());
 }
 
@@ -226,7 +227,8 @@ TEST_F(LocateDocumentWithFinancialContent, FileHasXML_10Q)
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_XML_10Q);
     HTML_FromFile htmls{file_content_10Q};
 
-    auto document = std::find_if(std::begin(htmls), std::end(htmls), FinancialDocumentFilter);
+    FinancialDocumentFilter document_filter{"10-Q"};
+    auto document = std::find_if(std::begin(htmls), std::end(htmls), document_filter);
     ASSERT_TRUE(document != htmls.end());
 }
 
@@ -235,7 +237,8 @@ TEST_F(LocateDocumentWithFinancialContent, FileHasNoUsableAnchors_10Q)
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
     HTML_FromFile htmls{file_content_10Q};
 
-    auto document = std::find_if(std::begin(htmls), std::end(htmls), FinancialDocumentFilter);
+    FinancialDocumentFilter document_filter{"10-Q"};
+    auto document = std::find_if(std::begin(htmls), std::end(htmls), document_filter);
     ASSERT_TRUE(document != htmls.end());
 }
 
@@ -244,7 +247,8 @@ TEST_F(LocateDocumentWithFinancialContent, FindContentInFileHasMinimalData_10Q)
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
     HTML_FromFile htmls{file_content_10Q};
 
-    auto document = std::find_if(std::begin(htmls), std::end(htmls), FinancialDocumentFilter);
+    FinancialDocumentFilter document_filter{"10-Q"};
+    auto document = std::find_if(std::begin(htmls), std::end(htmls), document_filter);
     ASSERT_TRUE(document != htmls.end());
 }
 
@@ -255,7 +259,8 @@ TEST_F(LocateDocumentWithFinancialContent, FindNoHTMLInFileWithNoHTML_10Q)
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_NO_HTML_10Q);
     HTML_FromFile htmls{file_content_10Q};
 
-    auto document = std::find_if(std::begin(htmls), std::end(htmls), FinancialDocumentFilter);
+    FinancialDocumentFilter document_filter{"10-Q"};
+    auto document = std::find_if(std::begin(htmls), std::end(htmls), document_filter);
     ASSERT_TRUE(document == htmls.end());
 }
 
@@ -271,7 +276,7 @@ TEST_F(FindAnchorsForFinancialStatements, FindSegmentedTopLevelAnchor_10Q)
 
     // we know there is only 1 HTML document in this file.
 
-    auto financial_content = *htmls.begin();
+    auto financial_content = htmls.begin()->html_;
 
     AnchorsFromHTML anchors{financial_content};
     
@@ -439,11 +444,12 @@ TEST_F(FindIndividualFinancialStatements_10Q, FindBalanceSheetInFileWithHTML_10Q
 
     bool found_it = false;
 
+    FinancialDocumentFilter document_filter{"10-Q"};
     for (auto html : htmls)
     {
-        if (FinancialDocumentFilter(html))
+        if (document_filter(html))
         {
-            TablesFromHTML tables{html};
+            TablesFromHTML tables{html.html_};
             auto balance_sheet = std::find_if(tables.begin(), tables.end(), BalanceSheetFilter);
             if (balance_sheet != tables.end())
             {
@@ -512,11 +518,12 @@ TEST_F(FindIndividualFinancialStatements_10Q, FindStatementOfOperations_10Q)
 
     bool found_it = false;
 
+    FinancialDocumentFilter document_filter{"10-Q"};
     for (auto html : htmls)
     {
-        if (FinancialDocumentFilter(html))
+        if (document_filter(html))
         {
-            TablesFromHTML tables{html};
+            TablesFromHTML tables{html.html_};
             auto statement_of_ops = std::find_if(tables.begin(), tables.end(), StatementOfOperationsFilter);
             if (statement_of_ops != tables.end())
             {
@@ -536,11 +543,12 @@ TEST_F(FindIndividualFinancialStatements_10Q, FindCashFlowStatement_10Q)
 
     bool found_it = false;
 
+    FinancialDocumentFilter document_filter{"10-Q"};
     for (auto html : htmls)
     {
-        if (FinancialDocumentFilter(html))
+        if (document_filter(html))
         {
-            TablesFromHTML tables{html};
+            TablesFromHTML tables{html.html_};
             auto cash_flows = std::find_if(tables.begin(), tables.end(), CashFlowsFilter);
             if (cash_flows != tables.end())
             {
@@ -602,7 +610,7 @@ TEST_F(Multipliers, DISABLED_FindDollarMultipliers_10Q)
 
     for (auto html : htmls)
     {
-        AnchorsFromHTML anchors(html);
+        AnchorsFromHTML anchors(html.html_);
         for (const auto& anchor : anchors)
         {
             std::cout << "\nHREF: " << anchor.href_
@@ -634,7 +642,7 @@ public:
 TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
-    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q);
+    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
 
     ASSERT_TRUE(all_sections.has_data());
 }
@@ -643,7 +651,7 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections2)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS2);
 
-    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q);
+    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
     std::cout << "\n\nCash Flow\n";
@@ -659,10 +667,14 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections2)
 TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections3)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS3);
-    auto financial_content = FindFinancialContentUsingAnchors(file_content_10Q);
-    EXPECT_TRUE(financial_content);
+    FinancialDocumentFilter document_filter{"10-Q"};
 
-    auto all_sections = ExtractFinancialStatementsUsingAnchors(financial_content->first);
+    HTML_FromFile htmls{file_content_10Q};
+
+    auto financial_content = std::find_if(std::begin(htmls), std::end(htmls), document_filter);
+    EXPECT_TRUE(financial_content != htmls.end());
+
+    auto all_sections = ExtractFinancialStatementsUsingAnchors(financial_content->html_);
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
     std::cout << "\n\nCash Flow\n";
@@ -698,7 +710,15 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSectionsMinimalHTMLData)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
 
-    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q);
+//    FinancialDocumentFilter document_filter{"10-Q"};
+//
+//    HTML_FromFile htmls{file_content_10Q};
+//
+//    auto financial_content = std::find_if(std::begin(htmls), std::end(htmls), document_filter);
+//    EXPECT_TRUE(financial_content != htmls.end());
+//
+//    auto all_sections = ExtractFinancialStatementsUsingAnchors(financial_content->html_);
+    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
 
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
@@ -756,7 +776,7 @@ TEST_F(ProblemFiles_10Q, FindSectionAnchors_10Q)
 TEST_F(ProblemFiles_10Q, FileWithMinimalData)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
-    auto financial_statements = FindAndExtractFinancialStatements(file_content_10Q);
+    auto financial_statements = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
 
     ASSERT_TRUE(financial_statements.has_data());
 }
@@ -822,11 +842,12 @@ TEST_F(NoAnchors_10Q, FindContentInFileWithNoAnchors1)
 
     FinancialStatements financial_statements;
 
+    FinancialDocumentFilter document_filter{"10-Q"};
     for (auto html : htmls)
     {
-        if (FinancialDocumentFilter(html))
+        if (document_filter(html))
         {
-            financial_statements = ExtractFinancialStatements(html);
+            financial_statements = ExtractFinancialStatements(html.html_);
             if (financial_statements.has_data())
             {
                 break;
@@ -870,7 +891,7 @@ TEST_F(NoAnchors_10Q, FileWithNoAnchors2)
 //
 //    EXPECT_TRUE(statement_anchors.size() < 3);
 
-    auto the_tables = FindAndExtractFinancialStatements(file_content_10Q);
+    auto the_tables = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
 
     ASSERT_TRUE(the_tables.has_data());
 }
@@ -897,7 +918,7 @@ TEST_F(NoAnchors_10Q, FileWithNoAnchors3)
 //
 //    EXPECT_TRUE(statement_anchors.size() < 3);
 
-    auto the_tables = FindAndExtractFinancialStatements(file_content_10Q);
+    auto the_tables = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
 
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(the_tables.balance_sheet_.parsed_data_.data(), 500);
@@ -924,7 +945,7 @@ TEST_F(ProblemWithRegexs_10Q, UseRegexProblemFile1)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_PROBLEM_REGEX1);
 
-    auto the_tables = FindAndExtractFinancialStatements(file_content_10Q);
+    auto the_tables = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
 
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(the_tables.balance_sheet_.parsed_data_.data(), 500);
@@ -948,7 +969,7 @@ TEST_F(ProblemWithRegexs_10Q, DISABLED_UseRegexProblemFile2)
     // this is not supported...yet.
 
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_PROBLEM_REGEX2);
-    auto the_tables = FindAndExtractFinancialStatements(file_content_10Q);
+    auto the_tables = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
 
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(the_tables.balance_sheet_.parsed_data_.data(), 500);
@@ -970,7 +991,7 @@ TEST_F(ProblemWithRegexs_10Q, ProblemMatchingCurrentAssets)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_XML_10Q);
 
-    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q);
+    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
 
     EXPECT_TRUE(all_sections.has_data());
 
@@ -1021,7 +1042,7 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_WITH_ANCHORS)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
 
-    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q);
+    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
 
     EXPECT_TRUE(all_sections.has_data());
 
@@ -1048,7 +1069,7 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_FIND_SHARES1)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_FIND_SHARES1);
 
-    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q);
+    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
 
     EXPECT_TRUE(all_sections.has_data());
 
@@ -1064,7 +1085,7 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_ASSETS_PROBLEM1)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_PROBLEM_WITH_ASSETS1);
 
-    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q);
+    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
 
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
@@ -1089,7 +1110,7 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_WITH_ANCHORS_Collect1)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
 
-    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q);
+    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
 
     EXPECT_TRUE(all_sections.has_data());
 
@@ -1107,7 +1128,7 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_WITH_ANCHORS_Collect1)
 TEST_F(ProcessEntireFileAndExtractData_10Q, XML_10Q_Collect1)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_XML_10Q);
-    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q);
+    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
 
     EXPECT_TRUE(all_sections.has_data());
 
@@ -1128,7 +1149,7 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, XML_10Q_Collect1)
 TEST_F(ProcessEntireFileAndExtractData_10Q, XML_10Q_Collect2)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_XML2_10Q);
-    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q);
+    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
 
     EXPECT_TRUE(all_sections.has_data());
 
@@ -1146,7 +1167,7 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, XML_10Q_Collect2)
 TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_NO_ANCHORS_10Q_Collect1)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS2);
-    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q);
+    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
 
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
@@ -1165,7 +1186,7 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_DUPLICATE_LABEL_TEXT)
 
     auto file_content_10Q = LoadDataFileForUse(FILE_SHOWING_DUPLICATE_LABEL_TEXT);
 
-    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q);
+    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
 
     EXPECT_TRUE(all_sections.has_data());
 
@@ -1188,7 +1209,7 @@ public:
 TEST_F(ProcessEntireFileAndExtractData_10K, XML_10K_Collect1)
 {
     auto file_content_10K = LoadDataFileForUse(FILE_WITH_HTML_NO_HREFS1_10K);
-    auto all_sections = FindAndExtractFinancialStatements(file_content_10K);
+    auto all_sections = FindAndExtractFinancialStatements(file_content_10K, {"10-K"});
 
     EXPECT_TRUE(all_sections.has_data());
 

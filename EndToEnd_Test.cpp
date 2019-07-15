@@ -65,6 +65,13 @@ constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS{"/vol_DA/SEC/Archives/edga
 using namespace testing;
 
 
+int CountFilesInDirectoryTree(const fs::path& directory)
+{
+	int count = std::count_if(fs::recursive_directory_iterator(directory), fs::recursive_directory_iterator(),
+			[](const fs::directory_entry& entry) { return entry.status().type() == fs::file_type::regular; });
+	return count;
+}
+
 class SingleFileEndToEnd_XBRL : public Test
 {
 	public:
@@ -707,20 +714,24 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
 //	ASSERT_EQ(CountFilings(), 31);
 //}
 //
-TEST_F(ProcessFolderEndtoEnd, WorkWithFileListContainsBadFileForExport)
+TEST_F(ProcessFolderEndtoEnd, ExportHMTLFromDirectory)
 {
 	//	NOTE: the program name 'the_program' in the command line below is ignored in the
 	//	the test program.
+
+    if (fs::exists("/tmp/extracts/html"))
+	   fs::remove_all("/tmp/extracts/html");
 
 	std::vector<std::string> tokens{"the_program",
         "--log-level", "debug",
 		"--form", "10-Q,10-K",
         "--mode", "HTML",
 		"--log-path", "/tmp/test1.log",
-		"--list", "./list_with_bad_file.txt",
+//		"--list", "./list_with_bad_file.txt",
+		"--form-dir", SEC_DIRECTORY.string(),
         "--export-HTML-data",
-        "--HTML-forms-to-dir", "/tmp/extracts",
-        "--HTML-forms-from-dir", "/vol_DA/SEC"
+        "--HTML-forms-to-dir", "/tmp/extracts/html",
+        "--HTML-forms-from-dir", "/vol_DA/SEC/Archives"
     };
 
 	try
@@ -755,7 +766,7 @@ TEST_F(ProcessFolderEndtoEnd, WorkWithFileListContainsBadFileForExport)
         spdlog::error("Something totally unexpected happened.");
 		throw;
 	}
-	ASSERT_EQ(CountFilings(), 42);
+ 	ASSERT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 182);
 }
 
 //TEST_F(ProcessFolderEndtoEnd, WorkWithMissingValuesFileList1)
@@ -1051,6 +1062,61 @@ TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3Async_10Q)
 		throw;
 	}
 	ASSERT_EQ(CountFilings(), 147);
+}
+
+TEST_F(ProcessFolderEndtoEnd, ExportHTMLUsingFileList3Async_10Q)
+{
+	//	NOTE: the program name 'the_program' in the command line below is ignored in the
+	//	the test program.
+
+    if (fs::exists("/tmp/extracts/html"))
+	   fs::remove_all("/tmp/extracts/html");
+
+	std::vector<std::string> tokens{"the_program",
+        "--log-level", "debug",
+		"--form", "10-Q,10-K",
+        "--mode", "HTML",
+		"-k", "6",
+		"--list", "./test_directory_list.txt",
+		"--log-path", "/tmp/test1.log",
+        "--export-HTML-data",
+        "--HTML-forms-to-dir", "/tmp/extracts/html",
+        "--HTML-forms-from-dir", "/vol_DA/SEC/Archives"
+    };
+
+	try
+	{
+        ExtractorApp myApp(tokens);
+
+		decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
+        spdlog::info(catenate("\n\nTest: ", test_info->name(), " test case: ",
+                test_info->test_case_name(), "\n\n"));
+
+        bool startup_OK = myApp.Startup();
+        if (startup_OK)
+        {
+            myApp.Run();
+            myApp.Shutdown();
+        }
+        else
+        {
+            std::cout << "Problems starting program.  No processing done.\n";
+        }
+	}
+
+    // catch any problems trying to setup application
+
+	catch (const std::exception& theProblem)
+	{
+        spdlog::error(catenate("Something fundamental went wrong: ", theProblem.what()));
+		throw;	//	so test framework will get it too.
+	}
+	catch (...)
+	{		// handle exception: unspecified
+        spdlog::error("Something totally unexpected happened.");
+		throw;
+	}
+ 	ASSERT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 182);
 }
 
 //TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3WithLimitAsync_10Q)

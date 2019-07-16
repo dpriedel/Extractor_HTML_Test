@@ -1230,6 +1230,47 @@ TEST_F(ProcessEntireFileAndExtractData_10K, XML_10K_Collect1)
     ASSERT_TRUE(all_sections.ListValues().size() == 97);
 }
 
+class ExportHTML : public Test
+{
+public:
+
+};
+
+TEST_F(ExportHTML, HTML_10Q)
+{
+    if (! fs::exists("/tmp/export_html.txt"))
+    {
+        fs::remove("/tmp/export_html.txt");
+    }
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
+
+    HTML_FromFile htmls{file_content_10Q};
+
+    FinancialDocumentFilter document_filter({"10-Q"});
+    auto financial_content = std::find_if(std::begin(htmls), std::end(htmls), document_filter);
+    EXPECT_TRUE(financial_content != htmls.end());
+
+    SEC_Header SEC_data;
+    SEC_data.UseData(file_content_10Q);
+
+    auto file_header = SEC_data.GetHeader();
+
+    // write content then read it back and parse it to complete test
+
+    std::ofstream exported_file{"/tmp/export_html.txt"};
+    exported_file.write(file_header.data(), file_header.size());
+    exported_file.put('\n');
+    exported_file.write(financial_content->document_.data(), financial_content->document_.size());
+    exported_file.close();
+
+    auto exported_data = LoadDataFileForUse("/tmp/export_html.txt");
+    SEC_data.UseData(exported_data);
+
+    HTML_FromFile htmls2{exported_data};
+    auto reimported_content = std::find_if(std::begin(htmls2), std::end(htmls2), document_filter);
+    ASSERT_TRUE(reimported_content != htmls2.end());
+}
+
 /* 
  * ===  FUNCTION  ======================================================================
  *         Name:  InitLogging

@@ -79,7 +79,7 @@ constexpr const char* FILE_WITH_HTML_10Q_PROBLEM_WITH_ASSETS1{"/vol_DA/SEC/Archi
 constexpr const char* FILE_WITH_NO_HTML_10Q{"/vol_DA/SEC/SEC_forms/855931/10-Q/0001130319-01-500242.txt"};
 constexpr const char* FILE_WITH_NO_HTML2_10Q{"/vol_DA/SEC/Archives/edgar/data/1421907/0001165527-13-000854.txt"};
 constexpr const char* FILE_WITH_ANCHOR_LOOP{"/vol_DA/SEC/SEC_forms/758938/10-K/0000950124-06-005605.txt"};
-//constexpr const char* sec_DIRECTORY{"/vol_DA/SEC/Archives/edgar/data"};
+constexpr const char* SEC_DIRECTORY{"/vol_DA/SEC/Archives/edgar/data"};
 //constexpr const char* FILE_NO_NAMESPACE_10Q{"/vol_DA/SEC/Archives/edgar/data/68270/0000068270-13-000059.txt"};
 //constexpr const char* FILE_SOME_NAMESPACE_10Q{"/vol_DA/SEC/Archives/edgar/data/1552979/0001214782-13-000386.txt"};
 //constexpr const char* FILE_MULTIPLE_LABEL_LINKS{"/vol_DA/SEC/Archives/edgar/data/1540334/0001078782-13-002015.txt"};
@@ -1230,6 +1230,9 @@ TEST_F(ProcessEntireFileAndExtractData_10K, XML_10K_Collect1)
     ASSERT_TRUE(all_sections.ListValues().size() == 97);
 }
 
+// the following tests are quite long since I have not encapsulated
+// the required functionality.
+
 class ExportHTML : public Test
 {
 public:
@@ -1271,6 +1274,133 @@ TEST_F(ExportHTML, HTML_10Q)
     ASSERT_TRUE(reimported_content != htmls2.end());
 }
 
+TEST_F(ExportHTML, VerifyExportAll_10Q)
+{
+    if (! fs::exists("/tmp/exported_html"))
+    {
+        fs::remove_all("/tmp/exported_html");
+    }
+    int files_with_form{0};
+
+    auto hierarchy_converter = ConvertInputHierarchyToOutputHierarchy(SEC_DIRECTORY, "/tmp/exported_html");
+
+    auto export_file([&files_with_form, &hierarchy_converter](const auto& dir_ent)
+        {
+            if (dir_ent.status().type() == fs::file_type::regular)
+            {
+                auto file_content_10Q = LoadDataFileForUse(dir_ent.path().c_str());
+
+                HTML_FromFile htmls{file_content_10Q};
+
+                for (const auto& html : htmls)
+                {
+                    if (html.file_type_ != "10-Q")
+                    {
+                        continue;
+                    }
+
+                    ++files_with_form;
+
+                    auto output_path_name = hierarchy_converter(dir_ent.path(), std::string{html.file_name_});
+
+                    auto output_directory = output_path_name.parent_path();
+                    if (! fs::exists(output_directory))
+                    {
+                        fs::create_directories(output_directory);
+                    }
+
+                    SEC_Header SEC_data;
+                    SEC_data.UseData(file_content_10Q);
+                    auto file_header = SEC_data.GetHeader();
+
+                    std::ofstream exported_file{output_path_name};
+                    exported_file.write(file_header.data(), file_header.size());
+                    exported_file.put('\n');
+                    exported_file.write(html.document_.data(), html.document_.size());
+                    exported_file.close();
+                    break;
+                }
+            }
+        });
+    std::for_each(fs::recursive_directory_iterator(SEC_DIRECTORY), fs::recursive_directory_iterator(), export_file);
+
+    ASSERT_EQ(files_with_form, 177);
+}
+
+TEST_F(ExportHTML, VerifyCanProcessExportedHTML_10Q)
+{
+    if (! fs::exists("/tmp/exported_html"))
+    {
+        fs::remove_all("/tmp/exported_html");
+    }
+    int files_with_form{0};
+
+    auto hierarchy_converter = ConvertInputHierarchyToOutputHierarchy(SEC_DIRECTORY, "/tmp/exported_html");
+
+    auto export_file([&files_with_form, &hierarchy_converter](const auto& dir_ent)
+        {
+            if (dir_ent.status().type() == fs::file_type::regular)
+            {
+                auto file_content_10Q = LoadDataFileForUse(dir_ent.path().c_str());
+
+                HTML_FromFile htmls{file_content_10Q};
+
+                for (const auto& html : htmls)
+                {
+                    if (html.file_type_ != "10-Q")
+                    {
+                        continue;
+                    }
+
+                    ++files_with_form;
+
+                    auto output_path_name = hierarchy_converter(dir_ent.path(), std::string{html.file_name_});
+
+                    auto output_directory = output_path_name.parent_path();
+                    if (! fs::exists(output_directory))
+                    {
+                        fs::create_directories(output_directory);
+                    }
+
+                    SEC_Header SEC_data;
+                    SEC_data.UseData(file_content_10Q);
+                    auto file_header = SEC_data.GetHeader();
+
+                    std::ofstream exported_file{output_path_name};
+                    exported_file.write(file_header.data(), file_header.size());
+                    exported_file.put('\n');
+                    exported_file.write(html.document_.data(), html.document_.size());
+                    exported_file.close();
+                    break;
+                }
+            }
+        });
+    std::for_each(fs::recursive_directory_iterator(SEC_DIRECTORY), fs::recursive_directory_iterator(), export_file);
+
+    EXPECT_EQ(files_with_form, 177);
+
+    FinancialDocumentFilter document_filter({"10-Q"});
+    int processed_files{0};
+
+    auto process_exported_data([&document_filter, &processed_files] (const auto& dir_ent)
+        {
+            if (dir_ent.status().type() == fs::file_type::regular)
+            {
+                auto file_content_10Q = LoadDataFileForUse(dir_ent.path().c_str());
+
+                HTML_FromFile htmls{file_content_10Q};
+                auto reimported_content = std::find_if(std::begin(htmls), std::end(htmls), document_filter);
+                if (reimported_content != htmls.end())
+                {
+                    ++processed_files;
+                }
+            }
+        });
+
+    std::for_each(fs::recursive_directory_iterator("/tmp/exported_html"), fs::recursive_directory_iterator(), process_exported_data);
+
+    ASSERT_EQ(processed_files, 177);
+}
 /* 
  * ===  FUNCTION  ======================================================================
  *         Name:  InitLogging

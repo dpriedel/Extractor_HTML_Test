@@ -72,6 +72,21 @@ int CountFilesInDirectoryTree(const fs::path& directory)
 	return count;
 }
 
+std::map<std::string, fs::file_time_type> CollectLastModifiedTimesForFilesInDirectoryTree(const fs::path& directory)
+{
+	std::map<std::string, fs::file_time_type> results;
+
+    auto save_mod_time([&results] (const auto& dir_ent)
+    {
+		if (dir_ent.status().type() == fs::file_type::regular)
+			results[dir_ent.path().filename().string()] = fs::last_write_time(dir_ent.path());
+    });
+
+    std::for_each(fs::recursive_directory_iterator(directory), fs::recursive_directory_iterator(), save_mod_time);
+
+	return results;
+}
+
 class SingleFileEndToEnd_XBRL : public Test
 {
 	public:
@@ -768,6 +783,114 @@ TEST_F(ProcessFolderEndtoEnd, ExportHMTLFromDirectory)
 	}
  	ASSERT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 182);
 }
+
+ TEST_F(ProcessFolderEndtoEnd, VerifyNoExportOfExistingFilesWhenReplaceIsNotSpecifed)
+ {
+    if (fs::exists("/tmp/extracts/html"))
+	   fs::remove_all("/tmp/extracts/html");
+
+	std::vector<std::string> tokens{"the_program",
+        "--log-level", "debug",
+		"--form", "10-Q,10-K",
+        "--mode", "HTML",
+		"--log-path", "/tmp/test1.log",
+//		"--list", "./list_with_bad_file.txt",
+		"--form-dir", SEC_DIRECTORY.string(),
+        "-R",
+        "--export-HTML-data",
+        "--HTML-forms-to-dir", "/tmp/extracts/html",
+        "--HTML-forms-from-dir", "/vol_DA/SEC/Archives"
+    };
+
+	try
+	{
+        ExtractorApp myApp(tokens);
+
+		decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
+        spdlog::info(catenate("\n\nTest: ", test_info->name(), " test case: ",
+                test_info->test_case_name(), "\n\n"));
+
+        bool startup_OK = myApp.Startup();
+        if (startup_OK)
+        {
+            myApp.Run();
+            myApp.Shutdown();
+        }
+        else
+        {
+            std::cout << "Problems starting program.  No processing done.\n";
+        }
+	}
+
+    // catch any problems trying to setup application
+
+	catch (const std::exception& theProblem)
+	{
+        spdlog::error(catenate("Something fundamental went wrong: ", theProblem.what()));
+		throw;	//	so test framework will get it too.
+	}
+	catch (...)
+	{		// handle exception: unspecified
+        spdlog::error("Something totally unexpected happened.");
+		throw;
+	}
+
+ 	EXPECT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 182);
+
+    auto x1 = CollectLastModifiedTimesForFilesInDirectoryTree("/tmp/extracts/html");
+
+ 	std::this_thread::sleep_for(std::chrono::seconds{3});
+
+	std::vector<std::string> tokens2{"the_program",
+        "--log-level", "debug",
+		"--form", "10-Q,10-K",
+        "--mode", "HTML",
+		"--log-path", "/tmp/test1.log",
+//		"--list", "./list_with_bad_file.txt",
+		"--form-dir", SEC_DIRECTORY.string(),
+        "--export-HTML-data",
+        "--HTML-forms-to-dir", "/tmp/extracts/html",
+        "--HTML-forms-from-dir", "/vol_DA/SEC/Archives"
+    };
+
+	try
+	{
+        ExtractorApp myApp(tokens2);
+
+		decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
+        spdlog::info(catenate("\n\nTest: ", test_info->name(), " test case: ",
+                test_info->test_case_name(), "\n\n"));
+
+        bool startup_OK = myApp.Startup();
+        if (startup_OK)
+        {
+            myApp.Run();
+            myApp.Shutdown();
+        }
+        else
+        {
+            std::cout << "Problems starting program.  No processing done.\n";
+        }
+	}
+
+    // catch any problems trying to setup application
+
+	catch (const std::exception& theProblem)
+	{
+        spdlog::error(catenate("Something fundamental went wrong: ", theProblem.what()));
+		throw;	//	so test framework will get it too.
+	}
+	catch (...)
+	{		// handle exception: unspecified
+        spdlog::error("Something totally unexpected happened.");
+		throw;
+	}
+ 	ASSERT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 182);
+
+    auto x2 = CollectLastModifiedTimesForFilesInDirectoryTree("/tmp/extracts/html");
+
+    ASSERT_EQ(x1, x2);
+ }
 
 //TEST_F(ProcessFolderEndtoEnd, WorkWithMissingValuesFileList1)
 //{

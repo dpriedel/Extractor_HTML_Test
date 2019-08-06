@@ -76,9 +76,9 @@ constexpr const char* FILE_WITH_HTML_10Q_MINIMAL_DATA{"/vol_DA/SEC/Archives/edga
 constexpr const char* FILE_WITH_HTML_10Q_PROBLEM_REGEX1{"/vol_DA/SEC/Archives/edgar/data/1377936/0001104659-13-075719.txt"};
 constexpr const char* FILE_WITH_HTML_10Q_PROBLEM_REGEX2{"/vol_DA/SEC/Archives/edgar/data/4515/0000004515-13-000053.txt"};
 constexpr const char* FILE_WITH_HTML_10Q_PROBLEM_WITH_ASSETS1{"/vol_DA/SEC/Archives/edgar/data/68270/0000068270-13-000059.txt"};
-constexpr const char* FILE_WITH_NO_HTML_10Q{"/vol_DA/SEC/SEC_forms/855931/10-Q/0001130319-01-500242.txt"};
+constexpr const char* FILE_WITH_NO_HTML_10Q{"/vol_DA/SEC/SEC_forms/0000855931/10-Q/0001130319-01-500242.txt"};
 constexpr const char* FILE_WITH_NO_HTML2_10Q{"/vol_DA/SEC/Archives/edgar/data/1421907/0001165527-13-000854.txt"};
-constexpr const char* FILE_WITH_ANCHOR_LOOP{"/vol_DA/SEC/SEC_forms/758938/10-K/0000950124-06-005605.txt"};
+constexpr const char* FILE_WITH_ANCHOR_LOOP{"/vol_DA/SEC/SEC_forms/0000758938/10-K/0000950124-06-005605.txt"};
 constexpr const char* SEC_DIRECTORY{"/vol_DA/SEC/Archives/edgar/data"};
 //constexpr const char* FILE_NO_NAMESPACE_10Q{"/vol_DA/SEC/Archives/edgar/data/68270/0000068270-13-000059.txt"};
 //constexpr const char* FILE_SOME_NAMESPACE_10Q{"/vol_DA/SEC/Archives/edgar/data/1552979/0001214782-13-000386.txt"};
@@ -93,7 +93,7 @@ constexpr const char* SEC_DIRECTORY{"/vol_DA/SEC/Archives/edgar/data"};
 
 constexpr const char* FILE_SHOWING_DUPLICATE_LABEL_TEXT{"/vol_DA/SEC/Archives/edgar/data/1522222/0001185185-13-002216.txt"};
 constexpr const char* FILE_WITH_HTML_10Q_FIND_SHARES1{"/vol_DA/SEC/Archives/edgar/data/29989/0000029989-13-000015.txt"};
-constexpr const char* FILE_WITH_HTML_NO_HREFS1_10K{"/vol_DA/SEC/SEC_forms/906345/10-K/0000906345-04-000036.txt"};
+constexpr const char* FILE_WITH_HTML_NO_HREFS1_10K{"/vol_DA/SEC/SEC_forms/0000906345/10-K/0000906345-04-000036.txt"};
 constexpr const char* FILE_WITH_HTML_ANCHORS_10Q{"/home/dpriedel/projects/github/Extractsec_XBRL/YUM_bad_balsheet.html"};
 constexpr const char* FILE_WITH_HTML_10Q_WITH_SEGMENTED_ANCHORS{"/home/dpriedel/projects/github/Extractor_HTML_Test/test_files/RubyTuesday.html"};
 // This ctype facet does NOT classify spaces and tabs as whitespace

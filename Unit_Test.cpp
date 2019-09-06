@@ -450,7 +450,8 @@ TEST_F(FindIndividualFinancialStatements_10Q, FindBalanceSheetInFileWithHTML_10Q
         if (document_filter(html))
         {
             TablesFromHTML tables{html.html_};
-            auto balance_sheet = std::find_if(tables.begin(), tables.end(), BalanceSheetFilter);
+            auto balance_sheet = std::find_if(tables.begin(), tables.end(),
+                    [](const auto& x) { return BalanceSheetFilter(x.current_table_parsed_); });
             if (balance_sheet != tables.end())
             {
                 found_it = true;
@@ -524,7 +525,8 @@ TEST_F(FindIndividualFinancialStatements_10Q, FindStatementOfOperations_10Q)
         if (document_filter(html))
         {
             TablesFromHTML tables{html.html_};
-            auto statement_of_ops = std::find_if(tables.begin(), tables.end(), StatementOfOperationsFilter);
+            auto statement_of_ops = std::find_if(tables.begin(), tables.end(),
+                    [](const auto& x) { return StatementOfOperationsFilter(x.current_table_parsed_); });
             if (statement_of_ops != tables.end())
             {
                 found_it = true;
@@ -549,7 +551,8 @@ TEST_F(FindIndividualFinancialStatements_10Q, FindCashFlowStatement_10Q)
         if (document_filter(html))
         {
             TablesFromHTML tables{html.html_};
-            auto cash_flows = std::find_if(tables.begin(), tables.end(), CashFlowsFilter);
+            auto cash_flows = std::find_if(tables.begin(), tables.end(),
+                    [](const auto& x) { return CashFlowsFilter(x.current_table_parsed_); });
             if (cash_flows != tables.end())
             {
                 found_it = true;

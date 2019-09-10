@@ -182,6 +182,17 @@ TEST_F(Iterators, AnchorIteratorFileWithXML_10Q)
     ASSERT_TRUE(total == 2239);
 }
 
+TEST_F(Iterators, TableIteratorFileWithHTML_10Q)
+{
+    const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
+    HTML_FromFile htmls{file_content_10Q};
+
+    TablesFromHTML tables(htmls.begin()->html_);
+
+    auto how_many = std::distance(std::begin(tables), std::end(tables));
+    ASSERT_EQ(how_many, 22);
+}
+
 class IdentifyHTMLFilesToUse : public Test
 {
 

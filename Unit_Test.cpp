@@ -190,7 +190,27 @@ TEST_F(Iterators, TableIteratorFileWithHTML_10Q)
     TablesFromHTML tables(htmls.begin()->html_);
 
     auto how_many = std::distance(std::begin(tables), std::end(tables));
-    ASSERT_EQ(how_many, 22);
+
+    // a bunch of tables are skipped because they have too little html
+    // so there are 49 usable tables left.
+    
+    ASSERT_EQ(how_many, 49);
+}
+
+TEST_F(Iterators, TableRangeIteratorFileWithHTML_10Q)
+{
+    const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
+    HTML_FromFile htmls{file_content_10Q};
+
+    TablesFromHTML tables(htmls.begin()->html_);
+    TablesFromHTMLRange tbl_rng{tables};
+
+    auto how_many = ranges::distance(tbl_rng);
+
+    // a bunch of tables are skipped because they have too little html
+    // so there are 49 usable tables left.
+    
+    ASSERT_EQ(how_many, 49);
 }
 
 class IdentifyHTMLFilesToUse : public Test

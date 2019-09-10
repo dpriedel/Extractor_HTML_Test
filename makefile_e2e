@@ -70,10 +70,10 @@ CFG_LIB := -lpthread \
 		-lboost_program_options-mt-x64 \
 		-L/usr/local/lib64 \
 		-lgmock -lgmock_main -lgtest \
-		-lfmt \
 		-L/usr/local/lib/spdlog \
 		-lspdlog \
 		-L/usr/local/lib \
+		-lfmt \
 		-lgumbo \
 		-lgq \
 		-L/usr/lib \

@@ -546,32 +546,17 @@ TEST_F(FindIndividualFinancialStatements_10Q, RangeFindBalanceSheetInFileWithHTM
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
     HTML_FromFile htmls{file_content_10Q};
 
-    bool found_it = false;
-
     FinancialDocumentFilter document_filter{{"10-Q"}};
-//    for (auto html : htmls)
-//    {
-//        if (document_filter(html))
-//        {
-//            TablesFromHTML tables{html.html_};
-//            auto balance_sheet = std::find_if(tables.begin(), tables.end(),
-//                    [](const auto& x) { return BalanceSheetFilter(x.current_table_parsed_); });
-//            if (balance_sheet != tables.end())
-//            {
-//                found_it = true;
-//                break;
-//            }
-//        }
-//    }
-    auto xxx = ranges::views::filter(document_filter)
+
+    auto find_doc = ranges::views::filter(document_filter)
         | ranges::views::filter([](const auto& html)
                 { TablesFromHTML ts{html.html_};
                 return  ! (ts | ranges::views::filter([](const auto& t)
                         { return BalanceSheetFilter(t.current_table_parsed_); })).empty(); } ) ;
 
-    bool yyy = ! (htmls | xxx).empty();
+    bool found_it = ! (htmls | find_doc).empty();
 
-    ASSERT_TRUE(yyy);
+    ASSERT_TRUE(found_it);
 }
 
 TEST_F(FindIndividualFinancialStatements_10Q, FindBalanceSheetWithAnchorsHTML5_10Q)

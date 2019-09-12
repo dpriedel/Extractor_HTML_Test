@@ -132,12 +132,37 @@ TEST_F(Iterators, HTMLIteratorFileWithHTML_10Q)
     ASSERT_TRUE(htmls.size() == 5);
 }
 
+TEST_F(Iterators, HTMLRangeFileWithHTML_10Q)
+{
+    const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
+    HTML_FromFile html{file_content_10Q};
+
+    auto how_many = ranges::distance(html);
+    EXPECT_TRUE(how_many == 5);
+
+    auto htmls = Find_HTML_Documents(file_content_10Q);
+    ASSERT_TRUE(htmls.size() == 5);
+}
+
 TEST_F(Iterators, HTMLIteratorFileWithMinimalHTML_10Q)
 {
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_NO_HTML_10Q);
     HTML_FromFile html{file_content_10Q};
 
     auto how_many = std::distance(std::begin(html), std::end(html));
+
+    EXPECT_TRUE(how_many == 0);
+
+    auto htmls = Find_HTML_Documents(file_content_10Q);
+    ASSERT_TRUE(htmls.size() == 0);
+}
+
+TEST_F(Iterators, HTMLRangeFileWithMinimalHTML_10Q)
+{
+    const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_NO_HTML_10Q);
+    HTML_FromFile html{file_content_10Q};
+
+    auto how_many = ranges::distance(html);
 
     EXPECT_TRUE(how_many == 0);
 
@@ -168,6 +193,17 @@ TEST_F(Iterators, AnchorIteratorFileWithHTML_10Q)
     ASSERT_TRUE(how_many == 22);
 }
 
+TEST_F(Iterators, AnchorRangeFileWithHTML_10Q)
+{
+    const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
+    HTML_FromFile htmls{file_content_10Q};
+
+    AnchorsFromHTML anchors{ranges::front(htmls).html_};
+
+    auto how_many = ranges::distance(anchors);
+    ASSERT_EQ(how_many, 22);
+}
+
 TEST_F(Iterators, AnchorIteratorFileWithXML_10Q)
 {
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_XML_10Q);
@@ -178,6 +214,18 @@ TEST_F(Iterators, AnchorIteratorFileWithXML_10Q)
         AnchorsFromHTML anchors(html.html_);
         total += std::distance(std::begin(anchors), std::end(anchors));
     }
+    std::cout << "Total anchors found: " << total << '\n';
+    ASSERT_TRUE(total == 2239);
+}
+
+TEST_F(Iterators, AnchorRangeFileWithXML_10Q)
+{
+    const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_XML_10Q);
+    HTML_FromFile htmls{file_content_10Q};
+
+    int total = ranges::accumulate(htmls
+            | ranges::views::transform([](const auto& html) { AnchorsFromHTML x{html.html_}; return ranges::distance(x); }),
+            0 );
     std::cout << "Total anchors found: " << total << '\n';
     ASSERT_TRUE(total == 2239);
 }
@@ -203,9 +251,8 @@ TEST_F(Iterators, TableRangeIteratorFileWithHTML_10Q)
     HTML_FromFile htmls{file_content_10Q};
 
     TablesFromHTML tables(htmls.begin()->html_);
-    TablesFromHTMLRange tbl_rng{tables};
 
-    auto how_many = ranges::distance(tbl_rng);
+    auto how_many = ranges::distance(tables);
 
     // a bunch of tables are skipped because they have too little html
     // so there are 49 usable tables left.
@@ -259,7 +306,7 @@ TEST_F(LocateDocumentWithFinancialContent, FileHasXML_10Q)
     HTML_FromFile htmls{file_content_10Q};
 
     FinancialDocumentFilter document_filter{{"10-Q"}};
-    auto document = std::find_if(std::begin(htmls), std::end(htmls), document_filter);
+    auto document = ranges::find_if(htmls, document_filter);
     ASSERT_TRUE(document != htmls.end());
 }
 
@@ -311,16 +358,16 @@ TEST_F(FindAnchorsForFinancialStatements, FindSegmentedTopLevelAnchor_10Q)
 
     AnchorsFromHTML anchors{financial_content};
     
-    for (const auto& anchor : anchors)
+    ranges::for_each(anchors, [](const auto & anchor)
     {
         std::cout
             << "HREF: " << anchor.href_
             << "\n\tNAME: " << anchor.name_
             << "\n\tTEXT: " << anchor.text_
             << "\n\tCONTENT: " << anchor.anchor_content_ << '\n';
-    }
+    });
 
-    auto found_some = std::adjacent_find(anchors.begin(), anchors.end(), [](const auto& a, const auto& b) { return a.href_ == b.href_; });
+    auto found_some = ranges::adjacent_find(anchors, [](const auto& a, const auto& b) { return a.href_ == b.href_; });
     EXPECT_TRUE(found_some != anchors.end());
 
 }
@@ -411,17 +458,17 @@ TEST_F(FindAnchorsForFinancialStatements, FindAnchorDestinations_10Q)
 
     static const boost::regex regex_balance_sheet{R"***((?:balance\s+sheet)|(?:financial.*?position))***",
         boost::regex_constants::normal | boost::regex_constants::icase};
-    auto balance_sheet_href = std::find_if(anchors.begin(), anchors.end(), MakeAnchorFilterForStatementType(regex_balance_sheet));
+    auto balance_sheet_href = ranges::find_if(anchors, MakeAnchorFilterForStatementType(regex_balance_sheet));
 
     static const boost::regex regex_operations{R"***((?:statement|statements)\s+?of.*?(?:oper|loss|income|earning))***",
         boost::regex_constants::normal | boost::regex_constants::icase};
 
-    auto stmt_of_ops_href = std::find_if(anchors.begin(), anchors.end(), MakeAnchorFilterForStatementType(regex_operations));
+    auto stmt_of_ops_href = ranges::find_if(anchors, MakeAnchorFilterForStatementType(regex_operations));
     
     static const boost::regex regex_cash_flow{R"***((?:cash\s+flow)|(?:statement.+?cash)|(?:cashflow))***",
         boost::regex_constants::normal | boost::regex_constants::icase};
 
-    auto cash_flows_href = std::find_if(anchors.begin(), anchors.end(), MakeAnchorFilterForStatementType(regex_cash_flow));
+    auto cash_flows_href = ranges::find_if(anchors, MakeAnchorFilterForStatementType(regex_cash_flow));
     
 //    auto sholder_equity_href = std::find_if(anchors.begin(), anchors.end(), StockholdersEquityAnchorFilter);
     
@@ -492,6 +539,39 @@ TEST_F(FindIndividualFinancialStatements_10Q, FindBalanceSheetInFileWithHTML_10Q
     }
 
     ASSERT_TRUE(found_it);
+}
+
+TEST_F(FindIndividualFinancialStatements_10Q, RangeFindBalanceSheetInFileWithHTML_10Q)
+{
+    auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
+    HTML_FromFile htmls{file_content_10Q};
+
+    bool found_it = false;
+
+    FinancialDocumentFilter document_filter{{"10-Q"}};
+//    for (auto html : htmls)
+//    {
+//        if (document_filter(html))
+//        {
+//            TablesFromHTML tables{html.html_};
+//            auto balance_sheet = std::find_if(tables.begin(), tables.end(),
+//                    [](const auto& x) { return BalanceSheetFilter(x.current_table_parsed_); });
+//            if (balance_sheet != tables.end())
+//            {
+//                found_it = true;
+//                break;
+//            }
+//        }
+//    }
+    auto xxx = ranges::views::filter(document_filter)
+        | ranges::views::filter([](const auto& html)
+                { TablesFromHTML ts{html.html_};
+                return  ! (ts | ranges::views::filter([](const auto& t)
+                        { return BalanceSheetFilter(t.current_table_parsed_); })).empty(); } ) ;
+
+    bool yyy = ! (htmls | xxx).empty();
+
+    ASSERT_TRUE(yyy);
 }
 
 TEST_F(FindIndividualFinancialStatements_10Q, FindBalanceSheetWithAnchorsHTML5_10Q)

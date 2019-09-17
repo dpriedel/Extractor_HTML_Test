@@ -190,7 +190,12 @@ TEST_F(Iterators, AnchorIteratorFileWithHTML_10Q)
     AnchorsFromHTML anchors(htmls.begin()->html_);
 
     auto how_many = std::distance(std::begin(anchors), std::end(anchors));
-    ASSERT_TRUE(how_many == 22);
+    EXPECT_EQ(how_many, 22);
+
+    // add a cache test
+    
+    how_many = std::distance(std::begin(anchors), std::end(anchors));
+    ASSERT_EQ(how_many, 22);
 }
 
 TEST_F(Iterators, AnchorRangeFileWithHTML_10Q)
@@ -201,6 +206,11 @@ TEST_F(Iterators, AnchorRangeFileWithHTML_10Q)
     AnchorsFromHTML anchors{ranges::front(htmls).html_};
 
     auto how_many = ranges::distance(anchors);
+    EXPECT_EQ(how_many, 22);
+
+    // add a cache test
+    
+    how_many = ranges::distance(anchors);
     ASSERT_EQ(how_many, 22);
 }
 
@@ -242,6 +252,11 @@ TEST_F(Iterators, TableIteratorFileWithHTML_10Q)
     // a bunch of tables are skipped because they have too little html
     // so there are 49 usable tables left.
     
+    EXPECT_EQ(how_many, 49);
+
+    // add a cache test
+    
+    how_many = std::distance(std::begin(tables), std::end(tables));
     ASSERT_EQ(how_many, 49);
 }
 
@@ -257,6 +272,11 @@ TEST_F(Iterators, TableRangeIteratorFileWithHTML_10Q)
     // a bunch of tables are skipped because they have too little html
     // so there are 49 usable tables left.
     
+    EXPECT_EQ(how_many, 49);
+
+    // add a cache test
+    
+    how_many = ranges::distance(tables);
     ASSERT_EQ(how_many, 49);
 }
 
@@ -458,17 +478,17 @@ TEST_F(FindAnchorsForFinancialStatements, FindAnchorDestinations_10Q)
 
     static const boost::regex regex_balance_sheet{R"***((?:balance\s+sheet)|(?:financial.*?position))***",
         boost::regex_constants::normal | boost::regex_constants::icase};
-    auto balance_sheet_href = ranges::find_if(anchors, MakeAnchorFilterForStatementType(regex_balance_sheet));
+    auto balance_sheet_href = ranges::find_if(anchors, [](const auto& anchor) { return AnchorFilterUsingRegex(regex_balance_sheet, anchor); });
 
     static const boost::regex regex_operations{R"***((?:statement|statements)\s+?of.*?(?:oper|loss|income|earning))***",
         boost::regex_constants::normal | boost::regex_constants::icase};
 
-    auto stmt_of_ops_href = ranges::find_if(anchors, MakeAnchorFilterForStatementType(regex_operations));
+    auto stmt_of_ops_href = ranges::find_if(anchors, [](const auto& anchor) { return AnchorFilterUsingRegex(regex_operations, anchor); });
     
     static const boost::regex regex_cash_flow{R"***((?:cash\s+flow)|(?:statement.+?cash)|(?:cashflow))***",
         boost::regex_constants::normal | boost::regex_constants::icase};
 
-    auto cash_flows_href = ranges::find_if(anchors, MakeAnchorFilterForStatementType(regex_cash_flow));
+    auto cash_flows_href = ranges::find_if(anchors, [](const auto& anchor) { return AnchorFilterUsingRegex(regex_cash_flow, anchor); });
     
 //    auto sholder_equity_href = std::find_if(anchors.begin(), anchors.end(), StockholdersEquityAnchorFilter);
     
@@ -845,17 +865,17 @@ TEST_F(ProblemFiles_10Q, FindSectionAnchors_10Q)
 
     static const boost::regex regex_balance_sheet{R"***((?:balance\s+sheet)|(?:financial.*?position))***",
         boost::regex_constants::normal | boost::regex_constants::icase};
-    auto balance_sheet_href = std::find_if(anchors.begin(), anchors.end(), MakeAnchorFilterForStatementType(regex_balance_sheet));
+    auto balance_sheet_href = ranges::find_if(anchors, [](const auto& anchor) { return AnchorFilterUsingRegex(regex_balance_sheet, anchor); });
 
     static const boost::regex regex_operations{R"***((?:statement|statements)\s+?of.*?(?:oper|loss|income|earning))***",
         boost::regex_constants::normal | boost::regex_constants::icase};
 
-    auto stmt_of_ops_href = std::find_if(anchors.begin(), anchors.end(), MakeAnchorFilterForStatementType(regex_operations));
+    auto stmt_of_ops_href = ranges::find_if(anchors, [](const auto& anchor) { return AnchorFilterUsingRegex(regex_operations, anchor); });
     
     static const boost::regex regex_cash_flow{R"***((?:cash\s+flow)|(?:statement.+?cash)|(?:cashflow))***",
         boost::regex_constants::normal | boost::regex_constants::icase};
 
-    auto cash_flows_href = std::find_if(anchors.begin(), anchors.end(), MakeAnchorFilterForStatementType(regex_cash_flow));
+    auto cash_flows_href = ranges::find_if(anchors, [](const auto& anchor) { return AnchorFilterUsingRegex(regex_cash_flow, anchor); });
     
 //    auto sholder_equity_href = std::find_if(anchors.begin(), anchors.end(), StockholdersEquityAnchorFilter);
     
@@ -897,17 +917,17 @@ TEST_F(ProblemFiles_10K, DISABLED_FindSectionAnchors_10K)
 
     static const boost::regex regex_balance_sheet{R"***((?:balance\s+sheet)|(?:financial.*?position))***",
         boost::regex_constants::normal | boost::regex_constants::icase};
-    auto balance_sheet_href = std::find_if(anchors.begin(), anchors.end(), MakeAnchorFilterForStatementType(regex_balance_sheet));
+    auto balance_sheet_href = ranges::find_if(anchors, [](const auto& anchor) { return AnchorFilterUsingRegex(regex_balance_sheet, anchor); });
 
     static const boost::regex regex_operations{R"***((?:statement|statements)\s+?of.*?(?:oper|loss|income|earning))***",
         boost::regex_constants::normal | boost::regex_constants::icase};
 
-    auto stmt_of_ops_href = std::find_if(anchors.begin(), anchors.end(), MakeAnchorFilterForStatementType(regex_operations));
+    auto stmt_of_ops_href = ranges::find_if(anchors, [](const auto& anchor) { return AnchorFilterUsingRegex(regex_operations, anchor); });
     
     static const boost::regex regex_cash_flow{R"***((?:cash\s+flow)|(?:statement.+?cash)|(?:cashflow))***",
         boost::regex_constants::normal | boost::regex_constants::icase};
 
-    auto cash_flows_href = std::find_if(anchors.begin(), anchors.end(), MakeAnchorFilterForStatementType(regex_cash_flow));
+    auto cash_flows_href = ranges::find_if(anchors, [](const auto& anchor) { return AnchorFilterUsingRegex(regex_cash_flow, anchor); });
     
 //    auto sholder_equity_href = std::find_if(anchors.begin(), anchors.end(), StockholdersEquityAnchorFilter);
     

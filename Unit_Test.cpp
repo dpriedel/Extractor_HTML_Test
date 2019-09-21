@@ -1240,8 +1240,7 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_WITH_ANCHORS_Collect1)
 //    {
 //        std::cout << "\nkey: " << key << " value: " << value << '\n';
 //    }
-    std::cout << "\nFound: " << all_sections.ListValues().size() << " values.\n";
-    ASSERT_TRUE(all_sections.ListValues().size() == 80);
+    ASSERT_EQ(all_sections.ListValues().size(), 80);
 }
 
 TEST_F(ProcessEntireFileAndExtractData_10Q, XML_10Q_Collect1)

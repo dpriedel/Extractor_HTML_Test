@@ -56,6 +56,7 @@ using namespace testing;
 #include "SEC_Header.h"
 #include "AnchorsFromHTML.h"
 #include "TablesFromFile.h"
+#include "SharesOutstanding.h"
 
 // some specific files for Testing.
 
@@ -1189,10 +1190,15 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_FIND_SHARES1)
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_FIND_SHARES1);
 
     auto all_sections = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
-
     EXPECT_TRUE(all_sections.has_data());
 
-    std::cout << "\n\nShares outstanding: " << all_sections.outstanding_shares_ << '\n';
+    SharesOutstanding so;
+
+    int64_t shares = so(all_sections.html_);
+
+    ASSERT_TRUE(shares > -1);
+
+    std::cout << "\n\nShares outstanding: " << shares << '\n';
 
 //    for (const auto& [key, value] : all_sections.ListValues())
 //    {

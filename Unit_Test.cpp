@@ -762,7 +762,9 @@ public:
 TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
-    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
+
+    const SharesOutstanding so;
+    auto all_sections = FindAndExtractFinancialStatements(so, file_content_10Q, {"10-Q"});
 
     ASSERT_TRUE(all_sections.has_data());
 }
@@ -771,7 +773,8 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections2)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS2);
 
-    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
+    const SharesOutstanding so;
+    auto all_sections = FindAndExtractFinancialStatements(so, file_content_10Q, {"10-Q"});
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
     std::cout << "\n\nCash Flow\n";
@@ -838,7 +841,8 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSectionsMinimalHTMLData)
 //    EXPECT_TRUE(financial_content != htmls.end());
 //
 //    auto all_sections = ExtractFinancialStatementsUsingAnchors(financial_content->html_);
-    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
+    const SharesOutstanding so;
+    auto all_sections = FindAndExtractFinancialStatements(so, file_content_10Q, {"10-Q"});
 
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
@@ -896,7 +900,8 @@ TEST_F(ProblemFiles_10Q, FindSectionAnchors_10Q)
 TEST_F(ProblemFiles_10Q, FileWithMinimalData)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
-    auto financial_statements = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
+    const SharesOutstanding so;
+    auto financial_statements = FindAndExtractFinancialStatements(so, file_content_10Q, {"10-Q"});
 
     ASSERT_TRUE(financial_statements.has_data());
 }
@@ -1011,7 +1016,8 @@ TEST_F(NoAnchors_10Q, FileWithNoAnchors2)
 //
 //    EXPECT_TRUE(statement_anchors.size() < 3);
 
-    auto the_tables = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
+    const SharesOutstanding so;
+    auto the_tables = FindAndExtractFinancialStatements(so, file_content_10Q, {"10-Q"});
 
     ASSERT_TRUE(the_tables.has_data());
 }
@@ -1038,7 +1044,8 @@ TEST_F(NoAnchors_10Q, FileWithNoAnchors3)
 //
 //    EXPECT_TRUE(statement_anchors.size() < 3);
 
-    auto the_tables = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
+    const SharesOutstanding so;
+    auto the_tables = FindAndExtractFinancialStatements(so, file_content_10Q, {"10-Q"});
 
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(the_tables.balance_sheet_.parsed_data_.data(), 500);
@@ -1065,7 +1072,8 @@ TEST_F(ProblemWithRegexs_10Q, UseRegexProblemFile1)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_PROBLEM_REGEX1);
 
-    auto the_tables = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
+    const SharesOutstanding so;
+    auto the_tables = FindAndExtractFinancialStatements(so, file_content_10Q, {"10-Q"});
 
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(the_tables.balance_sheet_.parsed_data_.data(), 500);
@@ -1089,7 +1097,8 @@ TEST_F(ProblemWithRegexs_10Q, DISABLED_UseRegexProblemFile2)
     // this is not supported...yet.
 
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_PROBLEM_REGEX2);
-    auto the_tables = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
+    const SharesOutstanding so;
+    auto the_tables = FindAndExtractFinancialStatements(so, file_content_10Q, {"10-Q"});
 
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(the_tables.balance_sheet_.parsed_data_.data(), 500);
@@ -1111,7 +1120,8 @@ TEST_F(ProblemWithRegexs_10Q, ProblemMatchingCurrentAssets)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_XML_10Q);
 
-    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
+    const SharesOutstanding so;
+    auto all_sections = FindAndExtractFinancialStatements(so, file_content_10Q, {"10-Q"});
 
     EXPECT_TRUE(all_sections.has_data());
 
@@ -1162,7 +1172,8 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_WITH_ANCHORS)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
 
-    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
+    const SharesOutstanding so;
+    auto all_sections = FindAndExtractFinancialStatements(so, file_content_10Q, {"10-Q"});
 
     EXPECT_TRUE(all_sections.has_data());
 
@@ -1189,16 +1200,15 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_FIND_SHARES1)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_FIND_SHARES1);
 
-    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
+    const SharesOutstanding so;
+    auto all_sections = FindAndExtractFinancialStatements(so, file_content_10Q, {"10-Q"});
     EXPECT_TRUE(all_sections.has_data());
 
-    SharesOutstanding so;
-
-    int64_t shares = so(all_sections.html_);
+    int64_t shares = all_sections.outstanding_shares_;
 
     ASSERT_EQ(shares, 257360875);
 
-    std::cout << "\n\nShares outstanding: " << shares << '\n';
+//    std::cout << "\n\nShares outstanding: " << shares << '\n';
 
 //    for (const auto& [key, value] : all_sections.ListValues())
 //    {
@@ -1210,7 +1220,8 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_ASSETS_PROBLEM1)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_PROBLEM_WITH_ASSETS1);
 
-    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
+    const SharesOutstanding so;
+    auto all_sections = FindAndExtractFinancialStatements(so, file_content_10Q, {"10-Q"});
 
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
@@ -1235,7 +1246,8 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_WITH_ANCHORS_Collect1)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
 
-    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
+    const SharesOutstanding so;
+    auto all_sections = FindAndExtractFinancialStatements(so, file_content_10Q, {"10-Q"});
 
     EXPECT_TRUE(all_sections.has_data());
 
@@ -1252,7 +1264,8 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_WITH_ANCHORS_Collect1)
 TEST_F(ProcessEntireFileAndExtractData_10Q, XML_10Q_Collect1)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_XML_10Q);
-    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
+    const SharesOutstanding so;
+    auto all_sections = FindAndExtractFinancialStatements(so, file_content_10Q, {"10-Q"});
 
     EXPECT_TRUE(all_sections.has_data());
 
@@ -1273,7 +1286,8 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, XML_10Q_Collect1)
 TEST_F(ProcessEntireFileAndExtractData_10Q, XML_10Q_Collect2)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_XML2_10Q);
-    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
+    const SharesOutstanding so;
+    auto all_sections = FindAndExtractFinancialStatements(so, file_content_10Q, {"10-Q"});
 
     EXPECT_TRUE(all_sections.has_data());
 
@@ -1291,7 +1305,8 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, XML_10Q_Collect2)
 TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_NO_ANCHORS_10Q_Collect1)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS2);
-    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
+    const SharesOutstanding so;
+    auto all_sections = FindAndExtractFinancialStatements(so, file_content_10Q, {"10-Q"});
 
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
@@ -1310,7 +1325,8 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_DUPLICATE_LABEL_TEXT)
 
     auto file_content_10Q = LoadDataFileForUse(FILE_SHOWING_DUPLICATE_LABEL_TEXT);
 
-    auto all_sections = FindAndExtractFinancialStatements(file_content_10Q, {"10-Q"});
+    const SharesOutstanding so;
+    auto all_sections = FindAndExtractFinancialStatements(so, file_content_10Q, {"10-Q"});
 
     EXPECT_TRUE(all_sections.has_data());
 
@@ -1333,7 +1349,8 @@ public:
 TEST_F(ProcessEntireFileAndExtractData_10K, XML_10K_Collect1)
 {
     auto file_content_10K = LoadDataFileForUse(FILE_WITH_HTML_NO_HREFS1_10K);
-    auto all_sections = FindAndExtractFinancialStatements(file_content_10K, {"10-K"});
+    const SharesOutstanding so;
+    auto all_sections = FindAndExtractFinancialStatements(so, file_content_10K, {"10-K"});
 
     EXPECT_TRUE(all_sections.has_data());
 

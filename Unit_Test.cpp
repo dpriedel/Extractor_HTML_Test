@@ -1196,7 +1196,7 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_FIND_SHARES1)
 
     int64_t shares = so(all_sections.html_);
 
-    ASSERT_TRUE(shares > -1);
+    ASSERT_EQ(shares, 257360875);
 
     std::cout << "\n\nShares outstanding: " << shares << '\n';
 

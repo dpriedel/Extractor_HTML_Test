@@ -1737,6 +1737,95 @@ TEST_F(ExportHTML, AsyncExportHTMLDetectsFullDiskAndStops)
 // 	ASSERT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 182);
 }
 
+class UpdateSharesOutstanding : public Test
+{
+public:
+
+    int entires_with_shares{0};
+
+        void SetUp() override
+        {
+		    pqxx::connection c{"dbname=sec_extracts user=extractor_pg"};
+		    pqxx::work trxn{c};
+
+            // we want to count how many entries we have.
+            // theoretically, we will update all of them.
+
+		    auto row = trxn.exec1("SELECT count(*) FROM html_extracts.sec_filing_id WHERE shares_outstanding != -1");
+			entires_with_shares = row[0].as<int>();
+
+		    trxn.exec("UPDATE html_extracts.sec_filing_id SET shares_outstanding = -1");
+		    trxn.commit();
+			c.disconnect();
+        }
+		int CountRows()
+		{
+		    pqxx::connection c{"dbname=sec_extracts user=extractor_pg"};
+		    pqxx::work trxn{c};
+
+		    // make sure the DB is empty before we start
+
+		    auto row = trxn.exec1("SELECT count(*) FROM html_extracts.sec_filing_id WHERE shares_outstanding != -1");
+		    trxn.commit();
+			c.disconnect();
+			return row[0].as<int>();
+		}
+};
+
+
+TEST_F(UpdateSharesOutstanding, UpdateSharesOutstandingAsyncAndSync)
+{
+	//	NOTE: the program name 'the_program' in the command line below is ignored in the
+	//	the test program.
+
+    if (fs::exists("/tmp/test1.log"))
+    {
+	   fs::remove("/tmp/test1.log");
+    }
+
+	std::vector<std::string> tokens{"the_program",
+        "--log-level", "debug",
+		"--form", "10-Q,10-K",
+        "--mode", "HTML",
+		"-k", "6",
+		"--list", "./test_directory_list.txt",
+		"--log-path", "/tmp/test1.log",
+        "--UpdateSharesOutstanding"
+    };
+
+	try
+	{
+        ExtractorApp myApp(tokens);
+
+		decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
+        spdlog::info(catenate("\n\nTest: ", test_info->name(), " test case: ",
+                test_info->test_case_name(), "\n\n"));
+
+        bool startup_OK = myApp.Startup();
+        if (startup_OK)
+        {
+            myApp.Run();
+            myApp.Shutdown();
+        }
+        else
+        {
+            std::cout << "Problems starting program.  No processing done.\n";
+        }
+	}
+
+    // catch any problems trying to setup application
+
+	catch (const std::exception& theProblem)
+	{
+        spdlog::error(catenate("Something fundamental went wrong: ", theProblem.what()));
+	}
+	catch (...)
+	{		// handle exception: unspecified
+        spdlog::error("Something totally unexpected happened.");
+	}
+    EXPECT_NE(CountRows(), 0);
+	ASSERT_EQ(CountRows(), entires_with_shares);
+}
 /* 
  * ===  FUNCTION  ======================================================================
  *         Name:  InitLogging

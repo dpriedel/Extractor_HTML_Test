@@ -45,6 +45,13 @@
 #include <gmock/gmock.h>
 
 //#include <range/v3/all.hpp>
+#include <range/v3/front.hpp>
+#include <range/v3/numeric/accumulate.hpp>
+#include <range/v3/algorithm/adjacent_find.hpp>
+#include <range/v3/algorithm/for_each.hpp>
+
+#include "spdlog/spdlog.h"
+
 
 namespace fs = std::filesystem;
 
@@ -97,6 +104,9 @@ constexpr const char* FILE_WITH_HTML_10Q_FIND_SHARES1{"/vol_DA/SEC/Archives/edga
 constexpr const char* FILE_WITH_HTML_NO_HREFS1_10K{"/vol_DA/SEC/SEC_forms/0000906345/10-K/0000906345-04-000036.txt"};
 constexpr const char* FILE_WITH_HTML_ANCHORS_10Q{"/home/dpriedel/projects/github/Extractsec_XBRL/YUM_bad_balsheet.html"};
 constexpr const char* FILE_WITH_HTML_10Q_WITH_SEGMENTED_ANCHORS{"/home/dpriedel/projects/github/Extractor_HTML_Test/test_files/RubyTuesday.html"};
+
+constexpr const char* TRAINING_FILE_FOR_SHARES_OUTSTANDING{"/home/dpriedel/projects/github/Extractor_HTML_Test/shares_outstanding_training_file.txt"};
+
 // This ctype facet does NOT classify spaces and tabs as whitespace
 // from cppreference example
 
@@ -1542,6 +1552,45 @@ TEST_F(ExportHTML, VerifyCanProcessExportedHTML_10Q)
 
     ASSERT_EQ(processed_files, 177);
 }
+
+// we expect these tests to run against extracted HTML content meaning
+// the relevant part of the original file has been isolated already.
+
+class FindSharesOutstanding : public Test
+{
+public:
+
+};
+
+TEST_F(FindSharesOutstanding, TEST_LIST_OF_FILES_WITH_ANSWERS)
+{
+    // tab delimited format.  file name, number of shares outstanding
+
+    std::ifstream training_file(TRAINING_FILE_FOR_SHARES_OUTSTANDING);
+
+    int success_ctr = 0;
+    while(training_file.good())
+    {
+        std::string file_name;
+        int64_t shares;
+        training_file >> file_name;
+        training_file >> shares;
+
+        auto file_content = LoadDataFileForUse(file_name);
+        HTML_FromFile htmls(file_content);
+
+        SharesOutstanding so;
+        int64_t found_shares = so(htmls.begin()->html_);
+        if (found_shares == shares)
+        {
+            ++success_ctr;
+        }
+        std::cout << "Looking for: " << shares << " Found: " << found_shares << ((found_shares == shares) ? " Success" : " Failure") << '\n';
+    };
+
+    ASSERT_EQ(success_ctr, 180);
+}
+
 /* 
  * ===  FUNCTION  ======================================================================
  *         Name:  InitLogging
@@ -1554,6 +1603,7 @@ void InitLogging ()
 //    (
 //        logging::trivial::severity >= logging::trivial::trace
 //    );
+    spdlog::set_level(spdlog::level::debug);
 }		/* -----  end of function InitLogging  ----- */
 
 int main(int argc, char** argv)

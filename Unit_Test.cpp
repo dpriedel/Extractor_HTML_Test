@@ -107,6 +107,11 @@ constexpr const char* FILE_WITH_HTML_10Q_WITH_SEGMENTED_ANCHORS{"/home/dpriedel/
 
 constexpr const char* TRAINING_FILE_FOR_SHARES_OUTSTANDING{"/home/dpriedel/projects/github/Extractor_HTML_Test/shares_outstanding_training_file.txt"};
 
+constexpr const char* FILE_WITH_SHARES_AND_VALUE{"/vol_DA/SEC/Archives/edgar/html/0000004127/0000004127-15-000037.txt_fy1510k1022015.htm"};
+constexpr const char* FILE_WITH_NO_POSSIBLES{"/vol_DA/SEC/Archives/edgar/html/0001609711/0001609711-19-000012.txt_a201810-kx10kdocument.htm"};
+constexpr const char* FILE_WITH_SHARES_BEFORE_YESNO{"/vol_KUtil2/SEC_exports/html/0000019617/10-K/0000950123-04-002022.txt_y94051e10vk.htm"};
+constexpr const char* FILE_WITH_SHARES_AFTER_CONTENTS{"/vol_KUtil2/SEC_exports/html/0000000020/10-K/0000893220-05-000728.txt_w06061e10vk.htm"};
+
 // This ctype facet does NOT classify spaces and tabs as whitespace
 // from cppreference example
 
@@ -1562,6 +1567,54 @@ public:
 
 };
 
+TEST_F(FindSharesOutstanding, TEST_10K_FILE_WITH_SHARES_AND_VALUE)
+{
+    auto file_content_10K = LoadDataFileForUse(FILE_WITH_SHARES_AND_VALUE);
+
+    HTML_FromFile htmls(file_content_10K);
+    const SharesOutstanding so;
+
+    int64_t found_shares = so(htmls.begin()->html_);
+
+    ASSERT_EQ(found_shares, 191151089);
+}
+
+TEST_F(FindSharesOutstanding, TEST_10K_FILE_WITH_NO_POSSIBLES)
+{
+    auto file_content_10K = LoadDataFileForUse(FILE_WITH_NO_POSSIBLES);
+
+    HTML_FromFile htmls(file_content_10K);
+    const SharesOutstanding so;
+
+    int64_t found_shares = so(htmls.begin()->html_);
+
+    ASSERT_EQ(found_shares, 169173941);
+}
+
+TEST_F(FindSharesOutstanding, TEST_10K_FILE_WITH_SHARES_BEFORE_YESNO)
+{
+    auto file_content_10K = LoadDataFileForUse(FILE_WITH_SHARES_BEFORE_YESNO);
+
+    HTML_FromFile htmls(file_content_10K);
+    const SharesOutstanding so;
+
+    int64_t found_shares = so(htmls.begin()->html_);
+
+    ASSERT_EQ(found_shares, 2058165766);
+}
+
+TEST_F(FindSharesOutstanding, TEST_10K_FILE_WITH_SHARES_AFTER_CONTENTS)
+{
+    auto file_content_10K = LoadDataFileForUse(FILE_WITH_SHARES_AFTER_CONTENTS);
+
+    HTML_FromFile htmls(file_content_10K);
+    const SharesOutstanding so;
+
+    int64_t found_shares = so(htmls.begin()->html_);
+
+    ASSERT_EQ(found_shares, 2539442);
+}
+
 TEST_F(FindSharesOutstanding, TEST_LIST_OF_FILES_WITH_ANSWERS)
 {
     // tab delimited format.  file name, number of shares outstanding
@@ -1575,6 +1628,8 @@ TEST_F(FindSharesOutstanding, TEST_LIST_OF_FILES_WITH_ANSWERS)
         int64_t shares;
         training_file >> file_name;
         training_file >> shares;
+
+        std::cout << "\n\nProcessing file: " << file_name << '\n';
 
         auto file_content = LoadDataFileForUse(file_name);
         HTML_FromFile htmls(file_content);

@@ -111,6 +111,7 @@ constexpr const char* FILE_WITH_SHARES_AND_VALUE{"/vol_DA/SEC/Archives/edgar/htm
 constexpr const char* FILE_WITH_NO_POSSIBLES{"/vol_DA/SEC/Archives/edgar/html/0001609711/0001609711-19-000012.txt_a201810-kx10kdocument.htm"};
 constexpr const char* FILE_WITH_SHARES_BEFORE_YESNO{"/vol_KUtil2/SEC_exports/html/0000019617/10-K/0000950123-04-002022.txt_y94051e10vk.htm"};
 constexpr const char* FILE_WITH_SHARES_AFTER_CONTENTS{"/vol_KUtil2/SEC_exports/html/0000000020/10-K/0000893220-05-000728.txt_w06061e10vk.htm"};
+constexpr const char* FILE_WITH_SHARE_VALUE_NO_DOLLAR_SIGN{"/vol_KUtil2/SEC_exports/html/0001326160/10-K/0001326160-14-000003.txt_form10k.htm"};
 
 // This ctype facet does NOT classify spaces and tabs as whitespace
 // from cppreference example
@@ -1567,7 +1568,7 @@ public:
 
 };
 
-TEST_F(FindSharesOutstanding, TEST_10K_FILE_WITH_SHARES_AND_VALUE)
+TEST_F(FindSharesOutstanding, Test10KFileWithSharesAndValue)
 {
     auto file_content_10K = LoadDataFileForUse(FILE_WITH_SHARES_AND_VALUE);
 
@@ -1579,7 +1580,19 @@ TEST_F(FindSharesOutstanding, TEST_10K_FILE_WITH_SHARES_AND_VALUE)
     ASSERT_EQ(found_shares, 191151089);
 }
 
-TEST_F(FindSharesOutstanding, TEST_10K_FILE_WITH_NO_POSSIBLES)
+TEST_F(FindSharesOutstanding, Test10KFileWithNoDollarSignOnValue)
+{
+    auto file_content_10K = LoadDataFileForUse(FILE_WITH_SHARE_VALUE_NO_DOLLAR_SIGN);
+
+    HTML_FromFile htmls(file_content_10K);
+    const SharesOutstanding so;
+
+    int64_t found_shares = so(htmls.begin()->html_);
+
+    ASSERT_EQ(found_shares, 706455305);
+}
+
+TEST_F(FindSharesOutstanding, Test10KFileWithNoPossibles)
 {
     auto file_content_10K = LoadDataFileForUse(FILE_WITH_NO_POSSIBLES);
 
@@ -1591,7 +1604,7 @@ TEST_F(FindSharesOutstanding, TEST_10K_FILE_WITH_NO_POSSIBLES)
     ASSERT_EQ(found_shares, 169173941);
 }
 
-TEST_F(FindSharesOutstanding, TEST_10K_FILE_WITH_SHARES_BEFORE_YESNO)
+TEST_F(FindSharesOutstanding, Test10KFileWithSharesBeforeYesNo)
 {
     auto file_content_10K = LoadDataFileForUse(FILE_WITH_SHARES_BEFORE_YESNO);
 
@@ -1603,7 +1616,7 @@ TEST_F(FindSharesOutstanding, TEST_10K_FILE_WITH_SHARES_BEFORE_YESNO)
     ASSERT_EQ(found_shares, 2058165766);
 }
 
-TEST_F(FindSharesOutstanding, TEST_10K_FILE_WITH_SHARES_AFTER_CONTENTS)
+TEST_F(FindSharesOutstanding, Test10KFileWithSharesAfterContents)
 {
     auto file_content_10K = LoadDataFileForUse(FILE_WITH_SHARES_AFTER_CONTENTS);
 
@@ -1615,7 +1628,7 @@ TEST_F(FindSharesOutstanding, TEST_10K_FILE_WITH_SHARES_AFTER_CONTENTS)
     ASSERT_EQ(found_shares, 2539442);
 }
 
-TEST_F(FindSharesOutstanding, TEST_LIST_OF_FILES_WITH_ANSWERS)
+TEST_F(FindSharesOutstanding, TestListOfFilesWithAnswers)
 {
     // tab delimited format.  file name, number of shares outstanding
 
@@ -1627,6 +1640,10 @@ TEST_F(FindSharesOutstanding, TEST_LIST_OF_FILES_WITH_ANSWERS)
         std::string file_name;
         int64_t shares;
         training_file >> file_name;
+        if (training_file.eof())
+        {
+            break;
+        }
         training_file >> shares;
 
         std::cout << "\n\nProcessing file: " << file_name << '\n';
@@ -1643,7 +1660,7 @@ TEST_F(FindSharesOutstanding, TEST_LIST_OF_FILES_WITH_ANSWERS)
         std::cout << "Looking for: " << shares << " Found: " << found_shares << ((found_shares == shares) ? " Success" : " Failure") << '\n';
     };
 
-    ASSERT_EQ(success_ctr, 180);
+    ASSERT_EQ(success_ctr, 182);
 }
 
 /* 

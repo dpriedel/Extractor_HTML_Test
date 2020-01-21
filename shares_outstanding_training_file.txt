@@ -8,175 +8,175 @@
 /vol_DA/SEC/Archives/edgar/html/1095130/0001144204-13-054803.txt_v356837_10q.htm	48898474
 /vol_DA/SEC/Archives/edgar/html/6845/0000006845-13-000022.txt_apog-2013831x10q.htm	28787974
 /vol_DA/SEC/Archives/edgar/html/1567503/0001567503-13-000025.txt_f10q_09302013vanell.htm	3880000
-/vol_DA/SEC/Archives/edgar/html/1552979/0001214782-13-000386.txt_gankit10q083113.htm	
-/vol_DA/SEC/Archives/edgar/html/1521065/0001062993-13-005005.txt_form10q.htm	
-/vol_DA/SEC/Archives/edgar/html/110471/0000110471-13-000005.txt_www-201397x10q.htm	
-/vol_DA/SEC/Archives/edgar/html/785815/0001437749-13-013062.txt_rmcf20131004_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1500305/0001493152-13-001992.txt_form10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1527032/0001104659-13-075617.txt_a13-19839_110q.htm	
-/vol_DA/SEC/Archives/edgar/html/355948/0000355948-13-000003.txt_rell-2013831x10q.htm	
-/vol_DA/SEC/Archives/edgar/html/65759/0001010549-13-000598.txt_micro10q083113.htm	
-/vol_DA/SEC/Archives/edgar/html/7623/0001437749-13-013065.txt_artw20131015_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1545447/0001493152-13-002000.txt_form10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1436549/0001354488-13-005633.txt_meil_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/108516/0001193125-13-396507.txt_d596239d10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1060409/0001211524-13-000254.txt_R5.htm	
-/vol_DA/SEC/Archives/edgar/html/100885/0001193125-13-402477.txt_d612281d10q.htm	
-/vol_DA/SEC/Archives/edgar/html/862692/0001193125-13-400021.txt_d594573d10q.htm	
-/vol_DA/SEC/Archives/edgar/html/86144/0000086144-13-000076.txt_swy-09072013x10q.htm	
-/vol_DA/SEC/Archives/edgar/html/764630/0001144204-13-055224.txt_v356867_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/783005/0000783005-13-000007.txt_emms10-q2.htm	
-/vol_DA/SEC/Archives/edgar/html/1524358/0001193125-13-396232.txt_d588401d10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1286681/0001193125-13-398993.txt_d605178d10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1382231/0001354488-13-005706.txt_stbr_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1164256/0001515971-13-000461.txt_dbrm10q083113.htm	
-/vol_DA/SEC/Archives/edgar/html/1558009/0001557240-13-000318.txt_sbor_2013aug31-10q3.htm	
-/vol_DA/SEC/Archives/edgar/html/1025771/0001477932-13-004642.txt_cpka_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1025771/0001477932-13-004643.txt_cpka_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1025771/0001477932-13-004645.txt_cpka_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/73290/0001513162-13-000770.txt_biomerica10qf14q1aug13pkfedi.htm	
-/vol_DA/SEC/Archives/edgar/html/1047166/0001067701-13-000020.txt_uri-9302013x10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1459482/0001019687-13-003873.txt_chineseinvestors_10q-083113.htm	
-/vol_DA/SEC/Archives/edgar/html/29905/0000029905-13-000053.txt_a20130930-10xq.htm	
-/vol_DA/SEC/Archives/edgar/html/1495648/0000939802-13-000158.txt_form10q083113.htm	
-/vol_DA/SEC/Archives/edgar/html/1522222/0001185185-13-002216.txt_adeltdesign10q083113.htm	
-/vol_DA/SEC/Archives/edgar/html/31667/0001185185-13-002224.txt_educationaldev10q083113.htm	
-/vol_DA/SEC/Archives/edgar/html/1350421/0001078782-13-001993.txt_f10q083113_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1040470/0001354488-13-005691.txt_aehr_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1512983/0001144204-13-055294.txt_v357318_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1551454/0001493152-13-001967.txt_form10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1508128/0001062993-13-005028.txt_form10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1558465/0001264931-13-000548.txt_commerce10q2.htm	
-/vol_DA/SEC/Archives/edgar/html/704440/0001161697-13-000752.txt_form_10-q.htm	
-/vol_DA/SEC/Archives/edgar/html/313616/0000313616-13-000125.txt_dhr-2013927x10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1519955/0001213900-13-005691.txt_f10q0813_astraventuresinc.htm	
-/vol_DA/SEC/Archives/edgar/html/922612/0001193125-13-396743.txt_d600850d10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1505124/0001255294-13-000815.txt_mainbody.htm	
-/vol_DA/SEC/Archives/edgar/html/95521/0001193125-13-402669.txt_d599448d10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1297223/0001062993-13-004994.txt_form10q.htm	
-/vol_DA/SEC/Archives/edgar/html/795266/0000795266-13-000042.txt_kbh-08312013x10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1315756/0001096906-13-001582.txt_huayue.htm	
-/vol_DA/SEC/Archives/edgar/html/38723/0000038723-09-000115.txt_sec10q092009edgar.htm	
-/vol_DA/SEC/Archives/edgar/html/835662/0001079973-13-000599.txt_mcar_10q-083113.htm	
-/vol_DA/SEC/Archives/edgar/html/1046672/0001102624-13-001243.txt_mxom10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1443089/0001144204-13-055034.txt_v357225_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/797465/0001513162-13-000764.txt_f10q3rdqtr2013_stly.htm	
-/vol_DA/SEC/Archives/edgar/html/920760/0001445305-13-002387.txt_len-2013831x10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1056757/0001079974-13-000628.txt_sey10q83113.htm	
-/vol_DA/SEC/Archives/edgar/html/90896/0001193125-13-397942.txt_d595152d10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1355304/0000949353-13-000157.txt_f10q-083113_uswirl.htm	
-/vol_DA/SEC/Archives/edgar/html/1389415/0001328759-09-000176.txt_form10-q1sthome.htm	
-/vol_DA/SEC/Archives/edgar/html/916789/0001104659-13-075078.txt_a13-19224_110q.htm	
-/vol_DA/SEC/Archives/edgar/html/1165002/0001564590-13-000691.txt_whg-10q_20130930.htm	
-/vol_DA/SEC/Archives/edgar/html/1530981/0001557240-13-000316.txt_nef_q1-aug2013.htm	
-/vol_DA/SEC/Archives/edgar/html/351346/0001402366-13-000009.txt_bmet-10qx8312013.htm	
-/vol_DA/SEC/Archives/edgar/html/96536/0000096536-13-000022.txt_tayd2014q110q.htm	
-/vol_DA/SEC/Archives/edgar/html/1529516/0001437749-13-013053.txt_esdi20131011_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1473591/0001354488-13-005669.txt_sure_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1422059/0001255294-13-000797.txt_mainbody.htm	
-/vol_DA/SEC/Archives/edgar/html/201779/0001354488-13-005666.txt_R7.htm	
-/vol_DA/SEC/Archives/edgar/html/1571123/0001193125-13-399793.txt_d582052d10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1493174/0001493152-13-001978.txt_form10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1407343/0001477932-13-004651.txt_tapp_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/34782/0000034782-09-000040.txt_form10_q.htm	
-/vol_DA/SEC/Archives/edgar/html/6201/0000006201-13-000089.txt_amr-10qx2013930.htm	
-/vol_DA/SEC/Archives/edgar/html/1478725/0001019687-13-003863.txt_voil_10q-083113.htm	
-/vol_DA/SEC/Archives/edgar/html/1435387/0001144204-13-055619.txt_v357486_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/836564/0001019687-13-003875.txt_patriot_10q-083113.htm	
-/vol_DA/SEC/Archives/edgar/html/1562738/0001562738-13-000015.txt_f10qbalius.htm	
-/vol_DA/SEC/Archives/edgar/html/1175416/0001175416-13-000010.txt_form10q08312013.htm	
-/vol_DA/SEC/Archives/edgar/html/1383394/0001078782-13-002031.txt_f10q093013_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1275187/0001193125-13-396632.txt_d595919d10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1563227/0001376474-13-000499.txt_sipup_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/758743/0001193125-13-399728.txt_d600221d10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1486297/0001165527-13-000849.txt_R18.htm	
-/vol_DA/SEC/Archives/edgar/html/1517389/0001477932-13-004667.txt_jfil_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1411488/0001193125-13-401456.txt_d592335d10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1566610/0001165527-13-000847.txt_g7105.htm	
-/vol_DA/SEC/Archives/edgar/html/91440/0001193125-13-401902.txt_d594575d10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1424404/0001062993-13-005030.txt_form10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1400000/0001211524-13-000256.txt_abakan10qaug2013.htm	
-/vol_DA/SEC/Archives/edgar/html/1540400/0001193125-13-396701.txt_d589155d10q.htm	
-/vol_DA/SEC/Archives/edgar/html/58822/0001354488-13-005605.txt_lcar_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/813389/0001086380-13-000036.txt_ahac0912.htm	
-/vol_DA/SEC/Archives/edgar/html/813389/0001086380-13-000035.txt_ahac0612q.htm	
-/vol_DA/SEC/Archives/edgar/html/813389/0001086380-13-000034.txt_ahac0312q.htm	
-/vol_DA/SEC/Archives/edgar/html/1141807/0001214659-09-002672.txt_s1119010q.htm	
-/vol_DA/SEC/Archives/edgar/html/1041061/0001041061-13-000044.txt_yum-9072013x10q.htm	
-/vol_DA/SEC/Archives/edgar/html/755003/0001193125-13-395959.txt_d579458d10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1402366/0001402366-13-000009.txt_bmet-10qx8312013.htm	
-/vol_DA/SEC/Archives/edgar/html/40888/0001193125-13-399898.txt_d596651d10q.htm	
-/vol_DA/SEC/Archives/edgar/html/736822/0001437749-13-013064.txt_blud20130831_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1561206/0001078782-13-002001.txt_f10q083113_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/77476/0000077476-13-000027.txt_pepsicoq3-10xq972013.htm	
-/vol_DA/SEC/Archives/edgar/html/1491959/0001393905-13-000561.txt_ndfm_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1065598/0001056520-13-000230.txt_f10q83113final.htm	
-/vol_DA/SEC/Archives/edgar/html/google-10k.txt_goog10-k2015.htm	
-/vol_DA/SEC/Archives/edgar/html/277948/0000277948-13-000040.txt_R6.htm	
-/vol_DA/SEC/Archives/edgar/html/1434743/0001193125-09-235665.txt_d10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1408057/0001185185-13-002218.txt_imedicor10q033113.htm	
-/vol_DA/SEC/Archives/edgar/html/1362703/0001062993-13-005077.txt_form10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1341319/0001445866-13-001158.txt_redtone10q10112013.htm	
-/vol_DA/SEC/Archives/edgar/html/1099215/0001144204-13-054857.txt_v356817_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/844143/0001104659-13-075680.txt_a13-18801_110q.htm	
-/vol_DA/SEC/Archives/edgar/html/949982/0001477932-13-004674.txt_aacs_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1376804/0001062993-13-005009.txt_form10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1468164/0001213900-13-005686.txt_f10q0813_profitplanners.htm	
-/vol_DA/SEC/Archives/edgar/html/1077561/0001140361-13-038647.txt_form10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1420525/0001420525-09-000028.txt_f3rdqtr_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/806172/0001171520-13-000641.txt_eps5310.htm	
-/vol_DA/SEC/Archives/edgar/html/1037390/0001104659-13-075074.txt_a13-20204_110q.htm	
-/vol_DA/SEC/Archives/edgar/html/354260/0001078782-13-002013.txt_f10q083113_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1404943/0001415889-13-002042.txt_metastat10q_aug312013.htm	
-/vol_DA/SEC/Archives/edgar/html/949268/0001137171-09-000933.txt_firstnrg10q112309.htm	
-/vol_DA/SEC/Archives/edgar/html/721447/0000721447-13-000033.txt_cca831201310q.htm	
-/vol_DA/SEC/Archives/edgar/html/1413990/0001398080-13-000023.txt_plq1201410qv1.htm	
-/vol_DA/SEC/Archives/edgar/html/1542261/0001542261-13-000022.txt_kolasco_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1175680/0001193125-13-399866.txt_d599514d10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1415998/0001214659-13-005671.txt_f52213010q.htm	
-/vol_DA/SEC/Archives/edgar/html/1415998/0001214659-13-005715.txt_s1092013010q.htm	
-/vol_DA/SEC/Archives/edgar/html/815556/0000815556-13-000049.txt_fast9301310q.htm	
-/vol_DA/SEC/Archives/edgar/html/1168960/0001052918-13-000423.txt_bioptic10qoct1513.htm	
-/vol_DA/SEC/Archives/edgar/html/1497251/0001002014-13-000448.txt_acro10q-6302012.htm	
-/vol_DA/SEC/Archives/edgar/html/1516079/0001213900-13-005698.txt_f10q0813_cloudsecuritycorp.htm	
-/vol_DA/SEC/Archives/edgar/html/1067701/0001067701-13-000020.txt_uri-9302013x10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1405621/0001405621-13-000016.txt_nga831201310q.htm	
-/vol_DA/SEC/Archives/edgar/html/1442492/0001199835-13-000657.txt_laredo_10q-15753.htm	
-/vol_DA/SEC/Archives/edgar/html/1123596/0001437749-13-013041.txt_babs20131009_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1326688/0001104659-09-064933.txt_a09-30948_110q.htm	
-/vol_DA/SEC/Archives/edgar/html/724445/0001104659-13-075692.txt_a13-19838_110q.htm	
-/vol_DA/SEC/Archives/edgar/html/1403431/0001403431-13-000024.txt_a201310-qq3.htm	
-/vol_DA/SEC/Archives/edgar/html/1088413/0001354488-13-005719.txt_glgi_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1326686/0001104659-09-064933.txt_a09-30948_110q.htm	
-/vol_DA/SEC/Archives/edgar/html/29989/0000029989-13-000015.txt_a2013q310-q.htm	
-/vol_DA/SEC/Archives/edgar/html/16918/0000016918-13-000021.txt_stz831201310q.htm	
-/vol_DA/SEC/Archives/edgar/html/1082492/0001019687-13-003898.txt_vadda_10q-063013.htm	
-/vol_DA/SEC/Archives/edgar/html/1435936/0001435936-13-000189.txt_f10q_20130831.htm	
-/vol_DA/SEC/Archives/edgar/html/724742/0001144204-13-055289.txt_v357078_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1513161/0001193125-13-402540.txt_d594160d10q.htm	
-/vol_DA/SEC/Archives/edgar/html/796764/0001171843-13-003957.txt_f10q_101013.htm	
-/vol_DA/SEC/Archives/edgar/html/1253557/0001144204-13-055247.txt_v357375_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1253557/0001144204-13-055241.txt_v357374_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1053532/0001053532-13-000052.txt_lho-q32013.htm	
-/vol_DA/SEC/Archives/edgar/html/807707/0000807707-13-000041.txt_q2201410q.htm	
-/vol_DA/SEC/Archives/edgar/html/70502/0000070502-13-000367.txt_aug312013_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/49534/0001144204-13-055134.txt_v356955_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1540334/0001078782-13-002015.txt_f10q063013_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1552946/0001552946-13-000041.txt_ecaug201310q.htm	
-/vol_DA/SEC/Archives/edgar/html/4515/0000004515-13-000053.txt_aa-10qx2013930.htm	
-/vol_DA/SEC/Archives/edgar/html/1421907/0001165527-13-000854.txt_R5.htm	
-/vol_DA/SEC/Archives/edgar/html/1118974/0001065949-13-000134.txt_R5.htm	
-/vol_DA/SEC/Archives/edgar/html/747540/0001013762-13-001308.txt_form10q.htm	
-/vol_DA/SEC/Archives/edgar/html/826773/0000826773-13-000010.txt_a2013q1form10-q.htm	
-/vol_DA/SEC/Archives/edgar/html/826773/0000826773-13-000011.txt_a2013q2form10-q.htm	
-/vol_DA/SEC/Archives/edgar/html/76267/0001437749-13-012986.txt_pke20130930_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1377936/0001104659-13-075719.txt_a13-19849_110q.htm	
-/vol_DA/SEC/Archives/edgar/html/90721/0001017386-13-000259.txt_pvsp_2013aug31-10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1522236/0001144204-13-055182.txt_v357232_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1541884/0001078782-13-002048.txt_f10q033113_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1541884/0001078782-13-002050.txt_f10q063013_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/811779/0001144204-13-055158.txt_v355911_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1511735/0001213900-13-005689.txt_f10q0813_yappncorp.htm	
-/vol_DA/SEC/Archives/edgar/html/1498291/0001524829-13-000185.txt_daca_10q.htm	
-/vol_DA/SEC/Archives/edgar/html/1466739/0001002014-13-000458.txt_wils10q-8312013.htm	
-/vol_DA/SEC/Archives/edgar/html/1460602/0001062993-13-005017.txt_form10q.htm	
+/vol_DA/SEC/Archives/edgar/html/1552979/0001214782-13-000386.txt_gankit10q083113.htm	30000000
+/vol_DA/SEC/Archives/edgar/html/1521065/0001062993-13-005005.txt_form10q.htm	28642913
+/vol_DA/SEC/Archives/edgar/html/110471/0000110471-13-000005.txt_www-201397x10q.htm	50291244
+/vol_DA/SEC/Archives/edgar/html/785815/0001437749-13-013062.txt_rmcf20131004_10q.htm	6115860
+/vol_DA/SEC/Archives/edgar/html/1500305/0001493152-13-001992.txt_form10q.htm	7000000
+/vol_DA/SEC/Archives/edgar/html/1527032/0001104659-13-075617.txt_a13-19839_110q.htm	-1
+/vol_DA/SEC/Archives/edgar/html/355948/0000355948-13-000003.txt_rell-2013831x10q.htm	11877968
+/vol_DA/SEC/Archives/edgar/html/65759/0001010549-13-000598.txt_micro10q083113.htm	2578315
+/vol_DA/SEC/Archives/edgar/html/7623/0001437749-13-013065.txt_artw20131015_10q.htm	4042552
+/vol_DA/SEC/Archives/edgar/html/1545447/0001493152-13-002000.txt_form10q.htm	4940000
+/vol_DA/SEC/Archives/edgar/html/1436549/0001354488-13-005633.txt_meil_10q.htm	7006417
+/vol_DA/SEC/Archives/edgar/html/108516/0001193125-13-396507.txt_d596239d10q.htm	70631324
+/vol_DA/SEC/Archives/edgar/html/1060409/0001211524-13-000254.txt_R5.htm	-1
+/vol_DA/SEC/Archives/edgar/html/100885/0001193125-13-402477.txt_d612281d10q.htm	460568638
+/vol_DA/SEC/Archives/edgar/html/862692/0001193125-13-400021.txt_d594573d10q.htm	10761325
+/vol_DA/SEC/Archives/edgar/html/86144/0000086144-13-000076.txt_swy-09072013x10q.htm	246800000
+/vol_DA/SEC/Archives/edgar/html/764630/0001144204-13-055224.txt_v356867_10q.htm	3512527
+/vol_DA/SEC/Archives/edgar/html/783005/0000783005-13-000007.txt_emms10-q2.htm	37087493
+/vol_DA/SEC/Archives/edgar/html/1524358/0001193125-13-396232.txt_d588401d10q.htm	35425607
+/vol_DA/SEC/Archives/edgar/html/1286681/0001193125-13-398993.txt_d605178d10q.htm	55718857
+/vol_DA/SEC/Archives/edgar/html/1382231/0001354488-13-005706.txt_stbr_10q.htm	110086705
+/vol_DA/SEC/Archives/edgar/html/1164256/0001515971-13-000461.txt_dbrm10q083113.htm	55010411
+/vol_DA/SEC/Archives/edgar/html/1558009/0001557240-13-000318.txt_sbor_2013aug31-10q3.htm	3700000
+/vol_DA/SEC/Archives/edgar/html/1025771/0001477932-13-004642.txt_cpka_10q.htm	15536275
+/vol_DA/SEC/Archives/edgar/html/1025771/0001477932-13-004643.txt_cpka_10q.htm	15536275
+/vol_DA/SEC/Archives/edgar/html/1025771/0001477932-13-004645.txt_cpka_10q.htm	15536275
+/vol_DA/SEC/Archives/edgar/html/73290/0001513162-13-000770.txt_biomerica10qf14q1aug13pkfedi.htm	7279214
+/vol_DA/SEC/Archives/edgar/html/1047166/0001067701-13-000020.txt_uri-9302013x10q.htm	93234360
+/vol_DA/SEC/Archives/edgar/html/1459482/0001019687-13-003873.txt_chineseinvestors_10q-083113.htm	5969585
+/vol_DA/SEC/Archives/edgar/html/29905/0000029905-13-000053.txt_a20130930-10xq.htm	170365768
+/vol_DA/SEC/Archives/edgar/html/1495648/0000939802-13-000158.txt_form10q083113.htm	620500
+/vol_DA/SEC/Archives/edgar/html/1522222/0001185185-13-002216.txt_adeltdesign10q083113.htm	18000000
+/vol_DA/SEC/Archives/edgar/html/31667/0001185185-13-002224.txt_educationaldev10q083113.htm	3970216
+/vol_DA/SEC/Archives/edgar/html/1350421/0001078782-13-001993.txt_f10q083113_10q.htm	991163
+/vol_DA/SEC/Archives/edgar/html/1040470/0001354488-13-005691.txt_aehr_10q.htm	10708920
+/vol_DA/SEC/Archives/edgar/html/1512983/0001144204-13-055294.txt_v357318_10q.htm	5540000
+/vol_DA/SEC/Archives/edgar/html/1551454/0001493152-13-001967.txt_form10q.htm	2379935
+/vol_DA/SEC/Archives/edgar/html/1508128/0001062993-13-005028.txt_form10q.htm	183619388
+/vol_DA/SEC/Archives/edgar/html/1558465/0001264931-13-000548.txt_commerce10q2.htm	19950000
+/vol_DA/SEC/Archives/edgar/html/704440/0001161697-13-000752.txt_form_10-q.htm	36661667
+/vol_DA/SEC/Archives/edgar/html/313616/0000313616-13-000125.txt_dhr-2013927x10q.htm	697199830
+/vol_DA/SEC/Archives/edgar/html/1519955/0001213900-13-005691.txt_f10q0813_astraventuresinc.htm	6900000
+/vol_DA/SEC/Archives/edgar/html/922612/0001193125-13-396743.txt_d600850d10q.htm	2990910
+/vol_DA/SEC/Archives/edgar/html/1505124/0001255294-13-000815.txt_mainbody.htm	10760000
+/vol_DA/SEC/Archives/edgar/html/95521/0001193125-13-402669.txt_d599448d10q.htm	259476828
+/vol_DA/SEC/Archives/edgar/html/1297223/0001062993-13-004994.txt_form10q.htm	321416654
+/vol_DA/SEC/Archives/edgar/html/795266/0000795266-13-000042.txt_kbh-08312013x10q.htm	83716101
+/vol_DA/SEC/Archives/edgar/html/1315756/0001096906-13-001582.txt_huayue.htm	31327741
+/vol_DA/SEC/Archives/edgar/html/38723/0000038723-09-000115.txt_sec10q092009edgar.htm	-1
+/vol_DA/SEC/Archives/edgar/html/835662/0001079973-13-000599.txt_mcar_10q-083113.htm	45411400
+/vol_DA/SEC/Archives/edgar/html/1046672/0001102624-13-001243.txt_mxom10q.htm	100340026
+/vol_DA/SEC/Archives/edgar/html/1443089/0001144204-13-055034.txt_v357225_10q.htm	1364719304
+/vol_DA/SEC/Archives/edgar/html/797465/0001513162-13-000764.txt_f10q3rdqtr2013_stly.htm	14509119
+/vol_DA/SEC/Archives/edgar/html/920760/0001445305-13-002387.txt_len-2013831x10q.htm	163111599
+/vol_DA/SEC/Archives/edgar/html/1056757/0001079974-13-000628.txt_sey10q83113.htm	25853646
+/vol_DA/SEC/Archives/edgar/html/90896/0001193125-13-397942.txt_d595152d10q.htm	8391244
+/vol_DA/SEC/Archives/edgar/html/1355304/0000949353-13-000157.txt_f10q-083113_uswirl.htm	15164588
+/vol_DA/SEC/Archives/edgar/html/1389415/0001328759-09-000176.txt_form10-q1sthome.htm	15000000
+/vol_DA/SEC/Archives/edgar/html/916789/0001104659-13-075078.txt_a13-19224_110q.htm	32045496
+/vol_DA/SEC/Archives/edgar/html/1165002/0001564590-13-000691.txt_whg-10q_20130930.htm	8187529
+/vol_DA/SEC/Archives/edgar/html/1530981/0001557240-13-000316.txt_nef_q1-aug2013.htm	4662500
+/vol_DA/SEC/Archives/edgar/html/351346/0001402366-13-000009.txt_bmet-10qx8312013.htm	552387966
+/vol_DA/SEC/Archives/edgar/html/96536/0000096536-13-000022.txt_tayd2014q110q.htm	3341690
+/vol_DA/SEC/Archives/edgar/html/1529516/0001437749-13-013053.txt_esdi20131011_10q.htm	39755000
+/vol_DA/SEC/Archives/edgar/html/1473591/0001354488-13-005669.txt_sure_10q.htm	92855861
+/vol_DA/SEC/Archives/edgar/html/1422059/0001255294-13-000797.txt_mainbody.htm	2150000
+/vol_DA/SEC/Archives/edgar/html/201779/0001354488-13-005666.txt_R7.htm	-1
+/vol_DA/SEC/Archives/edgar/html/1571123/0001193125-13-399793.txt_d582052d10q.htm	49019388
+/vol_DA/SEC/Archives/edgar/html/1493174/0001493152-13-001978.txt_form10q.htm	10123500
+/vol_DA/SEC/Archives/edgar/html/1407343/0001477932-13-004651.txt_tapp_10q.htm	90280920
+/vol_DA/SEC/Archives/edgar/html/34782/0000034782-09-000040.txt_form10_q.htm	24141456
+/vol_DA/SEC/Archives/edgar/html/6201/0000006201-13-000089.txt_amr-10qx2013930.htm	335598131
+/vol_DA/SEC/Archives/edgar/html/1478725/0001019687-13-003863.txt_voil_10q-083113.htm	46900000
+/vol_DA/SEC/Archives/edgar/html/1435387/0001144204-13-055619.txt_v357486_10q.htm	138295500
+/vol_DA/SEC/Archives/edgar/html/836564/0001019687-13-003875.txt_patriot_10q-083113.htm	404798797
+/vol_DA/SEC/Archives/edgar/html/1562738/0001562738-13-000015.txt_f10qbalius.htm	12550000
+/vol_DA/SEC/Archives/edgar/html/1175416/0001175416-13-000010.txt_form10q08312013.htm	75730341
+/vol_DA/SEC/Archives/edgar/html/1383394/0001078782-13-002031.txt_f10q093013_10q.htm	30074508
+/vol_DA/SEC/Archives/edgar/html/1275187/0001193125-13-396632.txt_d595919d10q.htm	35253222
+/vol_DA/SEC/Archives/edgar/html/1563227/0001376474-13-000499.txt_sipup_10q.htm	4000000
+/vol_DA/SEC/Archives/edgar/html/758743/0001193125-13-399728.txt_d600221d10q.htm	7593210
+/vol_DA/SEC/Archives/edgar/html/1486297/0001165527-13-000849.txt_R18.htm	-1
+/vol_DA/SEC/Archives/edgar/html/1517389/0001477932-13-004667.txt_jfil_10q.htm	6500000
+/vol_DA/SEC/Archives/edgar/html/1411488/0001193125-13-401456.txt_d592335d10q.htm	11549713
+/vol_DA/SEC/Archives/edgar/html/1566610/0001165527-13-000847.txt_g7105.htm	5825000
+/vol_DA/SEC/Archives/edgar/html/91440/0001193125-13-401902.txt_d594575d10q.htm	58149740
+/vol_DA/SEC/Archives/edgar/html/1424404/0001062993-13-005030.txt_form10q.htm	201563333
+/vol_DA/SEC/Archives/edgar/html/1400000/0001211524-13-000256.txt_abakan10qaug2013.htm	64284855
+/vol_DA/SEC/Archives/edgar/html/1540400/0001193125-13-396701.txt_d589155d10q.htm	26507320
+/vol_DA/SEC/Archives/edgar/html/58822/0001354488-13-005605.txt_lcar_10q.htm	48722316
+/vol_DA/SEC/Archives/edgar/html/813389/0001086380-13-000036.txt_ahac0912.htm	3707500
+/vol_DA/SEC/Archives/edgar/html/813389/0001086380-13-000035.txt_ahac0612q.htm	3707500
+/vol_DA/SEC/Archives/edgar/html/813389/0001086380-13-000034.txt_ahac0312q.htm	3707500
+/vol_DA/SEC/Archives/edgar/html/1141807/0001214659-09-002672.txt_s1119010q.htm	4267421
+/vol_DA/SEC/Archives/edgar/html/1041061/0001041061-13-000044.txt_yum-9072013x10q.htm	445330577
+/vol_DA/SEC/Archives/edgar/html/755003/0001193125-13-395959.txt_d579458d10q.htm	10322055
+/vol_DA/SEC/Archives/edgar/html/1402366/0001402366-13-000009.txt_bmet-10qx8312013.htm	552387966
+/vol_DA/SEC/Archives/edgar/html/40888/0001193125-13-399898.txt_d596651d10q.htm	60900000
+/vol_DA/SEC/Archives/edgar/html/736822/0001437749-13-013064.txt_blud20130831_10q.htm	-1
+/vol_DA/SEC/Archives/edgar/html/1561206/0001078782-13-002001.txt_f10q083113_10q.htm	17454545
+/vol_DA/SEC/Archives/edgar/html/77476/0000077476-13-000027.txt_pepsicoq3-10xq972013.htm	1533599526
+/vol_DA/SEC/Archives/edgar/html/1491959/0001393905-13-000561.txt_ndfm_10q.htm	2750000
+/vol_DA/SEC/Archives/edgar/html/1065598/0001056520-13-000230.txt_f10q83113final.htm	29182275
+/vol_DA/SEC/Archives/edgar/html/google-10k.txt_goog10-k2015.htm	292580627
+/vol_DA/SEC/Archives/edgar/html/277948/0000277948-13-000040.txt_R6.htm	-1
+/vol_DA/SEC/Archives/edgar/html/1434743/0001193125-09-235665.txt_d10q.htm	5010117
+/vol_DA/SEC/Archives/edgar/html/1408057/0001185185-13-002218.txt_imedicor10q033113.htm	1020641409
+/vol_DA/SEC/Archives/edgar/html/1362703/0001062993-13-005077.txt_form10q.htm	62508000
+/vol_DA/SEC/Archives/edgar/html/1341319/0001445866-13-001158.txt_redtone10q10112013.htm	282315325
+/vol_DA/SEC/Archives/edgar/html/1099215/0001144204-13-054857.txt_v356817_10q.htm	28296180
+/vol_DA/SEC/Archives/edgar/html/844143/0001104659-13-075680.txt_a13-18801_110q.htm	68483214
+/vol_DA/SEC/Archives/edgar/html/949982/0001477932-13-004674.txt_aacs_10q.htm	673622066
+/vol_DA/SEC/Archives/edgar/html/1376804/0001062993-13-005009.txt_form10q.htm	78769712
+/vol_DA/SEC/Archives/edgar/html/1468164/0001213900-13-005686.txt_f10q0813_profitplanners.htm	53737972
+/vol_DA/SEC/Archives/edgar/html/1077561/0001140361-13-038647.txt_form10q.htm	11200000
+/vol_DA/SEC/Archives/edgar/html/1420525/0001420525-09-000028.txt_f3rdqtr_10q.htm	9230343
+/vol_DA/SEC/Archives/edgar/html/806172/0001171520-13-000641.txt_eps5310.htm	14508507
+/vol_DA/SEC/Archives/edgar/html/1037390/0001104659-13-075074.txt_a13-20204_110q.htm	5146366
+/vol_DA/SEC/Archives/edgar/html/354260/0001078782-13-002013.txt_f10q083113_10q.htm	875135
+/vol_DA/SEC/Archives/edgar/html/1404943/0001415889-13-002042.txt_metastat10q_aug312013.htm	21469431
+/vol_DA/SEC/Archives/edgar/html/949268/0001137171-09-000933.txt_firstnrg10q112309.htm	10884021
+/vol_DA/SEC/Archives/edgar/html/721447/0000721447-13-000033.txt_cca831201310q.htm	6038982
+/vol_DA/SEC/Archives/edgar/html/1413990/0001398080-13-000023.txt_plq1201410qv1.htm	206551422
+/vol_DA/SEC/Archives/edgar/html/1542261/0001542261-13-000022.txt_kolasco_10q.htm	3600000
+/vol_DA/SEC/Archives/edgar/html/1175680/0001193125-13-399866.txt_d599514d10q.htm	39629187
+/vol_DA/SEC/Archives/edgar/html/1415998/0001214659-13-005671.txt_f52213010q.htm	532560872
+/vol_DA/SEC/Archives/edgar/html/1415998/0001214659-13-005715.txt_s1092013010q.htm	532560872
+/vol_DA/SEC/Archives/edgar/html/815556/0000815556-13-000049.txt_fast9301310q.htm	296742069
+/vol_DA/SEC/Archives/edgar/html/1168960/0001052918-13-000423.txt_bioptic10qoct1513.htm	20512235
+/vol_DA/SEC/Archives/edgar/html/1497251/0001002014-13-000448.txt_acro10q-6302012.htm	1624732
+/vol_DA/SEC/Archives/edgar/html/1516079/0001213900-13-005698.txt_f10q0813_cloudsecuritycorp.htm	97733086
+/vol_DA/SEC/Archives/edgar/html/1067701/0001067701-13-000020.txt_uri-9302013x10q.htm	93234360
+/vol_DA/SEC/Archives/edgar/html/1405621/0001405621-13-000016.txt_nga831201310q.htm	-1
+/vol_DA/SEC/Archives/edgar/html/1442492/0001199835-13-000657.txt_laredo_10q-15753.htm	53650013
+/vol_DA/SEC/Archives/edgar/html/1123596/0001437749-13-013041.txt_babs20131009_10q.htm	7263508
+/vol_DA/SEC/Archives/edgar/html/1326688/0001104659-09-064933.txt_a09-30948_110q.htm	-1
+/vol_DA/SEC/Archives/edgar/html/724445/0001104659-13-075692.txt_a13-19838_110q.htm	131448444
+/vol_DA/SEC/Archives/edgar/html/1403431/0001403431-13-000024.txt_a201310-qq3.htm	18418593
+/vol_DA/SEC/Archives/edgar/html/1088413/0001354488-13-005719.txt_glgi_10q.htm	26111201
+/vol_DA/SEC/Archives/edgar/html/1326686/0001104659-09-064933.txt_a09-30948_110q.htm	-1
+/vol_DA/SEC/Archives/edgar/html/29989/0000029989-13-000015.txt_a2013q310-q.htm	257360875
+/vol_DA/SEC/Archives/edgar/html/16918/0000016918-13-000021.txt_stz831201310q.htm	165875270
+/vol_DA/SEC/Archives/edgar/html/1082492/0001019687-13-003898.txt_vadda_10q-063013.htm	104235236
+/vol_DA/SEC/Archives/edgar/html/1435936/0001435936-13-000189.txt_f10q_20130831.htm	690580119
+/vol_DA/SEC/Archives/edgar/html/724742/0001144204-13-055289.txt_v357078_10q.htm	19999998
+/vol_DA/SEC/Archives/edgar/html/1513161/0001193125-13-402540.txt_d594160d10q.htm	71016771
+/vol_DA/SEC/Archives/edgar/html/796764/0001171843-13-003957.txt_f10q_101013.htm	49342987
+/vol_DA/SEC/Archives/edgar/html/1253557/0001144204-13-055247.txt_v357375_10q.htm	61201483
+/vol_DA/SEC/Archives/edgar/html/1253557/0001144204-13-055241.txt_v357374_10q.htm	61201483
+/vol_DA/SEC/Archives/edgar/html/1053532/0001053532-13-000052.txt_lho-q32013.htm	96258318
+/vol_DA/SEC/Archives/edgar/html/807707/0000807707-13-000041.txt_q2201410q.htm	22019827
+/vol_DA/SEC/Archives/edgar/html/70502/0000070502-13-000367.txt_aug312013_10q.htm	-1
+/vol_DA/SEC/Archives/edgar/html/49534/0001144204-13-055134.txt_v356955_10q.htm	18647468
+/vol_DA/SEC/Archives/edgar/html/1540334/0001078782-13-002015.txt_f10q063013_10q.htm	10855000
+/vol_DA/SEC/Archives/edgar/html/1552946/0001552946-13-000041.txt_ecaug201310q.htm	25000000
+/vol_DA/SEC/Archives/edgar/html/4515/0000004515-13-000053.txt_aa-10qx2013930.htm	1000
+/vol_DA/SEC/Archives/edgar/html/1421907/0001165527-13-000854.txt_R5.htm	-1
+/vol_DA/SEC/Archives/edgar/html/1118974/0001065949-13-000134.txt_R5.htm	-1
+/vol_DA/SEC/Archives/edgar/html/747540/0001013762-13-001308.txt_form10q.htm	9060012
+/vol_DA/SEC/Archives/edgar/html/826773/0000826773-13-000010.txt_a2013q1form10-q.htm	18965330
+/vol_DA/SEC/Archives/edgar/html/826773/0000826773-13-000011.txt_a2013q2form10-q.htm	18965330
+/vol_DA/SEC/Archives/edgar/html/76267/0001437749-13-012986.txt_pke20130930_10q.htm	20851843
+/vol_DA/SEC/Archives/edgar/html/1377936/0001104659-13-075719.txt_a13-19849_110q.htm	4730116
+/vol_DA/SEC/Archives/edgar/html/90721/0001017386-13-000259.txt_pvsp_2013aug31-10q.htm	799499997
+/vol_DA/SEC/Archives/edgar/html/1522236/0001144204-13-055182.txt_v357232_10q.htm	2430125
+/vol_DA/SEC/Archives/edgar/html/1541884/0001078782-13-002048.txt_f10q033113_10q.htm	14209229
+/vol_DA/SEC/Archives/edgar/html/1541884/0001078782-13-002050.txt_f10q063013_10q.htm	14209229
+/vol_DA/SEC/Archives/edgar/html/811779/0001144204-13-055158.txt_v355911_10q.htm	2513461835
+/vol_DA/SEC/Archives/edgar/html/1511735/0001213900-13-005689.txt_f10q0813_yappncorp.htm	100300000
+/vol_DA/SEC/Archives/edgar/html/1498291/0001524829-13-000185.txt_daca_10q.htm	9894319
+/vol_DA/SEC/Archives/edgar/html/1466739/0001002014-13-000458.txt_wils10q-8312013.htm	66146442
+/vol_DA/SEC/Archives/edgar/html/1460602/0001062993-13-005017.txt_form10q.htm	51144621

@@ -112,6 +112,7 @@ constexpr const char* FILE_WITH_NO_POSSIBLES{"/vol_DA/SEC/Archives/edgar/html/00
 constexpr const char* FILE_WITH_SHARES_BEFORE_YESNO{"/vol_KUtil2/SEC_exports/html/0000019617/10-K/0000950123-04-002022.txt_y94051e10vk.htm"};
 constexpr const char* FILE_WITH_SHARES_AFTER_CONTENTS{"/vol_KUtil2/SEC_exports/html/0000000020/10-K/0000893220-05-000728.txt_w06061e10vk.htm"};
 constexpr const char* FILE_WITH_SHARE_VALUE_NO_DOLLAR_SIGN{"/vol_KUtil2/SEC_exports/html/0001326160/10-K/0001326160-14-000003.txt_form10k.htm"};
+constexpr const char* FILE_WITH_XBRL_INSIDE_HTM_DOCUMENT{"/vol_KUtil2/SEC_exports/html/0000029905/10-K/0000029905-19-000019.txt_wfx-20181231.htm"};
 
 // This ctype facet does NOT classify spaces and tabs as whitespace
 // from cppreference example
@@ -1590,6 +1591,18 @@ TEST_F(FindSharesOutstanding, Test10KFileWithNoDollarSignOnValue)
     int64_t found_shares = so(htmls.begin()->html_);
 
     ASSERT_EQ(found_shares, 706455305);
+}
+
+TEST_F(FindSharesOutstanding, Test10KFileWithDollarSignOnValue)
+{
+    auto file_content_10K = LoadDataFileForUse(FILE_WITH_XBRL_INSIDE_HTM_DOCUMENT);
+
+    HTML_FromFile htmls(file_content_10K);
+    const SharesOutstanding so;
+
+    ASSERT_THROW(so(htmls.begin()->html_), HTMLException);
+
+//    ASSERT_EQ(found_shares, 144940620);
 }
 
 TEST_F(FindSharesOutstanding, Test10KFileWithNoPossibles)

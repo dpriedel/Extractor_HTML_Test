@@ -113,6 +113,7 @@ constexpr const char* FILE_WITH_SHARES_BEFORE_YESNO{"/vol_KUtil2/SEC_exports/htm
 constexpr const char* FILE_WITH_SHARES_AFTER_CONTENTS{"/vol_KUtil2/SEC_exports/html/0000000020/10-K/0000893220-05-000728.txt_w06061e10vk.htm"};
 constexpr const char* FILE_WITH_SHARE_VALUE_NO_DOLLAR_SIGN{"/vol_KUtil2/SEC_exports/html/0001326160/10-K/0001326160-14-000003.txt_form10k.htm"};
 constexpr const char* FILE_WITH_XBRL_INSIDE_HTM_DOCUMENT{"/vol_KUtil2/SEC_exports/html/0000029905/10-K/0000029905-19-000019.txt_wfx-20181231.htm"};
+constexpr const char* FILE_WITH_XBRL_INSIDE_TXT_DOCUMENT{"/vol_DA/SEC/SEC_forms/0000029905/10-K/0000029905-19-000019.txt"};
 
 // This ctype facet does NOT classify spaces and tabs as whitespace
 // from cppreference example
@@ -1319,6 +1320,26 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, XML_10Q_Collect2)
     ASSERT_TRUE(all_sections.ListValues().size() == 59);
 }
 
+TEST_F(ProcessEntireFileAndExtractData_10Q, XML_10K_NoSharesOutstanding)
+{
+    auto file_content_10K = LoadDataFileForUse(FILE_WITH_XBRL_INSIDE_TXT_DOCUMENT);
+
+    const SharesOutstanding so;
+    auto all_sections = FindAndExtractFinancialStatements(so, file_content_10K, {"10-K"});
+    EXPECT_TRUE(all_sections.has_data());
+
+    int64_t shares = all_sections.outstanding_shares_;
+
+    ASSERT_EQ(shares, 144940620);
+
+//    std::cout << "\n\nShares outstanding: " << shares << '\n';
+
+//    for (const auto& [key, value] : all_sections.ListValues())
+//    {
+//        std::cout << "\nkey: " << key << " value: " << value << '\n';
+//    }
+}
+
 TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_NO_ANCHORS_10Q_Collect1)
 {
     auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS2);
@@ -1600,9 +1621,10 @@ TEST_F(FindSharesOutstanding, Test10KFileWithDollarSignOnValue)
     HTML_FromFile htmls(file_content_10K);
     const SharesOutstanding so;
 
-    ASSERT_THROW(so(htmls.begin()->html_), HTMLException);
+    int64_t found_shares = so(htmls.begin()->html_);
+//    ASSERT_THROW(so(htmls.begin()->html_), HTMLException);
 
-//    ASSERT_EQ(found_shares, 144940620);
+    ASSERT_EQ(found_shares, 144940620);
 }
 
 TEST_F(FindSharesOutstanding, Test10KFileWithNoPossibles)

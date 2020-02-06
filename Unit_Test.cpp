@@ -1436,11 +1436,11 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, XML_10K_NoSharesOutstanding)
 
     const SharesOutstanding so;
     auto all_sections = FindAndExtractFinancialStatements(so, &sections, {"10-K"});
-    EXPECT_TRUE(all_sections.has_data());
+    EXPECT_FALSE(all_sections.has_data());
 
     int64_t shares = all_sections.outstanding_shares_;
 
-    ASSERT_EQ(shares, 144940620);
+    ASSERT_EQ(shares, -1);
 
 //    std::cout << "\n\nShares outstanding: " << shares << '\n';
 
@@ -1581,7 +1581,7 @@ TEST_F(ExportHTML, VerifyExportAll_10Q)
     }
     int files_with_form{0};
 
-    auto hierarchy_converter = ConvertInputHierarchyToOutputHierarchy(SEC_DIRECTORY.get(), "/tmp/exported_html");
+    auto hierarchy_converter = ConvertInputHierarchyToOutputHierarchy(SEC_DIRECTORY, EM::FileName{"/tmp/exported_html"});
 
     auto export_file([&files_with_form, &hierarchy_converter](const auto& dir_ent)
         {
@@ -1602,7 +1602,7 @@ TEST_F(ExportHTML, VerifyExportAll_10Q)
 
                     ++files_with_form;
 
-                    auto output_path_name = hierarchy_converter(dir_ent.path(), std::string{html.file_name_.get()});
+                    auto output_path_name = hierarchy_converter(EM::FileName{dir_ent.path()}, html.file_name_.get().string());
 
                     auto output_directory = output_path_name.parent_path();
                     if (! fs::exists(output_directory))
@@ -1636,7 +1636,7 @@ TEST_F(ExportHTML, VerifyCanProcessExportedHTML_10Q)
     }
     int files_with_form{0};
 
-    auto hierarchy_converter = ConvertInputHierarchyToOutputHierarchy(SEC_DIRECTORY.get(), "/tmp/exported_html");
+    auto hierarchy_converter = ConvertInputHierarchyToOutputHierarchy(SEC_DIRECTORY, EM::FileName{"/tmp/exported_html"});
 
     auto export_file([&files_with_form, &hierarchy_converter](const auto& dir_ent)
         {
@@ -1657,7 +1657,7 @@ TEST_F(ExportHTML, VerifyCanProcessExportedHTML_10Q)
 
                     ++files_with_form;
 
-                    auto output_path_name = hierarchy_converter(dir_ent.path(), std::string{html.file_name_.get()});
+                    auto output_path_name = hierarchy_converter(EM::FileName{dir_ent.path()}, html.file_name_.get().string());
 
                     auto output_directory = output_path_name.parent_path();
                     if (! fs::exists(output_directory))
@@ -1756,7 +1756,7 @@ TEST_F(FindSharesOutstanding, Test10KFileWithDollarSignOnValue)
     int64_t found_shares = so(htmls.begin()->html_);
 //    ASSERT_THROW(so(htmls.begin()->html_), HTMLException);
 
-    ASSERT_EQ(found_shares, 144940620);
+    ASSERT_EQ(found_shares, -1);
 }
 
 TEST_F(FindSharesOutstanding, Test10KFileWithNoPossibles)
@@ -1805,7 +1805,7 @@ TEST_F(FindSharesOutstanding, TestListOfFilesWithAnswers)
 {
     // tab delimited format.  file name, number of shares outstanding
 
-    std::ifstream training_file(std::string{TRAINING_FILE_FOR_SHARES_OUTSTANDING.get()});
+    std::ifstream training_file(TRAINING_FILE_FOR_SHARES_OUTSTANDING.get());
 
     int success_ctr = 0;
     while(training_file.good())

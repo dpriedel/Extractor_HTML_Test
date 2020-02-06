@@ -59,6 +59,7 @@ const fs::path FILE_NO_NAMESPACE_10Q{"/vol_DA/SEC/Archives/edgar/data/68270/0000
 const fs::path BAD_FILE2{"/vol_DA/SEC/SEC_forms/1000180/10-K/0001000180-16-000068.txt"};
 const fs::path NO_SHARES_OUT{"/vol_DA/SEC/SEC_forms/1023453/10-K/0001144204-12-017368.txt"};
 const fs::path MISSING_VALUES_LIST{"../Extractor_XBRL_Test/missing_values_files.txt"};
+const fs::path CRASH_IN_REGEX{"/vol_DA/SEC/Archives/edgar/data/1060409/0001211524-13-000254.txt"};
 
 constexpr const char* FILE_WITH_HTML_10Q_WITH_ANCHORS{"/vol_DA/SEC/Archives/edgar/data/1420525/0001420525-09-000028.txt"};
 
@@ -249,6 +250,7 @@ TEST_F(SingleFileEndToEnd_HTML, VerifyCanLoadDataToDBForFileWithHTML_10QHTML)
         "--log-level", "debug",
 		"--form", "10-Q",
         "--mode", "HTML",
+//		"-f", CRASH_IN_REGEX
 		"-f", FILE_WITH_HTML_10Q_WITH_ANCHORS
 	};
 
@@ -1476,7 +1478,7 @@ TEST_F(ExportHTML, ExportHMTLFromDirectory)
 	{		// handle exception: unspecified
         spdlog::error("Something totally unexpected happened.");
 	}
- 	ASSERT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 182);
+ 	ASSERT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 178);
 }
 
 TEST_F(ExportHTML, VerifyNoExportOfExistingFilesWhenReplaceIsNotSpecifed)
@@ -1528,7 +1530,7 @@ TEST_F(ExportHTML, VerifyNoExportOfExistingFilesWhenReplaceIsNotSpecifed)
         spdlog::error("Something totally unexpected happened.");
 	}
 
- 	EXPECT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 182);
+ 	EXPECT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 178);
 
     auto x1 = CollectLastModifiedTimesForFilesInDirectoryTree("/tmp/extracts/html");
 
@@ -1576,7 +1578,7 @@ TEST_F(ExportHTML, VerifyNoExportOfExistingFilesWhenReplaceIsNotSpecifed)
 	{		// handle exception: unspecified
         spdlog::error("Something totally unexpected happened.");
 	}
- 	ASSERT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 182);
+ 	ASSERT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 178);
 
     auto x2 = CollectLastModifiedTimesForFilesInDirectoryTree("/tmp/extracts/html");
 
@@ -1633,7 +1635,7 @@ TEST_F(ExportHTML, ExportHTMLUsingFileList3Async_10Q)
 	{		// handle exception: unspecified
         spdlog::error("Something totally unexpected happened.");
 	}
- 	ASSERT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 182);
+ 	ASSERT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 178);
 }
 
 TEST_F(ExportHTML, ExportHTMLDetectsFullDiskAndStops)

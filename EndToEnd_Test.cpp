@@ -99,7 +99,7 @@ class SingleFileEndToEnd_XBRL : public Test
 
 		    // make sure the DB is empty before we start
 
-		    trxn.exec("DELETE FROM xbrl_extracts.sec_filing_id");
+		    trxn.exec("DELETE FROM unified_extracts.sec_filing_id WHERE data_source = 'XBRL'");
 		    trxn.commit();
 			c.disconnect();
         }
@@ -111,7 +111,7 @@ class SingleFileEndToEnd_XBRL : public Test
 
 		    // make sure the DB is empty before we start
 
-		    auto row = trxn.exec1("SELECT count(*) FROM xbrl_extracts.sec_filing_data");
+		    auto row = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_xbrl_data");
 		    trxn.commit();
 			c.disconnect();
 			return row[0].as<int>();
@@ -220,7 +220,7 @@ class SingleFileEndToEnd_HTML : public Test
 
 		    // make sure the DB is empty before we start
 
-		    trxn.exec("DELETE FROM html_extracts.sec_filing_id");
+		    trxn.exec("DELETE FROM unified_extracts.sec_filing_id WHERE data_source = 'HTML'");
 		    trxn.commit();
 			c.disconnect();
         }
@@ -232,9 +232,9 @@ class SingleFileEndToEnd_HTML : public Test
 
 		    // make sure the DB is empty before we start
 
-		    auto row1 = trxn.exec1("SELECT count(*) FROM html_extracts.sec_bal_sheet_data");
-		    auto row2 = trxn.exec1("SELECT count(*) FROM html_extracts.sec_stmt_of_ops_data");
-		    auto row3 = trxn.exec1("SELECT count(*) FROM html_extracts.sec_cash_flows_data");
+		    auto row1 = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_bal_sheet_data");
+		    auto row2 = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_stmt_of_ops_data");
+		    auto row3 = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_cash_flows_data");
 		    trxn.commit();
 			c.disconnect();
 			return row1[0].as<int>() + row2[0].as<int>() + row3[0].as<int>();
@@ -464,7 +464,7 @@ class ProcessFolderEndtoEnd : public Test
 
 		    // make sure the DB is empty before we start
 
-		    trxn.exec("DELETE FROM html_extracts.sec_filing_id");
+		    trxn.exec("DELETE FROM unified_extracts.sec_filing_id WHERE data_source = 'HTML'");
 		    trxn.commit();
 			c.disconnect();
         }
@@ -474,10 +474,14 @@ class ProcessFolderEndtoEnd : public Test
 		    pqxx::connection c{"dbname=sec_extracts user=extractor_pg"};
 		    pqxx::work trxn{c};
 
-		    auto row = trxn.exec1("SELECT count(*) FROM html_extracts.sec_filing_data");
+		    // make sure the DB is empty before we start
+
+		    auto row1 = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_bal_sheet_data");
+		    auto row2 = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_stmt_of_ops_data");
+		    auto row3 = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_cash_flows_data");
 		    trxn.commit();
 			c.disconnect();
-			return row[0].as<int>();
+			return row1[0].as<int>() + row2[0].as<int>() + row3[0].as<int>();
 		}
 
 		int CountMissingValues()
@@ -485,10 +489,12 @@ class ProcessFolderEndtoEnd : public Test
 		    pqxx::connection c{"dbname=sec_extracts user=extractor_pg"};
 		    pqxx::work trxn{c};
 
-		    auto row = trxn.exec1("SELECT count(*) FROM html_extracts.sec_filing_data WHERE user_label = 'Missing Value'");
+		    auto row1 = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_bal_sheet_data WHERE label = 'Missing Value'");
+		    auto row2 = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_stmt_of_ops_data WHERE label = 'Missing Value'");
+		    auto row3 = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_cash_flows_data WHERE label = 'Missing Value'");
 		    trxn.commit();
 			c.disconnect();
-			return row[0].as<int>();
+			return row1[0].as<int>() + row2[0].as<int>() + row3[0].as<int>();
 		}
 
 		int CountFilings()
@@ -498,7 +504,7 @@ class ProcessFolderEndtoEnd : public Test
 
 		    // make sure the DB is empty before we start
 
-		    auto row = trxn.exec1("SELECT count(*) FROM html_extracts.sec_filing_id");
+		    auto row = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_filing_id WHERE data_source = 'HTML'");
 		    trxn.commit();
 			c.disconnect();
 			return row[0].as<int>();
@@ -1753,10 +1759,10 @@ public:
             // we want to count how many entries we have.
             // theoretically, we will update all of them.
 
-		    auto row = trxn.exec1("SELECT count(*) FROM html_extracts.sec_filing_id WHERE shares_outstanding != -1");
+		    auto row = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_filing_id WHERE shares_outstanding != -1");
 			entires_with_shares = row[0].as<int>();
 
-		    trxn.exec("UPDATE html_extracts.sec_filing_id SET shares_outstanding = -1");
+		    trxn.exec("UPDATE unified_extracts.sec_filing_id SET shares_outstanding = -1");
 		    trxn.commit();
 			c.disconnect();
         }
@@ -1767,7 +1773,7 @@ public:
 
 		    // make sure the DB is empty before we start
 
-		    auto row = trxn.exec1("SELECT count(*) FROM html_extracts.sec_filing_id WHERE shares_outstanding != -1");
+		    auto row = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_filing_id WHERE shares_outstanding != -1");
 		    trxn.commit();
 			c.disconnect();
 			return row[0].as<int>();

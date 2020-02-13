@@ -1834,6 +1834,133 @@ TEST_F(UpdateSharesOutstanding, UpdateSharesOutstandingAsyncAndSync)
     EXPECT_NE(CountRows(), 0);
 	ASSERT_EQ(CountRows(), entires_with_shares);
 }
+
+class TestBoth : public Test
+{
+	public:
+
+        void SetUp() override
+        {
+		    pqxx::connection c{"dbname=sec_extracts user=extractor_pg"};
+		    pqxx::work trxn{c};
+
+		    // make sure the DB is empty before we start
+
+		    trxn.exec("DELETE FROM unified_extracts.sec_filing_id");
+		    trxn.commit();
+			c.disconnect();
+        }
+
+		int CountRows()
+		{
+		    pqxx::connection c{"dbname=sec_extracts user=extractor_pg"};
+		    pqxx::work trxn{c};
+
+		    // make sure the DB is empty before we start
+
+		    auto row1 = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_bal_sheet_data");
+		    auto row2 = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_stmt_of_ops_data");
+		    auto row3 = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_cash_flows_data");
+		    trxn.commit();
+			c.disconnect();
+			return row1[0].as<int>() + row2[0].as<int>() + row3[0].as<int>();
+		}
+
+		int CountMissingValues()
+		{
+		    pqxx::connection c{"dbname=sec_extracts user=extractor_pg"};
+		    pqxx::work trxn{c};
+
+		    auto row1 = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_bal_sheet_data WHERE label = 'Missing Value'");
+		    auto row2 = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_stmt_of_ops_data WHERE label = 'Missing Value'");
+		    auto row3 = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_cash_flows_data WHERE label = 'Missing Value'");
+		    trxn.commit();
+			c.disconnect();
+			return row1[0].as<int>() + row2[0].as<int>() + row3[0].as<int>();
+		}
+
+		int CountFilingsHTML()
+		{
+		    pqxx::connection c{"dbname=sec_extracts user=extractor_pg"};
+		    pqxx::work trxn{c};
+
+		    // make sure the DB is empty before we start
+
+		    auto row = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_filing_id WHERE data_source = 'HTML'");
+		    trxn.commit();
+			c.disconnect();
+			return row[0].as<int>();
+		}
+
+		int CountFilingsXBRL()
+		{
+		    pqxx::connection c{"dbname=sec_extracts user=extractor_pg"};
+		    pqxx::work trxn{c};
+
+		    // make sure the DB is empty before we start
+
+		    auto row = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_filing_id WHERE data_source = 'XBRL'");
+		    trxn.commit();
+			c.disconnect();
+			return row[0].as<int>();
+		}
+};
+
+TEST_F(TestBoth, UpdateSharesOutstandingAsyncAndSync)
+{
+	//	NOTE: the program name 'the_program' in the command line below is ignored in the
+	//	the test program.
+
+    if (fs::exists("/tmp/test1.log"))
+    {
+	   fs::remove("/tmp/test1.log");
+    }
+
+	std::vector<std::string> tokens{"the_program",
+        "--log-level", "debug",
+		"--form", "10-Q,10-K",
+        "--mode", "BOTH",
+		"-k", "6",
+		"--list", "./test_directory_list.txt",
+		"--log-path", "/tmp/test1.log"
+    };
+
+	try
+	{
+        ExtractorApp myApp(tokens);
+
+		decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
+        spdlog::info(catenate("\n\nTest: ", test_info->name(), " test case: ",
+                test_info->test_case_name(), "\n\n"));
+
+        bool startup_OK = myApp.Startup();
+        if (startup_OK)
+        {
+            myApp.Run();
+            myApp.Shutdown();
+        }
+        else
+        {
+            std::cout << "Problems starting program.  No processing done.\n";
+        }
+	}
+
+    // catch any problems trying to setup application
+
+	catch (const std::exception& theProblem)
+	{
+        spdlog::error(catenate("Something fundamental went wrong: ", theProblem.what()));
+	}
+	catch (...)
+	{		// handle exception: unspecified
+        spdlog::error("Something totally unexpected happened.");
+	}
+    // there are 159 possible files but 3 of them are weirdly redundant
+	EXPECT_EQ(CountFilingsXBRL(), 156);
+
+    EXPECT_EQ(CountFilingsHTML(), 22);
+}
+
 /* 
  * ===  FUNCTION  ======================================================================
  *         Name:  InitLogging

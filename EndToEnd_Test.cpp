@@ -1906,7 +1906,7 @@ class TestBoth : public Test
 		}
 };
 
-TEST_F(TestBoth, UpdateSharesOutstandingAsyncAndSync)
+TEST_F(TestBoth, UpdateDBFromList)
 {
 	//	NOTE: the program name 'the_program' in the command line below is ignored in the
 	//	the test program.
@@ -1920,7 +1920,7 @@ TEST_F(TestBoth, UpdateSharesOutstandingAsyncAndSync)
         "--log-level", "debug",
 		"--form", "10-Q,10-K",
         "--mode", "BOTH",
-		"-k", "6",
+//		"-k", "6",
 		"--list", "./test_directory_list.txt",
 		"--log-path", "/tmp/test1.log"
     };
@@ -1955,7 +1955,9 @@ TEST_F(TestBoth, UpdateSharesOutstandingAsyncAndSync)
 	{		// handle exception: unspecified
         spdlog::error("Something totally unexpected happened.");
 	}
-    // there are 159 possible files but 3 of them are weirdly redundant
+    // there are 159 possible XBRL files but 3 of them are weirdly redundant
+    // so they error out as DB duplicates.
+
 	EXPECT_EQ(CountFilingsXBRL(), 156);
 
     EXPECT_EQ(CountFilingsHTML(), 22);

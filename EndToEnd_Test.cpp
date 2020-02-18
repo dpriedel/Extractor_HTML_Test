@@ -88,7 +88,7 @@ std::map<std::string, fs::file_time_type> CollectLastModifiedTimesForFilesInDire
 	return results;
 }
 
-class SingleFileEndToEnd_XBRL : public Test
+class SingleFileEndToEndXBRL : public Test
 {
 	public:
 
@@ -119,7 +119,7 @@ class SingleFileEndToEnd_XBRL : public Test
 };
 
 
-TEST_F(SingleFileEndToEnd_XBRL, VerifyCanLoadDataToDBForFileWithXML_10QXBRL)
+TEST_F(SingleFileEndToEndXBRL, VerifyCanLoadDataToDBForFileWithXML10QXBRL)
 {
 	//	NOTE: the program name 'the_program' in the command line below is ignored in the
 	//	the test program.
@@ -164,7 +164,7 @@ TEST_F(SingleFileEndToEnd_XBRL, VerifyCanLoadDataToDBForFileWithXML_10QXBRL)
 	ASSERT_EQ(CountRows(), 194);
 }
 
-TEST_F(SingleFileEndToEnd_XBRL, VerifyLoadsNoDataToDBForFileWithXML_10QHTML)
+TEST_F(SingleFileEndToEndXBRL, VerifyLoadsNoDataToDBForFileWithXML10QHTML)
 {
 	//	NOTE: the program name 'the_program' in the command line below is ignored in the
 	//	the test program.
@@ -209,7 +209,7 @@ TEST_F(SingleFileEndToEnd_XBRL, VerifyLoadsNoDataToDBForFileWithXML_10QHTML)
 	ASSERT_EQ(CountRows(), 0);
 }
 
-class SingleFileEndToEnd_HTML : public Test
+class SingleFileEndToEndHTML : public Test
 {
 	public:
 
@@ -241,7 +241,7 @@ class SingleFileEndToEnd_HTML : public Test
 		}
 };
 
-TEST_F(SingleFileEndToEnd_HTML, VerifyCanLoadDataToDBForFileWithHTML_10QHTML)
+TEST_F(SingleFileEndToEndHTML, VerifyCanLoadDataToDBForFileWithHTML10QHTML)
 {
 	//	NOTE: the program name 'the_program' in the command line below is ignored in the
 	//	the test program.
@@ -366,7 +366,7 @@ TEST_F(SingleFileEndToEnd_HTML, VerifyCanLoadDataToDBForFileWithHTML_10QHTML)
 //	ASSERT_EQ(CountRows(), 79);
 //}
 //
-TEST_F(SingleFileEndToEnd_HTML, VerifyCanLoadDataToDBForFileWithXML_10K)
+TEST_F(SingleFileEndToEndHTML, VerifyCanLoadDataToDBForFileWithXML10K)
 {
 	//	NOTE: the program name 'the_program' in the command line below is ignored in the
 	//	the test program.
@@ -549,7 +549,7 @@ class ProcessFolderEndtoEnd : public Test
 //	ASSERT_EQ(CountFilings(), 0);
 //}
 //
-TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
+TEST_F(ProcessFolderEndtoEnd, UseDirectory10QHTML)
 {
 	//	NOTE: the program name 'the_program' in the command line below is ignored in the
 	//	the test program.
@@ -923,7 +923,7 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory_10Q_HTML)
 //	ASSERT_EQ(CountFilings(), 1);
 //}
 //
-TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3Async_10Q)
+TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3Async10Q)
 {
 	//	NOTE: the program name 'the_program' in the command line below is ignored in the
 	//	the test program.
@@ -1591,7 +1591,7 @@ TEST_F(ExportHTML, VerifyNoExportOfExistingFilesWhenReplaceIsNotSpecifed)
     ASSERT_EQ(x1, x2);
 }
 
-TEST_F(ExportHTML, ExportHTMLUsingFileList3Async_10Q)
+TEST_F(ExportHTML, ExportHTMLUsingFileList3Async10Q)
 {
 	//	NOTE: the program name 'the_program' in the command line below is ignored in the
 	//	the test program.

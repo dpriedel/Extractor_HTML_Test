@@ -1917,7 +1917,7 @@ TEST_F(TestBoth, UpdateDBFromList)
     }
 
 	std::vector<std::string> tokens{"the_program",
-        "--log-level", "debug",
+        "--log-level", "info",
 		"--form", "10-Q,10-K",
         "--mode", "BOTH",
 //		"-k", "6",

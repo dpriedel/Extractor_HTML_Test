@@ -76,6 +76,7 @@ CFG_LIB := -lpthread \
 		-lfmt \
 		-lgumbo \
 		-lgq \
+		-ltz \
 		-L/usr/lib \
 		-lpugixml \
 		-lpqxx -lpq

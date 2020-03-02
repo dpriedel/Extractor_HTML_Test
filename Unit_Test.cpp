@@ -1256,15 +1256,15 @@ class ValidateCanNavigateDocumentStructure : public Test
 {
 };
 
-//////TEST_F(ValidateCanNavigateDocumentStructure, FindSECHeader_10K)
-//////{
-//////    auto file_content_10K = LoadXMLDataFileForUse(FILE_WITH_XML_10K);
-//////
-//////    SEC_Header SEC_data;
-//////
-//////    ASSERT_NO_THROW(SEC_data.UseData(file_content_10K));
-//////}
-//////
+//TEST_F(ValidateCanNavigateDocumentStructure, FindSECHeader_10K)
+//{
+//    auto file_content_10K = LoadXMLDataFileForUse(FILE_WITH_XML_10K);
+//
+//    SEC_Header SEC_data;
+//
+//    ASSERT_NO_THROW(SEC_data.UseData(file_content_10K));
+//}
+//
 TEST_F(ValidateCanNavigateDocumentStructure, SECHeaderFindAllFields_10Q)
 {
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);

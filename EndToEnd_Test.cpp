@@ -101,7 +101,6 @@ class SingleFileEndToEndXBRL : public Test
 
 		    trxn.exec("DELETE FROM unified_extracts.sec_filing_id WHERE data_source = 'XBRL'");
 		    trxn.commit();
-			c.disconnect();
         }
 
 		int CountRows()
@@ -113,7 +112,6 @@ class SingleFileEndToEndXBRL : public Test
 
 		    auto row = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_xbrl_data");
 		    trxn.commit();
-			c.disconnect();
 			return row[0].as<int>();
 		}
 };
@@ -222,7 +220,6 @@ class SingleFileEndToEndHTML : public Test
 
 		    trxn.exec("DELETE FROM unified_extracts.sec_filing_id WHERE data_source = 'HTML'");
 		    trxn.commit();
-			c.disconnect();
         }
 
 		int CountRows()
@@ -236,7 +233,6 @@ class SingleFileEndToEndHTML : public Test
 		    auto row2 = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_stmt_of_ops_data");
 		    auto row3 = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_cash_flows_data");
 		    trxn.commit();
-			c.disconnect();
 			return row1[0].as<int>() + row2[0].as<int>() + row3[0].as<int>();
 		}
 };
@@ -466,7 +462,6 @@ class ProcessFolderEndtoEnd : public Test
 
 		    trxn.exec("DELETE FROM unified_extracts.sec_filing_id WHERE data_source = 'HTML'");
 		    trxn.commit();
-			c.disconnect();
         }
 
 		int CountRows()
@@ -480,7 +475,6 @@ class ProcessFolderEndtoEnd : public Test
 		    auto row2 = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_stmt_of_ops_data");
 		    auto row3 = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_cash_flows_data");
 		    trxn.commit();
-			c.disconnect();
 			return row1[0].as<int>() + row2[0].as<int>() + row3[0].as<int>();
 		}
 
@@ -493,7 +487,6 @@ class ProcessFolderEndtoEnd : public Test
 		    auto row2 = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_stmt_of_ops_data WHERE label = 'Missing Value'");
 		    auto row3 = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_cash_flows_data WHERE label = 'Missing Value'");
 		    trxn.commit();
-			c.disconnect();
 			return row1[0].as<int>() + row2[0].as<int>() + row3[0].as<int>();
 		}
 
@@ -506,7 +499,6 @@ class ProcessFolderEndtoEnd : public Test
 
 		    auto row = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_filing_id WHERE data_source = 'HTML'");
 		    trxn.commit();
-			c.disconnect();
 			return row[0].as<int>();
 		}
 };
@@ -1764,7 +1756,6 @@ public:
 
 		    trxn.exec("UPDATE unified_extracts.sec_filing_id SET shares_outstanding = -1");
 		    trxn.commit();
-			c.disconnect();
         }
 		int CountRows()
 		{
@@ -1775,7 +1766,6 @@ public:
 
 		    auto row = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_filing_id WHERE shares_outstanding != -1");
 		    trxn.commit();
-			c.disconnect();
 			return row[0].as<int>();
 		}
 };
@@ -1848,7 +1838,6 @@ class TestBoth : public Test
 
 		    trxn.exec("DELETE FROM unified_extracts.sec_filing_id");
 		    trxn.commit();
-			c.disconnect();
         }
 
 		int CountRows()
@@ -1862,7 +1851,6 @@ class TestBoth : public Test
 		    auto row2 = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_stmt_of_ops_data");
 		    auto row3 = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_cash_flows_data");
 		    trxn.commit();
-			c.disconnect();
 			return row1[0].as<int>() + row2[0].as<int>() + row3[0].as<int>();
 		}
 
@@ -1875,7 +1863,6 @@ class TestBoth : public Test
 		    auto row2 = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_stmt_of_ops_data WHERE label = 'Missing Value'");
 		    auto row3 = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_cash_flows_data WHERE label = 'Missing Value'");
 		    trxn.commit();
-			c.disconnect();
 			return row1[0].as<int>() + row2[0].as<int>() + row3[0].as<int>();
 		}
 
@@ -1888,7 +1875,6 @@ class TestBoth : public Test
 
 		    auto row = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_filing_id WHERE data_source = 'HTML'");
 		    trxn.commit();
-			c.disconnect();
 			return row[0].as<int>();
 		}
 
@@ -1901,7 +1887,6 @@ class TestBoth : public Test
 
 		    auto row = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_filing_id WHERE data_source = 'XBRL'");
 		    trxn.commit();
-			c.disconnect();
 			return row[0].as<int>();
 		}
 };

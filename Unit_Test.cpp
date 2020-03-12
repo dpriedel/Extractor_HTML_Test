@@ -85,6 +85,9 @@ const EM::FileName FILE_WITH_HTML_10Q_PROBLEM_REGEX1{"/vol_DA/SEC/Archives/edgar
 const EM::FileName FILE_WITH_HTML_10Q_PROBLEM_REGEX2{"/vol_DA/SEC/Archives/edgar/data/4515/0000004515-13-000053.txt"};
 const EM::FileName FILE_WITH_HTML_10Q_PROBLEM_WITH_ASSETS1{"/vol_DA/SEC/Archives/edgar/data/68270/0000068270-13-000059.txt"};
 const EM::FileName FILE_WITH_NO_HTML_10Q{"/vol_DA/SEC/SEC_forms/0000855931/10-Q/0001130319-01-500242.txt"};
+
+const EM::FileName FILE_WITH_NO_HTML_AND_NO_FILENAME_10K{"/vol_DA/SEC/SEC_forms/0001000015/10-K/0000912057-00-014793.txt"};
+
 const EM::FileName FILE_WITH_NO_HTML2_10Q{"/vol_DA/SEC/Archives/edgar/data/1421907/0001165527-13-000854.txt"};
 const EM::FileName FILE_WITH_ANCHOR_LOOP{"/vol_DA/SEC/SEC_forms/0000758938/10-K/0000950124-06-005605.txt"};
 const EM::FileName SEC_DIRECTORY{"/vol_DA/SEC/Archives/edgar/data"};
@@ -144,12 +147,12 @@ TEST_F(Iterators, HTMLIteratorFileWithHTML_10Q)
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
-    HTML_FromFile html{&sections};
+    HTML_FromFile html{&sections, FILE_WITH_HTML_10Q};
 
     auto how_many = std::distance(std::begin(html), std::end(html));
     EXPECT_EQ(how_many, 5);
 
-    auto htmls = Find_HTML_Documents(&sections);
+    auto htmls = Find_HTML_Documents(&sections, FILE_WITH_HTML_10Q);
     ASSERT_EQ(htmls.size(), 5);
 }
 
@@ -158,12 +161,12 @@ TEST_F(Iterators, HTMLRangeFileWithHTML_10Q)
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
-    HTML_FromFile html{&sections};
+    HTML_FromFile html{&sections, FILE_WITH_HTML_10Q};
 
     auto how_many = ranges::distance(html);
     EXPECT_TRUE(how_many == 5);
 
-    auto htmls = Find_HTML_Documents(&sections);
+    auto htmls = Find_HTML_Documents(&sections, FILE_WITH_HTML_10Q);
     ASSERT_TRUE(htmls.size() == 5);
 }
 
@@ -172,13 +175,13 @@ TEST_F(Iterators, HTMLIteratorFileWithMinimalHTML_10Q)
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_NO_HTML_10Q);
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
-    HTML_FromFile html{&sections};
+    HTML_FromFile html{&sections, FILE_WITH_NO_HTML_10Q};
 
     auto how_many = std::distance(std::begin(html), std::end(html));
 
     EXPECT_TRUE(how_many == 0);
 
-    auto htmls = Find_HTML_Documents(&sections);
+    auto htmls = Find_HTML_Documents(&sections, FILE_WITH_NO_HTML_10Q);
     ASSERT_TRUE(htmls.size() == 0);
 }
 
@@ -187,13 +190,13 @@ TEST_F(Iterators, HTMLRangeFileWithMinimalHTML_10Q)
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_NO_HTML_10Q);
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
-    HTML_FromFile html{&sections};
+    HTML_FromFile html{&sections, FILE_WITH_NO_HTML_10Q};
 
     auto how_many = ranges::distance(html);
 
     EXPECT_TRUE(how_many == 0);
 
-    auto htmls = Find_HTML_Documents(&sections);
+    auto htmls = Find_HTML_Documents(&sections, FILE_WITH_NO_HTML_10Q);
     ASSERT_TRUE(htmls.size() == 0);
 }
 
@@ -202,12 +205,12 @@ TEST_F(Iterators, HTMLIteratorFileWithHTML_10K)
     const auto file_content_10K = LoadDataFileForUse(FILE_WITH_XML_10K);
     EM::FileContent file_content{file_content_10K};
     const auto sections = LocateDocumentSections(file_content);
-    HTML_FromFile html{&sections};
+    HTML_FromFile html{&sections, FILE_WITH_XML_10K};
 
     auto how_many = std::distance(std::begin(html), std::end(html));
     EXPECT_TRUE(how_many == 107);
 
-    auto htmls = Find_HTML_Documents(&sections);
+    auto htmls = Find_HTML_Documents(&sections, FILE_WITH_XML_10K);
     ASSERT_TRUE(htmls.size() == 107);
 }
 
@@ -216,7 +219,7 @@ TEST_F(Iterators, AnchorIteratorFileWithHTML_10Q)
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
-    HTML_FromFile htmls{&sections};
+    HTML_FromFile htmls{&sections, FILE_WITH_HTML_10Q};
 
     AnchorsFromHTML anchors(htmls.begin()->html_);
 
@@ -234,7 +237,7 @@ TEST_F(Iterators, AnchorRangeFileWithHTML_10Q)
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
-    HTML_FromFile htmls{&sections};
+    HTML_FromFile htmls{&sections, FILE_WITH_HTML_10Q};
 
     AnchorsFromHTML anchors{ranges::front(htmls).html_};
 
@@ -252,7 +255,7 @@ TEST_F(Iterators, AnchorIteratorFileWithXML_10Q)
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_XML_10Q);
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
-    HTML_FromFile htmls{&sections};
+    HTML_FromFile htmls{&sections, FILE_WITH_XML_10Q};
     int total = 0;
     for (const auto& html : htmls)
     {
@@ -268,7 +271,7 @@ TEST_F(Iterators, AnchorRangeFileWithXML_10Q)
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_XML_10Q);
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
-    HTML_FromFile htmls{&sections};
+    HTML_FromFile htmls{&sections, FILE_WITH_XML_10Q};
 
     int total = ranges::accumulate(htmls
             | ranges::views::transform([](const auto& html) { AnchorsFromHTML x{html.html_}; return ranges::distance(x); }),
@@ -282,7 +285,7 @@ TEST_F(Iterators, TableIteratorFileWithHTML_10Q)
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
-    HTML_FromFile htmls{&sections};
+    HTML_FromFile htmls{&sections, FILE_WITH_HTML_10Q};
 
     TablesFromHTML tables(htmls.begin()->html_);
 
@@ -304,7 +307,7 @@ TEST_F(Iterators, TableRangeIteratorFileWithHTML_10Q)
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
-    HTML_FromFile htmls{&sections};
+    HTML_FromFile htmls{&sections, FILE_WITH_HTML_10Q};
 
     TablesFromHTML tables(htmls.begin()->html_);
 
@@ -332,8 +335,12 @@ TEST_F(IdentifyHTMLFilesToUse, ConfirmFileHasHTML)
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
 
+    SEC_Header SEC_data;
+    SEC_data.UseData(file_content);
+    SEC_data.ExtractHeaderFields();
+
     FileHasHTML filter1{{"10-Q"}};
-    auto use_file = filter1(EM::SEC_Header_fields{}, sections);
+    auto use_file = filter1(SEC_data.GetFields(), sections);
     ASSERT_TRUE(use_file);
 }
 
@@ -360,7 +367,7 @@ TEST_F(LocateDocumentWithFinancialContent, FileHasHTML_10Q)
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
-    HTML_FromFile htmls{&sections};
+    HTML_FromFile htmls{&sections, FILE_WITH_HTML_10Q};
 
     FinancialDocumentFilter document_filter{{"10-Q"}};
     auto document = std::find_if(std::begin(htmls), std::end(htmls), document_filter);
@@ -372,7 +379,7 @@ TEST_F(LocateDocumentWithFinancialContent, FileHasXML_10Q)
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_XML_10Q);
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
-    HTML_FromFile htmls{&sections};
+    HTML_FromFile htmls{&sections, FILE_WITH_XML_10Q};
 
     FinancialDocumentFilter document_filter{{"10-Q"}};
     auto document = ranges::find_if(htmls, document_filter);
@@ -384,7 +391,7 @@ TEST_F(LocateDocumentWithFinancialContent, FileHasNoUsableAnchors_10Q)
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
-    HTML_FromFile htmls{&sections};
+    HTML_FromFile htmls{&sections, FILE_WITH_HTML_10Q_WITH_ANCHORS};
 
     FinancialDocumentFilter document_filter{{"10-Q"}};
     auto document = std::find_if(std::begin(htmls), std::end(htmls), document_filter);
@@ -396,7 +403,7 @@ TEST_F(LocateDocumentWithFinancialContent, FindContentInFileHasMinimalData_10Q)
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_MINIMAL_DATA);
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
-    HTML_FromFile htmls{&sections};
+    HTML_FromFile htmls{&sections, FILE_WITH_HTML_10Q_MINIMAL_DATA};
 
     FinancialDocumentFilter document_filter{{"10-Q"}};
     auto document = std::find_if(std::begin(htmls), std::end(htmls), document_filter);
@@ -410,7 +417,7 @@ TEST_F(LocateDocumentWithFinancialContent, FindNoHTMLInFileWithNoHTML_10Q)
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_NO_HTML_10Q);
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
-    HTML_FromFile htmls{&sections};
+    HTML_FromFile htmls{&sections, FILE_WITH_NO_HTML_10Q};
 
     FinancialDocumentFilter document_filter{{"10-Q"}};
     auto document = std::find_if(std::begin(htmls), std::end(htmls), document_filter);
@@ -427,7 +434,7 @@ TEST_F(FindAnchorsForFinancialStatements, FindSegmentedTopLevelAnchor_10Q)
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_SEGMENTED_ANCHORS);
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
-    HTML_FromFile htmls{&sections};
+    HTML_FromFile htmls{&sections, FILE_WITH_HTML_10Q_WITH_SEGMENTED_ANCHORS};
 
     // we know there is only 1 HTML document in this file.
 
@@ -455,7 +462,7 @@ TEST_F(FindAnchorsForFinancialStatements, FindTopLevelAnchor_10Q)
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
 
-    auto financial_content = FindFinancialContentUsingAnchors(&sections);
+    auto financial_content = FindFinancialContentUsingAnchors(&sections, FILE_WITH_HTML_10Q_WITH_ANCHORS);
 
     ASSERT_TRUE(financial_content);
 }
@@ -466,7 +473,7 @@ TEST_F(FindAnchorsForFinancialStatements, FindTopLevelAnchorInFileWithMinimalHTM
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
 
-    auto financial_content = FindFinancialContentUsingAnchors(&sections);
+    auto financial_content = FindFinancialContentUsingAnchors(&sections, FILE_WITH_HTML_10Q_MINIMAL_DATA);
 
     ASSERT_TRUE(financial_content);
 }
@@ -477,7 +484,7 @@ TEST_F(FindAnchorsForFinancialStatements, DontFindTopLevelAnchorInFileWithNoHTML
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
 
-    auto financial_content = FindFinancialContentUsingAnchors(&sections);
+    auto financial_content = FindFinancialContentUsingAnchors(&sections, FILE_WITH_NO_HTML_10Q);
 
     ASSERT_FALSE(financial_content);
 }
@@ -530,7 +537,7 @@ TEST_F(FindAnchorsForFinancialStatements, FindAnchorsComplexHTML_NO_HREFS_10K)
 
     AnchorList statement_anchors;
 
-    auto financial_content = FindFinancialContentUsingAnchors(&sections);
+    auto financial_content = FindFinancialContentUsingAnchors(&sections, FILE_WITH_HTML_NO_HREFS1_10K);
     ASSERT_FALSE(financial_content);
 }
 
@@ -539,7 +546,7 @@ TEST_F(FindAnchorsForFinancialStatements, FindAnchorDestinations_10Q)
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
-    auto financial_document = FindFinancialContentUsingAnchors(&sections);
+    auto financial_document = FindFinancialContentUsingAnchors(&sections, FILE_WITH_HTML_10Q_WITH_ANCHORS);
 
     AnchorsFromHTML anchors(financial_document->first);
 
@@ -607,7 +614,7 @@ TEST_F(FindIndividualFinancialStatements_10Q, FindBalanceSheetInFileWithHTML_10Q
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
-    HTML_FromFile htmls{&sections};
+    HTML_FromFile htmls{&sections, FILE_WITH_HTML_10Q};
 
     bool found_it = false;
 
@@ -635,7 +642,7 @@ TEST_F(FindIndividualFinancialStatements_10Q, RangeFindBalanceSheetInFileWithHTM
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
-    HTML_FromFile htmls{&sections};
+    HTML_FromFile htmls{&sections, FILE_WITH_HTML_10Q};
 
     FinancialDocumentFilter document_filter{{"10-Q"}};
 
@@ -655,7 +662,7 @@ TEST_F(FindIndividualFinancialStatements_10Q, FindBalanceSheetWithAnchorsHTML5_1
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS5);
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
-    auto financial_content = FindFinancialContentUsingAnchors(&sections);
+    auto financial_content = FindFinancialContentUsingAnchors(&sections, FILE_WITH_HTML_10Q_WITH_ANCHORS5);
     EXPECT_TRUE(financial_content);
 
     AnchorsFromHTML anchors(financial_content->first);
@@ -673,7 +680,7 @@ TEST_F(FindIndividualFinancialStatements_10Q, FindStatementOfOperationsWithAncho
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS5);
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
-    auto financial_content = FindFinancialContentUsingAnchors(&sections);
+    auto financial_content = FindFinancialContentUsingAnchors(&sections, FILE_WITH_HTML_10Q_WITH_ANCHORS5);
     EXPECT_TRUE(financial_content);
 
     static const boost::regex regex_operations{R"***((?:statement|statements)\s+?of.*?(?:oper|loss|income|earning))***",
@@ -691,7 +698,7 @@ TEST_F(FindIndividualFinancialStatements_10Q, FindCashFlowsWithAnchorsHTML5_10Q)
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS5);
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
-    auto financial_content = FindFinancialContentUsingAnchors(&sections);
+    auto financial_content = FindFinancialContentUsingAnchors(&sections, FILE_WITH_HTML_10Q_WITH_ANCHORS5);
     EXPECT_TRUE(financial_content);
 
     static const boost::regex regex_cash_flow{R"***((?:cash\s+flow)|(?:statement.+?cash)|(?:cashflow))***",
@@ -710,7 +717,7 @@ TEST_F(FindIndividualFinancialStatements_10Q, FindStatementOfOperations_10Q)
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
 
-    HTML_FromFile htmls{&sections};
+    HTML_FromFile htmls{&sections, FILE_WITH_HTML_10Q};
 
     bool found_it = false;
 
@@ -738,7 +745,7 @@ TEST_F(FindIndividualFinancialStatements_10Q, FindCashFlowStatement_10Q)
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q);
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
-    HTML_FromFile htmls{&sections};
+    HTML_FromFile htmls{&sections, FILE_WITH_HTML_10Q};
 
     bool found_it = false;
 
@@ -768,7 +775,7 @@ TEST_F(FindIndividualFinancialStatements_10Q, FindCashFlowStatement2_10Q)
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS2);
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
-    auto financial_content = FindFinancialContentUsingAnchors(&sections);
+    auto financial_content = FindFinancialContentUsingAnchors(&sections, FILE_WITH_HTML_10Q_WITH_ANCHORS2);
     EXPECT_TRUE(financial_content);
 
     AnchorsFromHTML anchors(financial_content->first);
@@ -810,7 +817,7 @@ TEST_F(Multipliers, DISABLED_FindDollarMultipliers_10Q)
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
 
-    HTML_FromFile htmls{&sections};
+    HTML_FromFile htmls{&sections, FILE_WITH_HTML_ANCHORS_10Q};
 
     for (auto html : htmls)
     {
@@ -823,7 +830,7 @@ TEST_F(Multipliers, DISABLED_FindDollarMultipliers_10Q)
                 <<'\n';
         }
     }
-    auto financial_content = FindFinancialContentUsingAnchors(&sections);
+    auto financial_content = FindFinancialContentUsingAnchors(&sections, FILE_WITH_HTML_ANCHORS_10Q);
 
     ASSERT_TRUE(financial_content);
 }
@@ -850,7 +857,7 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections)
     const auto sections = LocateDocumentSections(file_content);
 
     const SharesOutstanding so;
-    auto all_sections = FindAndExtractFinancialStatements(so, &sections, {"10-Q"});
+    auto all_sections = FindAndExtractFinancialStatements(so, &sections, {"10-Q"}, FILE_WITH_HTML_10Q_WITH_ANCHORS);
 
     ASSERT_TRUE(all_sections.has_data());
 }
@@ -862,7 +869,7 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections2)
     const auto sections = LocateDocumentSections(file_content);
 
     const SharesOutstanding so;
-    auto all_sections = FindAndExtractFinancialStatements(so, &sections, {"10-Q"});
+    auto all_sections = FindAndExtractFinancialStatements(so, &sections, {"10-Q"}, FILE_WITH_HTML_10Q_WITH_ANCHORS2);
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
     std::cout << "\n\nCash Flow\n";
@@ -882,7 +889,7 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections3)
     const auto sections = LocateDocumentSections(file_content);
     FinancialDocumentFilter document_filter{{"10-Q"}};
 
-    HTML_FromFile htmls{&sections};
+    HTML_FromFile htmls{&sections, FILE_WITH_HTML_10Q_WITH_ANCHORS3};
 
     auto financial_content = std::find_if(std::begin(htmls), std::end(htmls), document_filter);
     EXPECT_TRUE(financial_content != htmls.end());
@@ -905,7 +912,7 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections4)
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS4);
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
-    auto financial_content = FindFinancialContentUsingAnchors(&sections);
+    auto financial_content = FindFinancialContentUsingAnchors(&sections, FILE_WITH_HTML_10Q_WITH_ANCHORS4);
     EXPECT_TRUE(financial_content);
 
     auto all_sections = ExtractFinancialStatementsUsingAnchors(financial_content->first);
@@ -936,7 +943,7 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSectionsMinimalHTMLData)
 //
 //    auto all_sections = ExtractFinancialStatementsUsingAnchors(financial_content->html_);
     const SharesOutstanding so;
-    auto all_sections = FindAndExtractFinancialStatements(so, &sections, {"10-Q"});
+    auto all_sections = FindAndExtractFinancialStatements(so, &sections, {"10-Q"}, FILE_WITH_HTML_10Q_MINIMAL_DATA);
 
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
@@ -959,7 +966,7 @@ TEST_F(ProblemFiles_10Q, FindSectionAnchors_10Q)
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS);
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
-    auto financial_content = FindFinancialContentUsingAnchors(&sections);
+    auto financial_content = FindFinancialContentUsingAnchors(&sections, FILE_WITH_HTML_10Q_WITH_ANCHORS);
     EXPECT_TRUE(financial_content);
 
     AnchorsFromHTML anchors(financial_content->first);
@@ -999,7 +1006,7 @@ TEST_F(ProblemFiles_10Q, FileWithMinimalData)
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
     const SharesOutstanding so;
-    auto financial_statements = FindAndExtractFinancialStatements(so, &sections, {"10-Q"});
+    auto financial_statements = FindAndExtractFinancialStatements(so, &sections, {"10-Q"}, FILE_WITH_HTML_10Q_MINIMAL_DATA);
 
     ASSERT_TRUE(financial_statements.has_data());
 }
@@ -1007,6 +1014,16 @@ TEST_F(ProblemFiles_10Q, FileWithMinimalData)
 class ProblemFiles_10K : public Test
 {
 };
+
+TEST_F(ProblemFiles_10K, FileWithMinimalDataAndNoFileNme)
+{
+    const auto file_content_10K = LoadDataFileForUse(FILE_WITH_NO_HTML_AND_NO_FILENAME_10K);
+    EM::FileContent file_content{file_content_10K};
+    const auto sections = LocateDocumentSections(file_content);
+    const SharesOutstanding so;
+
+    ASSERT_THROW(FindAndExtractFinancialStatements(so, &sections, {"10-K"}, FILE_WITH_NO_HTML_AND_NO_FILENAME_10K), ExtractorException);
+}
 
 
 TEST_F(ProblemFiles_10K, DISABLED_FindSectionAnchors_10K)
@@ -1016,7 +1033,7 @@ TEST_F(ProblemFiles_10K, DISABLED_FindSectionAnchors_10K)
     const auto file_content_10K = LoadDataFileForUse(FILE_WITH_ANCHOR_LOOP);
     EM::FileContent file_content{file_content_10K};
     const auto sections = LocateDocumentSections(file_content);
-    auto financial_content = FindFinancialContentUsingAnchors(&sections);
+    auto financial_content = FindFinancialContentUsingAnchors(&sections, FILE_WITH_ANCHOR_LOOP);
     EXPECT_TRUE(financial_content);
 
     AnchorsFromHTML anchors(financial_content->first);
@@ -1060,12 +1077,12 @@ TEST_F(NoAnchors_10Q, FindContentInFileWithNoAnchors1)
     const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS);
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
-    auto financial_content = FindFinancialContentUsingAnchors(&sections);
+    auto financial_content = FindFinancialContentUsingAnchors(&sections, FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS);
     EXPECT_FALSE(financial_content);
 
     // let's see if we can find our data anyways
 
-    HTML_FromFile htmls{&sections};
+    HTML_FromFile htmls{&sections, FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS};
 
     FinancialStatements financial_statements;
 
@@ -1121,7 +1138,7 @@ TEST_F(NoAnchors_10Q, FileWithNoAnchors2)
 //    EXPECT_TRUE(statement_anchors.size() < 3);
 
     const SharesOutstanding so;
-    auto the_tables = FindAndExtractFinancialStatements(so, &sections, {"10-Q"});
+    auto the_tables = FindAndExtractFinancialStatements(so, &sections, {"10-Q"}, FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS2);
 
     ASSERT_TRUE(the_tables.has_data());
 }
@@ -1151,7 +1168,7 @@ TEST_F(NoAnchors_10Q, FileWithNoAnchors3)
 //    EXPECT_TRUE(statement_anchors.size() < 3);
 
     const SharesOutstanding so;
-    auto the_tables = FindAndExtractFinancialStatements(so, &sections, {"10-Q"});
+    auto the_tables = FindAndExtractFinancialStatements(so, &sections, {"10-Q"}, FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS3);
 
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(the_tables.balance_sheet_.parsed_data_.data(), 500);
@@ -1181,7 +1198,7 @@ TEST_F(ProblemWithRegexs_10Q, UseRegexProblemFile1)
     const auto sections = LocateDocumentSections(file_content);
 
     const SharesOutstanding so;
-    auto the_tables = FindAndExtractFinancialStatements(so, &sections, {"10-Q"});
+    auto the_tables = FindAndExtractFinancialStatements(so, &sections, {"10-Q"}, FILE_WITH_HTML_10Q_PROBLEM_REGEX1);
 
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(the_tables.balance_sheet_.parsed_data_.data(), 500);
@@ -1208,7 +1225,7 @@ TEST_F(ProblemWithRegexs_10Q, DISABLED_UseRegexProblemFile2)
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
     const SharesOutstanding so;
-    auto the_tables = FindAndExtractFinancialStatements(so, &sections, {"10-Q"});
+    auto the_tables = FindAndExtractFinancialStatements(so, &sections, {"10-Q"}, FILE_WITH_HTML_10Q_PROBLEM_REGEX2);
 
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(the_tables.balance_sheet_.parsed_data_.data(), 500);
@@ -1233,7 +1250,7 @@ TEST_F(ProblemWithRegexs_10Q, ProblemMatchingCurrentAssets)
     const auto sections = LocateDocumentSections(file_content);
 
     const SharesOutstanding so;
-    auto all_sections = FindAndExtractFinancialStatements(so, &sections, {"10-Q"});
+    auto all_sections = FindAndExtractFinancialStatements(so, &sections, {"10-Q"}, FILE_WITH_XML_10Q);
 
     EXPECT_TRUE(all_sections.has_data());
 
@@ -1289,7 +1306,7 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_WITH_ANCHORS)
     const auto sections = LocateDocumentSections(file_content);
 
     const SharesOutstanding so;
-    auto all_sections = FindAndExtractFinancialStatements(so, &sections, {"10-Q"});
+    auto all_sections = FindAndExtractFinancialStatements(so, &sections, {"10-Q"}, FILE_WITH_HTML_10Q_WITH_ANCHORS);
 
     EXPECT_TRUE(all_sections.has_data());
 
@@ -1319,7 +1336,7 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_FIND_SHARES1)
     const auto sections = LocateDocumentSections(file_content);
 
     const SharesOutstanding so;
-    auto all_sections = FindAndExtractFinancialStatements(so, &sections, {"10-Q"});
+    auto all_sections = FindAndExtractFinancialStatements(so, &sections, {"10-Q"}, FILE_WITH_HTML_10Q_FIND_SHARES1);
     EXPECT_TRUE(all_sections.has_data());
 
     int64_t shares = all_sections.outstanding_shares_;
@@ -1341,7 +1358,7 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_ASSETS_PROBLEM1)
     const auto sections = LocateDocumentSections(file_content);
 
     const SharesOutstanding so;
-    auto all_sections = FindAndExtractFinancialStatements(so, &sections, {"10-Q"});
+    auto all_sections = FindAndExtractFinancialStatements(so, &sections, {"10-Q"}, FILE_WITH_HTML_10Q_PROBLEM_WITH_ASSETS1);
 
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
@@ -1369,7 +1386,7 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_WITH_ANCHORS_Collect1)
     const auto sections = LocateDocumentSections(file_content);
 
     const SharesOutstanding so;
-    auto all_sections = FindAndExtractFinancialStatements(so, &sections, {"10-Q"});
+    auto all_sections = FindAndExtractFinancialStatements(so, &sections, {"10-Q"}, FILE_WITH_HTML_10Q_WITH_ANCHORS);
 
     EXPECT_TRUE(all_sections.has_data());
 
@@ -1389,7 +1406,7 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, XML_10Q_Collect1)
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
     const SharesOutstanding so;
-    auto all_sections = FindAndExtractFinancialStatements(so, &sections, {"10-Q"});
+    auto all_sections = FindAndExtractFinancialStatements(so, &sections, {"10-Q"}, FILE_WITH_XML_10Q);
 
     EXPECT_TRUE(all_sections.has_data());
 
@@ -1413,7 +1430,7 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, XML_10Q_Collect2)
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
     const SharesOutstanding so;
-    auto all_sections = FindAndExtractFinancialStatements(so, &sections, {"10-Q"});
+    auto all_sections = FindAndExtractFinancialStatements(so, &sections, {"10-Q"}, FILE_WITH_XML2_10Q);
 
     EXPECT_TRUE(all_sections.has_data());
 
@@ -1435,7 +1452,7 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, XML_10K_NoSharesOutstanding)
     const auto sections = LocateDocumentSections(file_content);
 
     const SharesOutstanding so;
-    auto all_sections = FindAndExtractFinancialStatements(so, &sections, {"10-K"});
+    auto all_sections = FindAndExtractFinancialStatements(so, &sections, {"10-K"}, FILE_WITH_XBRL_INSIDE_TXT_DOCUMENT);
     EXPECT_FALSE(all_sections.has_data());
 
     int64_t shares = all_sections.outstanding_shares_;
@@ -1456,7 +1473,7 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_NO_ANCHORS_10Q_Collect1)
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
     const SharesOutstanding so;
-    auto all_sections = FindAndExtractFinancialStatements(so, &sections, {"10-Q"});
+    auto all_sections = FindAndExtractFinancialStatements(so, &sections, {"10-Q"}, FILE_WITH_HTML_10Q_NO_USABLE_ANCHORS2);
 
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
@@ -1478,7 +1495,7 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_DUPLICATE_LABEL_TEXT)
     const auto sections = LocateDocumentSections(file_content);
 
     const SharesOutstanding so;
-    auto all_sections = FindAndExtractFinancialStatements(so, &sections, {"10-Q"});
+    auto all_sections = FindAndExtractFinancialStatements(so, &sections, {"10-Q"}, FILE_SHOWING_DUPLICATE_LABEL_TEXT);
 
     EXPECT_TRUE(all_sections.has_data());
 
@@ -1504,7 +1521,7 @@ TEST_F(ProcessEntireFileAndExtractData_10K, XML_10K_Collect1)
     EM::FileContent file_content{file_content_10K};
     const auto sections = LocateDocumentSections(file_content);
     const SharesOutstanding so;
-    auto all_sections = FindAndExtractFinancialStatements(so, &sections, {"10-K"});
+    auto all_sections = FindAndExtractFinancialStatements(so, &sections, {"10-K"}, FILE_WITH_HTML_NO_HREFS1_10K);
 
     EXPECT_TRUE(all_sections.has_data());
 
@@ -1544,7 +1561,7 @@ TEST_F(ExportHTML, HTML_10Q)
     EM::FileContent file_content{file_content_10Q};
     const auto sections = LocateDocumentSections(file_content);
 
-    HTML_FromFile htmls{&sections};
+    HTML_FromFile htmls{&sections, FILE_WITH_HTML_10Q};
 
     FinancialDocumentFilter document_filter({"10-Q"});
     auto financial_content = std::find_if(std::begin(htmls), std::end(htmls), document_filter);
@@ -1568,7 +1585,7 @@ TEST_F(ExportHTML, HTML_10Q)
     const auto exported_sections = LocateDocumentSections(exported_content);
     SEC_data.UseData(exported_content);
 
-    HTML_FromFile htmls2{&exported_sections};
+    HTML_FromFile htmls2{&exported_sections, EM::FileName{"/tmp/export_html.txt"}};
     auto reimported_content = std::find_if(std::begin(htmls2), std::end(htmls2), document_filter);
     ASSERT_TRUE(reimported_content != htmls2.end());
 }
@@ -1591,7 +1608,7 @@ TEST_F(ExportHTML, VerifyExportAll_10Q)
                 EM::FileContent file_content{file_content_10Q};
                 const auto sections = LocateDocumentSections(file_content);
 
-                HTML_FromFile htmls{&sections};
+                HTML_FromFile htmls{&sections, EM::FileName{dir_ent.path().c_str()}};
 
                 for (const auto& html : htmls)
                 {
@@ -1646,7 +1663,7 @@ TEST_F(ExportHTML, VerifyCanProcessExportedHTML_10Q)
                 EM::FileContent file_content{file_content_10Q};
                 const auto sections = LocateDocumentSections(file_content);
 
-                HTML_FromFile htmls{&sections};
+                HTML_FromFile htmls{&sections, EM::FileName{dir_ent.path().c_str()}};
 
                 for (const auto& html : htmls)
                 {
@@ -1693,7 +1710,7 @@ TEST_F(ExportHTML, VerifyCanProcessExportedHTML_10Q)
                 EM::FileContent file_content{file_content_10Q};
                 const auto sections = LocateDocumentSections(file_content);
 
-                HTML_FromFile htmls{&sections};
+                HTML_FromFile htmls{&sections, EM::FileName{dir_ent.path().c_str()}};
                 auto reimported_content = std::find_if(std::begin(htmls), std::end(htmls), document_filter);
                 if (reimported_content != htmls.end())
                 {
@@ -1722,7 +1739,7 @@ TEST_F(FindSharesOutstanding, Test10KFileWithSharesAndValue)
     EM::FileContent file_content{file_content_10K};
     const auto sections = LocateDocumentSections(file_content);
 
-    HTML_FromFile htmls(&sections);
+    HTML_FromFile htmls(&sections, FILE_WITH_SHARES_AND_VALUE);
     const SharesOutstanding so;
 
     int64_t found_shares = so(htmls.begin()->html_);
@@ -1736,7 +1753,7 @@ TEST_F(FindSharesOutstanding, Test10KFileWithNoDollarSignOnValue)
     EM::FileContent file_content{file_content_10K};
     const auto sections = LocateDocumentSections(file_content);
 
-    HTML_FromFile htmls(&sections);
+    HTML_FromFile htmls(&sections, FILE_WITH_SHARE_VALUE_NO_DOLLAR_SIGN);
     const SharesOutstanding so;
 
     int64_t found_shares = so(htmls.begin()->html_);
@@ -1750,7 +1767,7 @@ TEST_F(FindSharesOutstanding, Test10KFileWithDollarSignOnValue)
     EM::FileContent file_content{file_content_10K};
     const auto sections = LocateDocumentSections(file_content);
 
-    HTML_FromFile htmls(&sections);
+    HTML_FromFile htmls(&sections, FILE_WITH_XBRL_INSIDE_HTM_DOCUMENT);
     const SharesOutstanding so;
 
     int64_t found_shares = so(htmls.begin()->html_);
@@ -1765,7 +1782,7 @@ TEST_F(FindSharesOutstanding, Test10KFileWithNoPossibles)
     EM::FileContent file_content{file_content_10K};
     const auto sections = LocateDocumentSections(file_content);
 
-    HTML_FromFile htmls(&sections);
+    HTML_FromFile htmls(&sections, FILE_WITH_NO_POSSIBLES);
     const SharesOutstanding so;
 
     int64_t found_shares = so(htmls.begin()->html_);
@@ -1779,7 +1796,7 @@ TEST_F(FindSharesOutstanding, Test10KFileWithSharesBeforeYesNo)
     EM::FileContent file_content{file_content_10K};
     const auto sections = LocateDocumentSections(file_content);
 
-    HTML_FromFile htmls(&sections);
+    HTML_FromFile htmls(&sections, FILE_WITH_SHARES_BEFORE_YESNO);
     const SharesOutstanding so;
 
     int64_t found_shares = so(htmls.begin()->html_);
@@ -1793,7 +1810,7 @@ TEST_F(FindSharesOutstanding, Test10KFileWithSharesAfterContents)
     EM::FileContent file_content{file_content_10K};
     const auto sections = LocateDocumentSections(file_content);
 
-    HTML_FromFile htmls(&sections);
+    HTML_FromFile htmls(&sections, FILE_WITH_SHARES_AFTER_CONTENTS);
     const SharesOutstanding so;
 
     int64_t found_shares = so(htmls.begin()->html_);
@@ -1824,7 +1841,7 @@ TEST_F(FindSharesOutstanding, TestListOfFilesWithAnswers)
         auto content = LoadDataFileForUse(EM::FileName{file_name});
         EM::FileContent file_content{content};
         const auto sections = LocateDocumentSections(file_content);
-        HTML_FromFile htmls(&sections);
+        HTML_FromFile htmls(&sections, EM::FileName{file_name});
 
         SharesOutstanding so;
         int64_t found_shares = so(htmls.begin()->html_);

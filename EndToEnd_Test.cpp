@@ -159,7 +159,7 @@ TEST_F(SingleFileEndToEndXBRL, VerifyCanLoadDataToDBForFileWithXML10QXBRL)
 	{		// handle exception: unspecified
         spdlog::error("Something totally unexpected happened.");
 	}
-	ASSERT_EQ(CountRows(), 194);
+	ASSERT_EQ(CountRows(), 192);
 }
 
 TEST_F(SingleFileEndToEndXBRL, VerifyLoadsNoDataToDBForFileWithXML10QHTML)
@@ -1968,6 +1968,6 @@ int main(int argc, char** argv)
 
     InitLogging();
 
-	InitGoogleMock(&argc, argv);
+	InitGoogleTest(&argc, argv);
    return RUN_ALL_TESTS();
 }

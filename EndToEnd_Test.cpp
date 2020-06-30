@@ -80,7 +80,9 @@ std::map<std::string, fs::file_time_type> CollectLastModifiedTimesForFilesInDire
     auto save_mod_time([&results] (const auto& dir_ent)
     {
 		if (dir_ent.status().type() == fs::file_type::regular)
-			results[dir_ent.path().filename().string()] = fs::last_write_time(dir_ent.path());
+		{
+            results[dir_ent.path().filename().string()] = fs::last_write_time(dir_ent.path());
+        }
     });
 
     std::for_each(fs::recursive_directory_iterator(directory), fs::recursive_directory_iterator(), save_mod_time);
@@ -99,7 +101,7 @@ class SingleFileEndToEndXBRL : public Test
 
 		    // make sure the DB is empty before we start
 
-		    trxn.exec("DELETE FROM unified_extracts.sec_filing_id WHERE data_source = 'XBRL'");
+		    trxn.exec("DELETE FROM unified_extracts.sec_filing_id WHERE data_source != 'HTML'");
 		    trxn.commit();
         }
 
@@ -108,11 +110,20 @@ class SingleFileEndToEndXBRL : public Test
 		    pqxx::connection c{"dbname=sec_extracts user=extractor_pg"};
 		    pqxx::work trxn{c};
 
-		    // make sure the DB is empty before we start
-
-		    auto row = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_xbrl_data");
+		    auto row1 = trxn.query_value<int>("select count(*) from unified_extracts.sec_filing_id as t1 inner join unified_extracts.sec_bal_sheet_data as t2 on t1.filing_id =  t2.filing_id where t1.data_source = 'XLS';");
+		    auto row2 = trxn.query_value<int>("select count(*) from unified_extracts.sec_filing_id as t1 inner join unified_extracts.sec_stmt_of_ops_data as t2 on t1.filing_id =  t2.filing_id where t1.data_source = 'XLS';");
+		    auto row3 = trxn.query_value<int>("select count(*) from unified_extracts.sec_filing_id as t1 inner join unified_extracts.sec_cash_flows_data as t2 on t1.filing_id =  t2.filing_id where t1.data_source = 'XLS';");
 		    trxn.commit();
-			return row[0].as<int>();
+			int total = row1 + row2 + row3;
+            if ( total == 0)
+            {
+                // maybe we have plain XBRL
+
+                pqxx::work trxn{c};
+                total = trxn.query_value<int>("select count(*) from unified_extracts.sec_filing_id as t1 inner join unified_extracts.sec_xbrl_data as t2 on t1.filing_id =  t2.filing_id where t1.data_source = 'XBRL';");
+                trxn.commit();
+            }
+            return total;
 		}
 };
 
@@ -159,7 +170,7 @@ TEST_F(SingleFileEndToEndXBRL, VerifyCanLoadDataToDBForFileWithXML10QXBRL)
 	{		// handle exception: unspecified
         spdlog::error("Something totally unexpected happened.");
 	}
-	ASSERT_EQ(CountRows(), 192);
+	ASSERT_EQ(CountRows(), 55);
 }
 
 TEST_F(SingleFileEndToEndXBRL, VerifyLoadsNoDataToDBForFileWithXML10QHTML)
@@ -227,13 +238,12 @@ class SingleFileEndToEndHTML : public Test
 		    pqxx::connection c{"dbname=sec_extracts user=extractor_pg"};
 		    pqxx::work trxn{c};
 
-		    // make sure the DB is empty before we start
-
-		    auto row1 = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_bal_sheet_data");
-		    auto row2 = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_stmt_of_ops_data");
-		    auto row3 = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_cash_flows_data");
+		    auto row1 = trxn.query_value<int>("select count(*) from unified_extracts.sec_filing_id as t1 inner join unified_extracts.sec_bal_sheet_data as t2 on t1.filing_id =  t2.filing_id where t1.data_source = 'HTML';");
+		    auto row2 = trxn.query_value<int>("select count(*) from unified_extracts.sec_filing_id as t1 inner join unified_extracts.sec_stmt_of_ops_data as t2 on t1.filing_id =  t2.filing_id where t1.data_source = 'HTML';");
+		    auto row3 = trxn.query_value<int>("select count(*) from unified_extracts.sec_filing_id as t1 inner join unified_extracts.sec_cash_flows_data as t2 on t1.filing_id =  t2.filing_id where t1.data_source = 'HTML';");
 		    trxn.commit();
-			return row1[0].as<int>() + row2[0].as<int>() + row3[0].as<int>();
+			int total = row1 + row2 + row3;
+            return total;
 		}
 };
 
@@ -1885,7 +1895,7 @@ class TestBoth : public Test
 
 		    // make sure the DB is empty before we start
 
-		    auto row = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_filing_id WHERE data_source = 'XBRL'");
+		    auto row = trxn.exec1("SELECT count(*) FROM unified_extracts.sec_filing_id WHERE data_source != 'HTML'");
 		    trxn.commit();
 			return row[0].as<int>();
 		}
@@ -1942,8 +1952,9 @@ TEST_F(TestBoth, UpdateDBFromList)
 	}
     // there are 159 possible XBRL files but 3 of them are weirdly redundant
     // so they error out as DB duplicates.
+    // also, 3 more error out because the XLS sheets can't be found
 
-	EXPECT_EQ(CountFilingsXBRL(), 156);
+	EXPECT_EQ(CountFilingsXBRL(), 153);
 
     EXPECT_EQ(CountFilingsHTML(), 22);
 }

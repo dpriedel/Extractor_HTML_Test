@@ -40,7 +40,7 @@
 #include <system_error>
 #include <thread>
 
-#include <boost/algorithm/string/predicate.hpp>
+//#include <boost/algorithm/string/predicate.hpp>
 
 #include <gmock/gmock.h>
 

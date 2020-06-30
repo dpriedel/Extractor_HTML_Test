@@ -19,8 +19,8 @@
 #
 MAKE=gmake
 
-BOOSTDIR := /extra/boost/boost-1.73_gcc-9
-GCCDIR := /extra/gcc/gcc-9
+BOOSTDIR := /extra/boost/boost-1.73_gcc-10
+GCCDIR := /extra/gcc/gcc-10
 GTESTDIR := /usr/local/include
 CPP := $(GCCDIR)/bin/g++
 
@@ -52,6 +52,7 @@ SRCS2 := $(SDIR2)/ExtractorApp.cpp \
 		$(SDIR2)/AnchorsFromHTML.cpp \
 		$(SDIR2)/TablesFromFile.cpp \
 		$(SDIR2)/SharesOutstanding.cpp \
+		$(SDIR2)/XLS_Data.cpp \
 		$(SDIR2)/ExtractorMutexAndLock.cpp
 
 SRCS := $(SRCS1) $(SRCS2)
@@ -71,6 +72,7 @@ CFG_LIB := -lpthread \
 		-lboost_date_time-mt-d-x64 -lboost_iostreams-mt-d-x64 -lboost_regex-mt-d-x64 \
 		-lboost_program_options-mt-x64 \
 		-L/usr/local/lib \
+		-lxlsxio_read \
 		-lgtest -lgtest_main \
 		-lspdlog \
 		-lfmt \
@@ -78,6 +80,8 @@ CFG_LIB := -lpthread \
 		-lgq \
 		-ltz \
 		-L/usr/lib \
+		-lexpat \
+		-lzip \
 		-lpugixml \
 		-lpqxx -lpq
 
@@ -89,7 +93,7 @@ DEPS=$(OBJS:.o=.d)
 
 # COMPILE=$(CPP) -c  -x c++  -O0  -g3 -std=c++2a -DBOOST_ENABLE_ASSERT_HANDLER -D_DEBUG -fsanitize=address -fPIC -o $@ $(CFG_INC) $< -march=native -MMD -MP
 # LINK := $(CPP)  -g -fsanitize=address -o $(OUTFILE) $(OBJS) $(CFG_LIB) -Wl,-E $(RPATH_LIB)
-COMPILE=$(CPP) -c  -x c++  -O0  -g3 -std=c++2a -DBOOST_ENABLE_ASSERT_HANDLER -D_DEBUG -DSPDLOG_FMT_EXTERNAL -fconcepts -fPIC -o $@ $(CFG_INC) $< -march=native -MMD -MP
+COMPILE=$(CPP) -c  -x c++  -O0  -g3 -std=c++2a -DBOOST_ENABLE_ASSERT_HANDLER -D_DEBUG -DSPDLOG_FMT_EXTERNAL -fPIC -o $@ $(CFG_INC) $< -march=native -MMD -MP
 LINK := $(CPP)  -g -o $(OUTFILE) $(OBJS) $(CFG_LIB) -Wl,-E $(RPATH_LIB)
 
 endif #	DEBUG configuration

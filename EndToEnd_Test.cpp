@@ -1954,7 +1954,7 @@ TEST_F(TestBoth, UpdateDBFromList)
     // so they error out as DB duplicates.
     // also, 3 more error out because the XLS sheets can't be found
 
-	EXPECT_EQ(CountFilingsXBRL(), 153);
+	EXPECT_EQ(CountFilingsXBRL(), 154);
 
     EXPECT_EQ(CountFilingsHTML(), 22);
 }

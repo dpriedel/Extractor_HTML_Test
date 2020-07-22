@@ -105,7 +105,7 @@ const EM::FileName SEC_DIRECTORY{"/vol_DA/SEC/Archives/edgar/data"};
 const EM::FileName FILE_SHOWING_DUPLICATE_LABEL_TEXT{"/vol_DA/SEC/Archives/edgar/data/1522222/0001185185-13-002216.txt"};
 const EM::FileName FILE_WITH_HTML_10Q_FIND_SHARES1{"/vol_DA/SEC/Archives/edgar/data/29989/0000029989-13-000015.txt"};
 const EM::FileName FILE_WITH_HTML_NO_HREFS1_10K{"/vol_DA/SEC/SEC_forms/0000906345/10-K/0000906345-04-000036.txt"};
-const EM::FileName FILE_WITH_HTML_ANCHORS_10Q{"/home/dpriedel/projects/github/Extractsec_XBRL/YUM_bad_balsheet.html"};
+const EM::FileName FILE_WITH_HTML_ANCHORS_10Q{"/home/dpriedel/projects/github/Extractor_Markup/YUM_bad_balsheet.html"};
 const EM::FileName FILE_WITH_HTML_10Q_WITH_SEGMENTED_ANCHORS{"/home/dpriedel/projects/github/Extractor_HTML_Test/test_files/RubyTuesday.html"};
 
 const EM::FileName TRAINING_FILE_FOR_SHARES_OUTSTANDING{"/home/dpriedel/projects/github/Extractor_HTML_Test/shares_outstanding_training_file.txt"};
@@ -835,6 +835,25 @@ TEST_F(Multipliers, DISABLED_FindDollarMultipliers_10Q)
     ASSERT_TRUE(financial_content);
 }
 
+TEST_F(Multipliers, FindDollarMultipliers_10Q)
+{
+    // disabled because the anchors in this file are split into 
+    // mulitple pieces in the middle of phrases we are looking for.
+    // TODO: ?? handle this ??
+
+    const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_HTML_10Q_WITH_ANCHORS2);
+    EM::FileContent file_content{file_content_10Q};
+    const auto sections = LocateDocumentSections(file_content);
+
+    auto financial_content = FindFinancialContentUsingAnchors(&sections, FILE_WITH_HTML_10Q_WITH_ANCHORS2);
+    EXPECT_TRUE(financial_content);
+
+    auto financial_statements = ExtractFinancialStatements(financial_content->first);
+    ASSERT_TRUE(financial_statements.has_data());
+
+    std::cout << "multiplier: " << financial_statements.balance_sheet_.multiplier_s_ << '\n';
+}
+
 //TEST_F(FindIndividualFinancialStatements_10Q, FindTables_10Q)
 //{
 //    TablesFromHTML tables{financial_content};
@@ -880,6 +899,10 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections2)
     std::cout.write(all_sections.stockholders_equity_.parsed_data_.data(), std::min(500UL, all_sections.stockholders_equity_.parsed_data_.size()));
 
     ASSERT_TRUE(all_sections.has_data());
+    for (const auto& [key, value] : all_sections.ListValues())
+    {
+        std::cout << "\nkey: " << key << " value: " << value << '\n';
+    }
 }
 
 TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections3)

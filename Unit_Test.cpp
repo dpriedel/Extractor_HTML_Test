@@ -85,6 +85,7 @@ const EM::FileName FILE_WITH_HTML_10Q_PROBLEM_REGEX1{"/vol_DA/SEC/Archives/edgar
 const EM::FileName FILE_WITH_HTML_10Q_PROBLEM_REGEX2{"/vol_DA/SEC/Archives/edgar/data/4515/0000004515-13-000053.txt"};
 const EM::FileName FILE_WITH_HTML_10Q_PROBLEM_WITH_ASSETS1{"/vol_DA/SEC/Archives/edgar/data/68270/0000068270-13-000059.txt"};
 const EM::FileName FILE_WITH_NO_HTML_10Q{"/vol_DA/SEC/SEC_forms/0000855931/10-Q/0001130319-01-500242.txt"};
+const EM::FileName FILE_WITH_BAD_CASH_FLOW_VALUE{"/vol_DA/SEC/Archives/edgar/data/949982/0001477932-13-004674.txt"};
 
 const EM::FileName FILE_WITH_NO_HTML_AND_NO_FILENAME_10K{"/vol_DA/SEC/SEC_forms/0001000015/10-K/0000912057-00-014793.txt"};
 
@@ -1346,10 +1347,10 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_WITH_ANCHORS)
     std::cout.write(all_sections.stockholders_equity_.parsed_data_.data(),
             std::min(500UL, all_sections.stockholders_equity_.parsed_data_.size()));
 
-//    for (const auto& [key, value] : all_sections.ListValues())
-//    {
-//        std::cout << "\nkey: " << key << " value: " << value << '\n';
-//    }
+    for (const auto& [key, value] : all_sections.ListValues())
+    {
+        std::cout << "\nkey: " << key << " value: " << value << '\n';
+    }
 }
 
 TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_FIND_SHARES1)
@@ -1366,12 +1367,13 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_FIND_SHARES1)
 
     ASSERT_EQ(shares, 257360875);
 
-//    std::cout << "\n\nShares outstanding: " << shares << '\n';
+    std::cout << "\n\nShares outstanding: " << shares << '\n';
 
-//    for (const auto& [key, value] : all_sections.ListValues())
-//    {
-//        std::cout << "\nkey: " << key << " value: " << value << '\n';
-//    }
+    for (const auto& [key, value] : all_sections.ListValues())
+    {
+        std::cout << "\nkey: " << key << " value: " << value << '\n';
+    }
+    ASSERT_EQ(ranges::distance(all_sections.ListValues()), 76);
 }
 
 TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_ASSETS_PROBLEM1)
@@ -1395,11 +1397,44 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_ASSETS_PROBLEM1)
     std::cout << "\n\nShareholder Equity\n";
     std::cout.write(all_sections.stockholders_equity_.parsed_data_.data(),
             std::min(500UL, all_sections.stockholders_equity_.parsed_data_.size()));
-//    for (const auto& [key, value] : all_sections.ListValues())
-//    {
-//        std::cout << "\nkey: " << key << " value: " << value << '\n';
-//    }
+    for (const auto& [key, value] : all_sections.ListValues())
+    {
+        std::cout << "\nkey: " << key << " value: " << value << '\n';
+    }
+}
 
+TEST_F(ProcessEntireFileAndExtractData_10Q, HTML10QBadCashFlowValue)
+{
+    const auto file_content_10Q = LoadDataFileForUse(FILE_WITH_BAD_CASH_FLOW_VALUE);
+    EM::FileContent file_content{file_content_10Q};
+    const auto sections = LocateDocumentSections(file_content);
+
+    const SharesOutstanding so;
+    auto all_sections = FindAndExtractFinancialStatements(so, &sections, {"10-Q"}, FILE_WITH_BAD_CASH_FLOW_VALUE);
+
+    EXPECT_TRUE(all_sections.has_data());
+
+    int64_t shares = all_sections.outstanding_shares_;
+
+    EXPECT_EQ(shares, 673622066);
+
+    std::cout << "\n\nBalance Sheet\n";
+    std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
+    
+    std::cout << "\n\nStmt of Operations\n";
+    std::cout.write(all_sections.statement_of_operations_.parsed_data_.data(), 500);
+    
+    std::cout << "\n\nCash Flow\n";
+    std::cout.write(all_sections.cash_flows_.parsed_data_.data(), 500);
+    
+    std::cout << "\n\nShareholder Equity\n";
+    std::cout.write(all_sections.stockholders_equity_.parsed_data_.data(),
+            std::min(500UL, all_sections.stockholders_equity_.parsed_data_.size()));
+    for (const auto& [key, value] : all_sections.ListValues())
+    {
+        std::cout << "\nkey: " << key << " value: " << value << '\n';
+    }
+    ASSERT_EQ(ranges::distance(all_sections.ListValues()), 64);
 }
 
 TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_WITH_ANCHORS_Collect1)
@@ -1413,13 +1448,17 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_WITH_ANCHORS_Collect1)
 
     EXPECT_TRUE(all_sections.has_data());
 
+    int64_t shares = all_sections.outstanding_shares_;
+
+    EXPECT_EQ(shares, 9230343);
+
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
     
-//    for (const auto& [key, value] : all_sections.ListValues())
-//    {
-//        std::cout << "\nkey: " << key << " value: " << value << '\n';
-//    }
+    for (const auto& [key, value] : all_sections.ListValues())
+    {
+        std::cout << "\nkey: " << key << " value: " << value << '\n';
+    }
     ASSERT_EQ(all_sections.ListValues().size(), 80);
 }
 
@@ -1439,10 +1478,10 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, XML_10Q_Collect1)
     std::cout << "\n\nStmt of Operations\n";
     std::cout.write(all_sections.statement_of_operations_.parsed_data_.data(), 500);
     
-//    for (const auto& [key, value] : all_sections.ListValues())
-//    {
-//        std::cout << "\nkey: " << key << " value: " << value << '\n';
-//    }
+    for (const auto& [key, value] : all_sections.ListValues())
+    {
+        std::cout << "\nkey: " << key << " value: " << value << '\n';
+    }
     std::cout << "\nFound: " << all_sections.ListValues().size() << " values.\n";
     ASSERT_TRUE(all_sections.ListValues().size() == 51);
 }
@@ -1460,10 +1499,10 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, XML_10Q_Collect2)
     std::cout << "\n\nParsed Balance Sheet\n";
     std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
     
-//    for (const auto& [key, value] : all_sections.ListValues())
-//    {
-//        std::cout << "\nkey: " << key << " value: " << value << '\n';
-//    }
+    for (const auto& [key, value] : all_sections.ListValues())
+    {
+        std::cout << "\nkey: " << key << " value: " << value << '\n';
+    }
     std::cout << "\nFound: " << all_sections.ListValues().size() << " values.\n";
     ASSERT_TRUE(all_sections.ListValues().size() == 59);
 }
@@ -1482,12 +1521,12 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, XML_10K_NoSharesOutstanding)
 
     ASSERT_EQ(shares, -1);
 
-//    std::cout << "\n\nShares outstanding: " << shares << '\n';
+    std::cout << "\n\nShares outstanding: " << shares << '\n';
 
-//    for (const auto& [key, value] : all_sections.ListValues())
-//    {
-//        std::cout << "\nkey: " << key << " value: " << value << '\n';
-//    }
+    for (const auto& [key, value] : all_sections.ListValues())
+    {
+        std::cout << "\nkey: " << key << " value: " << value << '\n';
+    }
 }
 
 TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_NO_ANCHORS_10Q_Collect1)
@@ -1501,10 +1540,10 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_NO_ANCHORS_10Q_Collect1)
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
     
-//    for (const auto& [key, value] : all_sections.ListValues())
-//    {
-//        std::cout << "\nkey: " << key << " value: " << value << '\n';
-//    }
+    for (const auto& [key, value] : all_sections.ListValues())
+    {
+        std::cout << "\nkey: " << key << " value: " << value << '\n';
+    }
     std::cout << "\nFound: " << all_sections.ListValues().size() << " values.\n";
     ASSERT_TRUE(all_sections.ListValues().size() == 28);
 }

@@ -50,7 +50,7 @@
 #include <range/v3/algorithm/adjacent_find.hpp>
 #include <range/v3/algorithm/for_each.hpp>
 
-#include "spdlog/spdlog.h"
+#include <spdlog/spdlog.h>
 
 
 namespace fs = std::filesystem;

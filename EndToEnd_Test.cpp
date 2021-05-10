@@ -43,7 +43,7 @@ namespace fs = std::filesystem;
 
 #include <pqxx/pqxx>
 
-#include "spdlog/spdlog.h"
+#include <spdlog/spdlog.h>
 
 #include <gmock/gmock.h>
 

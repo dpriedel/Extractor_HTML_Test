@@ -50,6 +50,8 @@
 #include <range/v3/algorithm/adjacent_find.hpp>
 #include <range/v3/algorithm/for_each.hpp>
 
+namespace rng = ranges;
+
 #include <spdlog/spdlog.h>
 
 
@@ -164,7 +166,7 @@ TEST_F(Iterators, HTMLRangeFileWithHTML_10Q)
     const auto sections = LocateDocumentSections(file_content);
     HTML_FromFile html{&sections, FILE_WITH_HTML_10Q};
 
-    auto how_many = ranges::distance(html);
+    auto how_many = rng::distance(html);
     EXPECT_TRUE(how_many == 5);
 
     auto htmls = Find_HTML_Documents(&sections, FILE_WITH_HTML_10Q);
@@ -193,7 +195,7 @@ TEST_F(Iterators, HTMLRangeFileWithMinimalHTML_10Q)
     const auto sections = LocateDocumentSections(file_content);
     HTML_FromFile html{&sections, FILE_WITH_NO_HTML_10Q};
 
-    auto how_many = ranges::distance(html);
+    auto how_many = rng::distance(html);
 
     EXPECT_TRUE(how_many == 0);
 
@@ -240,14 +242,14 @@ TEST_F(Iterators, AnchorRangeFileWithHTML_10Q)
     const auto sections = LocateDocumentSections(file_content);
     HTML_FromFile htmls{&sections, FILE_WITH_HTML_10Q};
 
-    AnchorsFromHTML anchors{ranges::front(htmls).html_};
+    AnchorsFromHTML anchors{rng::front(htmls).html_};
 
-    auto how_many = ranges::distance(anchors);
+    auto how_many = rng::distance(anchors);
     EXPECT_EQ(how_many, 22);
 
     // add a cache test
     
-    how_many = ranges::distance(anchors);
+    how_many = rng::distance(anchors);
     ASSERT_EQ(how_many, 22);
 }
 
@@ -274,8 +276,8 @@ TEST_F(Iterators, AnchorRangeFileWithXML_10Q)
     const auto sections = LocateDocumentSections(file_content);
     HTML_FromFile htmls{&sections, FILE_WITH_XML_10Q};
 
-    int total = ranges::accumulate(htmls
-            | ranges::views::transform([](const auto& html) { AnchorsFromHTML x{html.html_}; return ranges::distance(x); }),
+    int total = rng::accumulate(htmls
+            | rng::views::transform([](const auto& html) { AnchorsFromHTML x{html.html_}; return rng::distance(x); }),
             0 );
     std::cout << "Total anchors found: " << total << '\n';
     ASSERT_TRUE(total == 2239);
@@ -312,7 +314,7 @@ TEST_F(Iterators, TableRangeIteratorFileWithHTML_10Q)
 
     TablesFromHTML tables(htmls.begin()->html_);
 
-    auto how_many = ranges::distance(tables);
+    auto how_many = rng::distance(tables);
 
     // a bunch of tables are skipped because they have too little html
     // so there are 49 usable tables left.
@@ -321,7 +323,7 @@ TEST_F(Iterators, TableRangeIteratorFileWithHTML_10Q)
 
     // add a cache test
     
-    how_many = ranges::distance(tables);
+    how_many = rng::distance(tables);
     ASSERT_EQ(how_many, 49);
 }
 
@@ -383,7 +385,7 @@ TEST_F(LocateDocumentWithFinancialContent, FileHasXML_10Q)
     HTML_FromFile htmls{&sections, FILE_WITH_XML_10Q};
 
     FinancialDocumentFilter document_filter{{"10-Q"}};
-    auto document = ranges::find_if(htmls, document_filter);
+    auto document = rng::find_if(htmls, document_filter);
     ASSERT_TRUE(document != htmls.end());
 }
 
@@ -443,7 +445,7 @@ TEST_F(FindAnchorsForFinancialStatements, FindSegmentedTopLevelAnchor_10Q)
 
     AnchorsFromHTML anchors{financial_content};
     
-    ranges::for_each(anchors, [](const auto & anchor)
+    rng::for_each(anchors, [](const auto & anchor)
     {
         std::cout
             << "HREF: " << anchor.href_
@@ -452,7 +454,7 @@ TEST_F(FindAnchorsForFinancialStatements, FindSegmentedTopLevelAnchor_10Q)
             << "\n\tCONTENT: " << anchor.anchor_content_.get() << '\n';
     });
 
-    auto found_some = ranges::adjacent_find(anchors, [](const auto& a, const auto& b) { return a.href_ == b.href_; });
+    auto found_some = rng::adjacent_find(anchors, [](const auto& a, const auto& b) { return a.href_ == b.href_; });
     EXPECT_TRUE(found_some != anchors.end());
 
 }
@@ -553,17 +555,17 @@ TEST_F(FindAnchorsForFinancialStatements, FindAnchorDestinations_10Q)
 
     static const boost::regex regex_balance_sheet{R"***((?:balance\s+sheet)|(?:financial.*?position))***",
         boost::regex_constants::normal | boost::regex_constants::icase};
-    auto balance_sheet_href = ranges::find_if(anchors, [](const auto& anchor) { return AnchorFilterUsingRegex(regex_balance_sheet, anchor); });
+    auto balance_sheet_href = rng::find_if(anchors, [](const auto& anchor) { return AnchorFilterUsingRegex(regex_balance_sheet, anchor); });
 
     static const boost::regex regex_operations{R"***((?:statement|statements)\s+?of.*?(?:oper|loss|income|earning))***",
         boost::regex_constants::normal | boost::regex_constants::icase};
 
-    auto stmt_of_ops_href = ranges::find_if(anchors, [](const auto& anchor) { return AnchorFilterUsingRegex(regex_operations, anchor); });
+    auto stmt_of_ops_href = rng::find_if(anchors, [](const auto& anchor) { return AnchorFilterUsingRegex(regex_operations, anchor); });
     
     static const boost::regex regex_cash_flow{R"***((?:cash\s+flow)|(?:statement.+?cash)|(?:cashflow))***",
         boost::regex_constants::normal | boost::regex_constants::icase};
 
-    auto cash_flows_href = ranges::find_if(anchors, [](const auto& anchor) { return AnchorFilterUsingRegex(regex_cash_flow, anchor); });
+    auto cash_flows_href = rng::find_if(anchors, [](const auto& anchor) { return AnchorFilterUsingRegex(regex_cash_flow, anchor); });
     
 //    auto sholder_equity_href = std::find_if(anchors.begin(), anchors.end(), StockholdersEquityAnchorFilter);
     
@@ -647,10 +649,10 @@ TEST_F(FindIndividualFinancialStatements_10Q, RangeFindBalanceSheetInFileWithHTM
 
     FinancialDocumentFilter document_filter{{"10-Q"}};
 
-    auto find_doc = ranges::views::filter(document_filter)
-        | ranges::views::filter([](const auto& html)
+    auto find_doc = rng::views::filter(document_filter)
+        | rng::views::filter([](const auto& html)
                 { TablesFromHTML ts{html.html_};
-                return  ! (ts | ranges::views::filter([](const auto& t)
+                return  ! (ts | rng::views::filter([](const auto& t)
                         { return BalanceSheetFilter(t.current_table_parsed_); })).empty(); } ) ;
 
     bool found_it = ! (htmls | find_doc).empty();
@@ -997,17 +999,17 @@ TEST_F(ProblemFiles_10Q, FindSectionAnchors_10Q)
 
     static const boost::regex regex_balance_sheet{R"***((?:balance\s+sheet)|(?:financial.*?position))***",
         boost::regex_constants::normal | boost::regex_constants::icase};
-    auto balance_sheet_href = ranges::find_if(anchors, [](const auto& anchor) { return AnchorFilterUsingRegex(regex_balance_sheet, anchor); });
+    auto balance_sheet_href = rng::find_if(anchors, [](const auto& anchor) { return AnchorFilterUsingRegex(regex_balance_sheet, anchor); });
 
     static const boost::regex regex_operations{R"***((?:statement|statements)\s+?of.*?(?:oper|loss|income|earning))***",
         boost::regex_constants::normal | boost::regex_constants::icase};
 
-    auto stmt_of_ops_href = ranges::find_if(anchors, [](const auto& anchor) { return AnchorFilterUsingRegex(regex_operations, anchor); });
+    auto stmt_of_ops_href = rng::find_if(anchors, [](const auto& anchor) { return AnchorFilterUsingRegex(regex_operations, anchor); });
     
     static const boost::regex regex_cash_flow{R"***((?:cash\s+flow)|(?:statement.+?cash)|(?:cashflow))***",
         boost::regex_constants::normal | boost::regex_constants::icase};
 
-    auto cash_flows_href = ranges::find_if(anchors, [](const auto& anchor) { return AnchorFilterUsingRegex(regex_cash_flow, anchor); });
+    auto cash_flows_href = rng::find_if(anchors, [](const auto& anchor) { return AnchorFilterUsingRegex(regex_cash_flow, anchor); });
     
 //    auto sholder_equity_href = std::find_if(anchors.begin(), anchors.end(), StockholdersEquityAnchorFilter);
     
@@ -1064,17 +1066,17 @@ TEST_F(ProblemFiles_10K, DISABLED_FindSectionAnchors_10K)
 
     static const boost::regex regex_balance_sheet{R"***((?:balance\s+sheet)|(?:financial.*?position))***",
         boost::regex_constants::normal | boost::regex_constants::icase};
-    auto balance_sheet_href = ranges::find_if(anchors, [](const auto& anchor) { return AnchorFilterUsingRegex(regex_balance_sheet, anchor); });
+    auto balance_sheet_href = rng::find_if(anchors, [](const auto& anchor) { return AnchorFilterUsingRegex(regex_balance_sheet, anchor); });
 
     static const boost::regex regex_operations{R"***((?:statement|statements)\s+?of.*?(?:oper|loss|income|earning))***",
         boost::regex_constants::normal | boost::regex_constants::icase};
 
-    auto stmt_of_ops_href = ranges::find_if(anchors, [](const auto& anchor) { return AnchorFilterUsingRegex(regex_operations, anchor); });
+    auto stmt_of_ops_href = rng::find_if(anchors, [](const auto& anchor) { return AnchorFilterUsingRegex(regex_operations, anchor); });
     
     static const boost::regex regex_cash_flow{R"***((?:cash\s+flow)|(?:statement.+?cash)|(?:cashflow))***",
         boost::regex_constants::normal | boost::regex_constants::icase};
 
-    auto cash_flows_href = ranges::find_if(anchors, [](const auto& anchor) { return AnchorFilterUsingRegex(regex_cash_flow, anchor); });
+    auto cash_flows_href = rng::find_if(anchors, [](const auto& anchor) { return AnchorFilterUsingRegex(regex_cash_flow, anchor); });
     
 //    auto sholder_equity_href = std::find_if(anchors.begin(), anchors.end(), StockholdersEquityAnchorFilter);
     
@@ -1373,7 +1375,7 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_FIND_SHARES1)
     {
         std::cout << "\nkey: " << key << " value: " << value << '\n';
     }
-    ASSERT_EQ(ranges::distance(all_sections.ListValues()), 76);
+    ASSERT_EQ(rng::distance(all_sections.ListValues()), 76);
 }
 
 TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_ASSETS_PROBLEM1)
@@ -1434,7 +1436,7 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML10QBadCashFlowValue)
     {
         std::cout << "\nkey: " << key << " value: " << value << '\n';
     }
-    ASSERT_EQ(ranges::distance(all_sections.ListValues()), 64);
+    ASSERT_EQ(rng::distance(all_sections.ListValues()), 64);
 }
 
 TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_WITH_ANCHORS_Collect1)

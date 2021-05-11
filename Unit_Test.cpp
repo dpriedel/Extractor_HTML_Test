@@ -44,11 +44,7 @@
 
 #include <gmock/gmock.h>
 
-//#include <range/v3/all.hpp>
-#include <range/v3/front.hpp>
-#include <range/v3/numeric/accumulate.hpp>
-#include <range/v3/algorithm/adjacent_find.hpp>
-#include <range/v3/algorithm/for_each.hpp>
+#include <range/v3/all.hpp>
 
 namespace rng = ranges;
 
@@ -902,10 +898,10 @@ TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections2)
     std::cout.write(all_sections.stockholders_equity_.parsed_data_.data(), std::min(500UL, all_sections.stockholders_equity_.parsed_data_.size()));
 
     ASSERT_TRUE(all_sections.has_data());
-    for (const auto& [key, value] : all_sections.ListValues())
-    {
-        std::cout << "\nkey: " << key << " value: " << value << '\n';
-    }
+//    for (const auto& [key, value] : all_sections.ListValues())
+//    {
+//        std::cout << "\nkey: " << key << " value: " << value << '\n';
+//    }
 }
 
 TEST_F(ProcessEntireFile_10Q, ExtractAllNeededSections3)
@@ -1349,10 +1345,10 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_WITH_ANCHORS)
     std::cout.write(all_sections.stockholders_equity_.parsed_data_.data(),
             std::min(500UL, all_sections.stockholders_equity_.parsed_data_.size()));
 
-    for (const auto& [key, value] : all_sections.ListValues())
-    {
-        std::cout << "\nkey: " << key << " value: " << value << '\n';
-    }
+//    for (const auto& [key, value] : all_sections.ListValues())
+//    {
+//        std::cout << "\nkey: " << key << " value: " << value << '\n';
+//    }
 }
 
 TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_FIND_SHARES1)
@@ -1371,11 +1367,11 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_FIND_SHARES1)
 
     std::cout << "\n\nShares outstanding: " << shares << '\n';
 
-    for (const auto& [key, value] : all_sections.ListValues())
-    {
-        std::cout << "\nkey: " << key << " value: " << value << '\n';
-    }
-    ASSERT_EQ(rng::distance(all_sections.ListValues()), 76);
+//    for (const auto& [key, value] : all_sections.ListValues())
+//    {
+//        std::cout << "\nkey: " << key << " value: " << value << '\n';
+//    }
+    ASSERT_EQ(all_sections.ValuesTotal(), 76);
 }
 
 TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_ASSETS_PROBLEM1)
@@ -1399,10 +1395,10 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_ASSETS_PROBLEM1)
     std::cout << "\n\nShareholder Equity\n";
     std::cout.write(all_sections.stockholders_equity_.parsed_data_.data(),
             std::min(500UL, all_sections.stockholders_equity_.parsed_data_.size()));
-    for (const auto& [key, value] : all_sections.ListValues())
-    {
-        std::cout << "\nkey: " << key << " value: " << value << '\n';
-    }
+//    for (const auto& [key, value] : all_sections.ListValues())
+//    {
+//        std::cout << "\nkey: " << key << " value: " << value << '\n';
+//    }
 }
 
 TEST_F(ProcessEntireFileAndExtractData_10Q, HTML10QBadCashFlowValue)
@@ -1432,11 +1428,11 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML10QBadCashFlowValue)
     std::cout << "\n\nShareholder Equity\n";
     std::cout.write(all_sections.stockholders_equity_.parsed_data_.data(),
             std::min(500UL, all_sections.stockholders_equity_.parsed_data_.size()));
-    for (const auto& [key, value] : all_sections.ListValues())
-    {
-        std::cout << "\nkey: " << key << " value: " << value << '\n';
-    }
-    ASSERT_EQ(rng::distance(all_sections.ListValues()), 64);
+//    for (const auto& [key, value] : all_sections.ListValues())
+//    {
+//        std::cout << "\nkey: " << key << " value: " << value << '\n';
+//    }
+    ASSERT_EQ(all_sections.ValuesTotal(), 64);
 }
 
 TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_WITH_ANCHORS_Collect1)
@@ -1457,11 +1453,11 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_WITH_ANCHORS_Collect1)
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
     
-    for (const auto& [key, value] : all_sections.ListValues())
-    {
-        std::cout << "\nkey: " << key << " value: " << value << '\n';
-    }
-    ASSERT_EQ(all_sections.ListValues().size(), 80);
+//    for (const auto& [key, value] : all_sections.ListValues())
+//    {
+//        std::cout << "\nkey: " << key << " value: " << value << '\n';
+//    }
+    ASSERT_EQ(all_sections.ValuesTotal(), 80);
 }
 
 TEST_F(ProcessEntireFileAndExtractData_10Q, XML_10Q_Collect1)
@@ -1480,12 +1476,12 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, XML_10Q_Collect1)
     std::cout << "\n\nStmt of Operations\n";
     std::cout.write(all_sections.statement_of_operations_.parsed_data_.data(), 500);
     
-    for (const auto& [key, value] : all_sections.ListValues())
-    {
-        std::cout << "\nkey: " << key << " value: " << value << '\n';
-    }
-    std::cout << "\nFound: " << all_sections.ListValues().size() << " values.\n";
-    ASSERT_TRUE(all_sections.ListValues().size() == 51);
+//    for (const auto& [key, value] : all_sections.ListValues())
+//    {
+//        std::cout << "\nkey: " << key << " value: " << value << '\n';
+//    }
+    std::cout << "\nFound: " << all_sections.ValuesTotal() << " values.\n";
+    ASSERT_TRUE(all_sections.ValuesTotal() == 51);
 }
 
 TEST_F(ProcessEntireFileAndExtractData_10Q, XML_10Q_Collect2)
@@ -1501,12 +1497,12 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, XML_10Q_Collect2)
     std::cout << "\n\nParsed Balance Sheet\n";
     std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
     
-    for (const auto& [key, value] : all_sections.ListValues())
-    {
-        std::cout << "\nkey: " << key << " value: " << value << '\n';
-    }
-    std::cout << "\nFound: " << all_sections.ListValues().size() << " values.\n";
-    ASSERT_TRUE(all_sections.ListValues().size() == 59);
+//    for (const auto& [key, value] : all_sections.ListValues())
+//    {
+//        std::cout << "\nkey: " << key << " value: " << value << '\n';
+//    }
+    std::cout << "\nFound: " << all_sections.ValuesTotal() << " values.\n";
+    ASSERT_TRUE(all_sections.ValuesTotal() == 59);
 }
 
 TEST_F(ProcessEntireFileAndExtractData_10Q, XML_10K_NoSharesOutstanding)
@@ -1525,10 +1521,10 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, XML_10K_NoSharesOutstanding)
 
     std::cout << "\n\nShares outstanding: " << shares << '\n';
 
-    for (const auto& [key, value] : all_sections.ListValues())
-    {
-        std::cout << "\nkey: " << key << " value: " << value << '\n';
-    }
+//    for (const auto& [key, value] : all_sections.ListValues())
+//    {
+//        std::cout << "\nkey: " << key << " value: " << value << '\n';
+//    }
 }
 
 TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_NO_ANCHORS_10Q_Collect1)
@@ -1542,12 +1538,12 @@ TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_NO_ANCHORS_10Q_Collect1)
     std::cout << "\n\nBalance Sheet\n";
     std::cout.write(all_sections.balance_sheet_.parsed_data_.data(), 500);
     
-    for (const auto& [key, value] : all_sections.ListValues())
-    {
-        std::cout << "\nkey: " << key << " value: " << value << '\n';
-    }
-    std::cout << "\nFound: " << all_sections.ListValues().size() << " values.\n";
-    ASSERT_TRUE(all_sections.ListValues().size() == 28);
+//    for (const auto& [key, value] : all_sections.ListValues())
+//    {
+//        std::cout << "\nkey: " << key << " value: " << value << '\n';
+//    }
+    std::cout << "\nFound: " << all_sections.ValuesTotal() << " values.\n";
+    ASSERT_TRUE(all_sections.ValuesTotal() == 28);
 }
 
 TEST_F(ProcessEntireFileAndExtractData_10Q, HTML_10Q_DUPLICATE_LABEL_TEXT)
@@ -1602,8 +1598,8 @@ TEST_F(ProcessEntireFileAndExtractData_10K, XML_10K_Collect1)
 //    {
 //        std::cout << "\nkey: " << key << " value: " << value << '\n';
 //    }
-    std::cout << "\nFound: " << all_sections.ListValues().size() << " values.\n";
-    ASSERT_TRUE(all_sections.ListValues().size() == 97);
+    std::cout << "\nFound: " << all_sections.ValuesTotal() << " values.\n";
+    ASSERT_TRUE(all_sections.ValuesTotal() == 97);
 }
 
 // the following tests are quite long since I have not encapsulated

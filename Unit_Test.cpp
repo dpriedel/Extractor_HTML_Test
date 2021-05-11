@@ -46,14 +46,7 @@
 
 #include <range/v3/all.hpp>
 
-namespace rng = ranges;
-
 #include <spdlog/spdlog.h>
-
-
-namespace fs = std::filesystem;
-
-using namespace testing;
 
 #include "Extractor_HTML_FileFilter.h"
 #include "Extractor_Utils.h"
@@ -62,6 +55,12 @@ using namespace testing;
 #include "AnchorsFromHTML.h"
 #include "TablesFromFile.h"
 #include "SharesOutstanding.h"
+
+namespace fs = std::filesystem;
+
+namespace rng = ranges;
+
+using namespace testing;
 
 // some specific files for Testing.
 

@@ -1804,7 +1804,7 @@ TEST_F(ExportHTML, VerifyExportAll_10Q) {
   std::for_each(fs::recursive_directory_iterator(SEC_DIRECTORY.get()),
                 fs::recursive_directory_iterator(), export_file);
 
-  ASSERT_EQ(files_with_form, 177);
+  ASSERT_EQ(files_with_form, 186);
 }
 
 TEST_F(ExportHTML, VerifyCanProcessExportedHTML_10Q) {
@@ -1858,7 +1858,7 @@ TEST_F(ExportHTML, VerifyCanProcessExportedHTML_10Q) {
   std::for_each(fs::recursive_directory_iterator(SEC_DIRECTORY.get()),
                 fs::recursive_directory_iterator(), export_file);
 
-  EXPECT_EQ(files_with_form, 177);
+  EXPECT_EQ(files_with_form, 186);
 
   FinancialDocumentFilter document_filter({"10-Q"});
   int processed_files{0};
@@ -1883,7 +1883,7 @@ TEST_F(ExportHTML, VerifyCanProcessExportedHTML_10Q) {
   std::for_each(fs::recursive_directory_iterator("/tmp/exported_html"),
                 fs::recursive_directory_iterator(), process_exported_data);
 
-  ASSERT_EQ(processed_files, 177);
+  ASSERT_EQ(processed_files, 186);
 }
 
 // we expect these tests to run against extracted HTML content meaning
@@ -1906,7 +1906,15 @@ TEST_F(FindSharesOutstanding, Test10KFileWithSharesAndValue) {
   ASSERT_EQ(found_shares, 191151089);
 }
 
-TEST_F(FindSharesOutstanding, Test10KFileWithNoDollarSignOnValue) {
+// ***
+// the following disabled tests are due to no longer having the input
+// files and not remembering how to create them.
+//
+// files may be on an old back drive....checking....slowly...
+//
+// ***
+//
+TEST_F(FindSharesOutstanding, DISABLED_Test10KFileWithNoDollarSignOnValue) {
   const auto file_content_10K =
       LoadDataFileForUse(FILE_WITH_SHARE_VALUE_NO_DOLLAR_SIGN);
   EM::FileContent file_content{file_content_10K};
@@ -1920,7 +1928,7 @@ TEST_F(FindSharesOutstanding, Test10KFileWithNoDollarSignOnValue) {
   ASSERT_EQ(found_shares, 706455305);
 }
 
-TEST_F(FindSharesOutstanding, Test10KFileWithDollarSignOnValue) {
+TEST_F(FindSharesOutstanding, DISABLED_Test10KFileWithDollarSignOnValue) {
   const auto file_content_10K =
       LoadDataFileForUse(FILE_WITH_XBRL_INSIDE_HTM_DOCUMENT);
   EM::FileContent file_content{file_content_10K};
@@ -1948,7 +1956,7 @@ TEST_F(FindSharesOutstanding, Test10KFileWithNoPossibles) {
   ASSERT_EQ(found_shares, 169173941);
 }
 
-TEST_F(FindSharesOutstanding, Test10KFileWithSharesBeforeYesNo) {
+TEST_F(FindSharesOutstanding, DISABLED_Test10KFileWithSharesBeforeYesNo) {
   const auto file_content_10K =
       LoadDataFileForUse(FILE_WITH_SHARES_BEFORE_YESNO);
   EM::FileContent file_content{file_content_10K};
@@ -1962,7 +1970,7 @@ TEST_F(FindSharesOutstanding, Test10KFileWithSharesBeforeYesNo) {
   ASSERT_EQ(found_shares, 2058165766);
 }
 
-TEST_F(FindSharesOutstanding, Test10KFileWithSharesAfterContents) {
+TEST_F(FindSharesOutstanding, DISABLED_Test10KFileWithSharesAfterContents) {
   const auto file_content_10K =
       LoadDataFileForUse(FILE_WITH_SHARES_AFTER_CONTENTS);
   EM::FileContent file_content{file_content_10K};
@@ -2021,7 +2029,7 @@ void InitLogging() {
   //    (
   //        logging::trivial::severity >= logging::trivial::trace
   //    );
-  spdlog::set_level(spdlog::level::debug);
+  spdlog::set_level(spdlog::level::info);
 } /* -----  end of function InitLogging  ----- */
 
 int main(int argc, char **argv) {

@@ -31,14 +31,10 @@
 /* along with Extractor_Markup.  If not, see <http://www.gnu.org/licenses/>. */
 
 #include <algorithm>
-#include <chrono>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <numeric>
 #include <string>
-#include <system_error>
-#include <thread>
 
 // #include <boost/algorithm/string/predicate.hpp>
 

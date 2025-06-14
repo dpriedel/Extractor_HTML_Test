@@ -45,9 +45,6 @@ namespace fs = std::filesystem;
 
 #include <pqxx/pqxx>
 
-#include "Extractor_HTML_FileFilter.h"
-#include "Extractor_XBRL_FileFilter.h"
-
 const fs::path FILE_WITH_XML_10Q{"/vol_DA/SEC/Archives/edgar/data/1460602/0001062993-13-005017.txt"};
 const fs::path FILE_WITH_XML_10K{"/vol_DA/SEC/Archives/edgar/data/google-10k.txt"};
 const fs::path FILE_WITHOUT_XML{"/vol_DA/SEC/Archives/edgar/data/841360/0001086380-13-000030.txt"};
@@ -58,14 +55,16 @@ const fs::path NO_SHARES_OUT{"/vol_DA/SEC/SEC_forms/1023453/10-K/0001144204-12-0
 const fs::path MISSING_VALUES_LIST{"../Extractor_XBRL_Test/missing_values_files.txt"};
 const fs::path CRASH_IN_REGEX{"/vol_DA/SEC/Archives/edgar/data/1060409/0001211524-13-000254.txt"};
 
-constexpr const char *FILE_WITH_HTML_10Q_WITH_ANCHORS{"/vol_DA/SEC/Archives/edgar/data/1420525/0001420525-09-000028.txt"};
+constexpr const char *FILE_WITH_HTML_10Q_WITH_ANCHORS{
+    "/vol_DA/SEC/Archives/edgar/data/1420525/0001420525-09-000028.txt"};
 
 using namespace testing;
 
 int CountFilesInDirectoryTree(const fs::path &directory)
 {
-    int count = std::count_if(fs::recursive_directory_iterator(directory), fs::recursive_directory_iterator(),
-                              [](const fs::directory_entry &entry) { return entry.status().type() == fs::file_type::regular; });
+    int count =
+        std::count_if(fs::recursive_directory_iterator(directory), fs::recursive_directory_iterator(),
+                      [](const fs::directory_entry &entry) { return entry.status().type() == fs::file_type::regular; });
     return count;
 }
 
@@ -73,14 +72,12 @@ std::map<std::string, fs::file_time_type> CollectLastModifiedTimesForFilesInDire
 {
     std::map<std::string, fs::file_time_type> results;
 
-    auto save_mod_time(
-        [&results](const auto &dir_ent)
+    auto save_mod_time([&results](const auto &dir_ent) {
+        if (dir_ent.status().type() == fs::file_type::regular)
         {
-            if (dir_ent.status().type() == fs::file_type::regular)
-            {
-                results[dir_ent.path().filename().string()] = fs::last_write_time(dir_ent.path());
-            }
-        });
+            results[dir_ent.path().filename().string()] = fs::last_write_time(dir_ent.path());
+        }
+    });
 
     std::for_each(fs::recursive_directory_iterator(directory), fs::recursive_directory_iterator(), save_mod_time);
 
@@ -89,7 +86,7 @@ std::map<std::string, fs::file_time_type> CollectLastModifiedTimesForFilesInDire
 
 class SingleFileEndToEndXBRL : public Test
 {
-   public:
+public:
     void SetUp() override
     {
         pqxx::connection c{"dbname=sec_extracts user=extractor_pg"};
@@ -97,9 +94,8 @@ class SingleFileEndToEndXBRL : public Test
 
         // make sure the DB is empty before we start
 
-        trxn.exec(
-            "DELETE FROM unified_extracts.sec_filing_id WHERE data_source != "
-            "'HTML'");
+        trxn.exec("DELETE FROM unified_extracts.sec_filing_id WHERE data_source != "
+                  "'HTML'");
         trxn.commit();
     }
 
@@ -108,18 +104,15 @@ class SingleFileEndToEndXBRL : public Test
         pqxx::connection c{"dbname=sec_extracts user=extractor_pg"};
         pqxx::work trxn{c};
 
-        auto row1 = trxn.query_value<int>(
-            "select count(*) from unified_extracts.sec_filing_id as t1 inner join "
-            "unified_extracts.sec_bal_sheet_data as t2 on t1.filing_id =  "
-            "t2.filing_id where t1.data_source = 'XLS';");
-        auto row2 = trxn.query_value<int>(
-            "select count(*) from unified_extracts.sec_filing_id as t1 inner join "
-            "unified_extracts.sec_stmt_of_ops_data as t2 on t1.filing_id =  "
-            "t2.filing_id where t1.data_source = 'XLS';");
-        auto row3 = trxn.query_value<int>(
-            "select count(*) from unified_extracts.sec_filing_id as t1 inner join "
-            "unified_extracts.sec_cash_flows_data as t2 on t1.filing_id =  "
-            "t2.filing_id where t1.data_source = 'XLS';");
+        auto row1 = trxn.query_value<int>("select count(*) from unified_extracts.sec_filing_id as t1 inner join "
+                                          "unified_extracts.sec_bal_sheet_data as t2 on t1.filing_id =  "
+                                          "t2.filing_id where t1.data_source = 'XLS';");
+        auto row2 = trxn.query_value<int>("select count(*) from unified_extracts.sec_filing_id as t1 inner join "
+                                          "unified_extracts.sec_stmt_of_ops_data as t2 on t1.filing_id =  "
+                                          "t2.filing_id where t1.data_source = 'XLS';");
+        auto row3 = trxn.query_value<int>("select count(*) from unified_extracts.sec_filing_id as t1 inner join "
+                                          "unified_extracts.sec_cash_flows_data as t2 on t1.filing_id =  "
+                                          "t2.filing_id where t1.data_source = 'XLS';");
         trxn.commit();
         int total = row1 + row2 + row3;
         if (total == 0)
@@ -127,10 +120,9 @@ class SingleFileEndToEndXBRL : public Test
             // maybe we have plain XBRL
 
             pqxx::work trxn{c};
-            total = trxn.query_value<int>(
-                "select count(*) from unified_extracts.sec_filing_id as t1 inner "
-                "join unified_extracts.sec_xbrl_data as t2 on t1.filing_id =  "
-                "t2.filing_id where t1.data_source = 'XBRL';");
+            total = trxn.query_value<int>("select count(*) from unified_extracts.sec_filing_id as t1 inner "
+                                          "join unified_extracts.sec_xbrl_data as t2 on t1.filing_id =  "
+                                          "t2.filing_id where t1.data_source = 'XBRL';");
             trxn.commit();
         }
         return total;
@@ -171,7 +163,7 @@ TEST_F(SingleFileEndToEndXBRL, VerifyCanLoadDataToDBForFileWithXML10QXBRL)
         spdlog::error(catenate("Something fundamental went wrong: ", theProblem.what()));
     }
     catch (...)
-    {    // handle exception: unspecified
+    { // handle exception: unspecified
         spdlog::error("Something totally unexpected happened.");
     }
     ASSERT_EQ(CountRows(), 55);
@@ -182,8 +174,16 @@ TEST_F(SingleFileEndToEndXBRL, VerifyLoadsNoDataToDBForFileWithXML10QHTML)
     //	NOTE: the program name 'the_program' in the command line below is
     // ignored in the 	the test program.
 
-    std::vector<std::string> tokens{
-        "the_program", "--log-level", "debug", "--form", "10-Q", "--mode", "HTML", "-f", FILE_WITH_XML_10Q.string(), "--replace-DB-data"};
+    std::vector<std::string> tokens{"the_program",
+                                    "--log-level",
+                                    "debug",
+                                    "--form",
+                                    "10-Q",
+                                    "--mode",
+                                    "HTML",
+                                    "-f",
+                                    FILE_WITH_XML_10Q.string(),
+                                    "--replace-DB-data"};
 
     try
     {
@@ -211,7 +211,7 @@ TEST_F(SingleFileEndToEndXBRL, VerifyLoadsNoDataToDBForFileWithXML10QHTML)
         spdlog::error(catenate("Something fundamental went wrong: ", theProblem.what()));
     }
     catch (...)
-    {    // handle exception: unspecified
+    { // handle exception: unspecified
         spdlog::error("Something totally unexpected happened.");
     }
     ASSERT_EQ(CountRows(), 0);
@@ -219,7 +219,7 @@ TEST_F(SingleFileEndToEndXBRL, VerifyLoadsNoDataToDBForFileWithXML10QHTML)
 
 class SingleFileEndToEndHTML : public Test
 {
-   public:
+public:
     void SetUp() override
     {
         pqxx::connection c{"dbname=sec_extracts user=extractor_pg"};
@@ -227,9 +227,8 @@ class SingleFileEndToEndHTML : public Test
 
         // make sure the DB is empty before we start
 
-        trxn.exec(
-            "DELETE FROM unified_extracts.sec_filing_id WHERE data_source = "
-            "'HTML'");
+        trxn.exec("DELETE FROM unified_extracts.sec_filing_id WHERE data_source = "
+                  "'HTML'");
         trxn.commit();
     }
 
@@ -238,18 +237,15 @@ class SingleFileEndToEndHTML : public Test
         pqxx::connection c{"dbname=sec_extracts user=extractor_pg"};
         pqxx::work trxn{c};
 
-        auto row1 = trxn.query_value<int>(
-            "select count(*) from unified_extracts.sec_filing_id as t1 inner join "
-            "unified_extracts.sec_bal_sheet_data as t2 on t1.filing_id =  "
-            "t2.filing_id where t1.data_source = 'HTML';");
-        auto row2 = trxn.query_value<int>(
-            "select count(*) from unified_extracts.sec_filing_id as t1 inner join "
-            "unified_extracts.sec_stmt_of_ops_data as t2 on t1.filing_id =  "
-            "t2.filing_id where t1.data_source = 'HTML';");
-        auto row3 = trxn.query_value<int>(
-            "select count(*) from unified_extracts.sec_filing_id as t1 inner join "
-            "unified_extracts.sec_cash_flows_data as t2 on t1.filing_id =  "
-            "t2.filing_id where t1.data_source = 'HTML';");
+        auto row1 = trxn.query_value<int>("select count(*) from unified_extracts.sec_filing_id as t1 inner join "
+                                          "unified_extracts.sec_bal_sheet_data as t2 on t1.filing_id =  "
+                                          "t2.filing_id where t1.data_source = 'HTML';");
+        auto row2 = trxn.query_value<int>("select count(*) from unified_extracts.sec_filing_id as t1 inner join "
+                                          "unified_extracts.sec_stmt_of_ops_data as t2 on t1.filing_id =  "
+                                          "t2.filing_id where t1.data_source = 'HTML';");
+        auto row3 = trxn.query_value<int>("select count(*) from unified_extracts.sec_filing_id as t1 inner join "
+                                          "unified_extracts.sec_cash_flows_data as t2 on t1.filing_id =  "
+                                          "t2.filing_id where t1.data_source = 'HTML';");
         trxn.commit();
         int total = row1 + row2 + row3;
         return total;
@@ -291,7 +287,7 @@ TEST_F(SingleFileEndToEndHTML, VerifyCanLoadDataToDBForFileWithHTML10QHTML)
         spdlog::error(catenate("Something fundamental went wrong: ", theProblem.what()));
     }
     catch (...)
-    {    // handle exception: unspecified
+    { // handle exception: unspecified
         spdlog::error("Something totally unexpected happened.");
     }
 
@@ -431,7 +427,7 @@ TEST_F(SingleFileEndToEndHTML, VerifyCanLoadDataToDBForFileWithXML10K)
         spdlog::error(catenate("Something fundamental went wrong: ", theProblem.what()));
     }
     catch (...)
-    {    // handle exception: unspecified
+    { // handle exception: unspecified
         spdlog::error("Something totally unexpected happened.");
     }
 
@@ -483,7 +479,7 @@ TEST_F(SingleFileEndToEndHTML, VerifyCanLoadDataToDBForFileWithXML10K)
 //
 class ProcessFolderEndtoEnd : public Test
 {
-   public:
+public:
     void SetUp() override
     {
         pqxx::connection c{"dbname=sec_extracts user=extractor_pg"};
@@ -491,9 +487,8 @@ class ProcessFolderEndtoEnd : public Test
 
         // make sure the DB is empty before we start
 
-        trxn.exec(
-            "DELETE FROM unified_extracts.sec_filing_id WHERE data_source = "
-            "'HTML'");
+        trxn.exec("DELETE FROM unified_extracts.sec_filing_id WHERE data_source = "
+                  "'HTML'");
         trxn.commit();
     }
 
@@ -516,17 +511,14 @@ class ProcessFolderEndtoEnd : public Test
         pqxx::connection c{"dbname=sec_extracts user=extractor_pg"};
         pqxx::work trxn{c};
 
-        auto row1 = trxn.exec(
-                            "SELECT count(*) FROM unified_extracts.sec_bal_sheet_data "
-                            "WHERE label = 'Missing Value'")
+        auto row1 = trxn.exec("SELECT count(*) FROM unified_extracts.sec_bal_sheet_data "
+                              "WHERE label = 'Missing Value'")
                         .one_row();
-        auto row2 = trxn.exec(
-                            "SELECT count(*) FROM unified_extracts.sec_stmt_of_ops_data "
-                            "WHERE label = 'Missing Value'")
+        auto row2 = trxn.exec("SELECT count(*) FROM unified_extracts.sec_stmt_of_ops_data "
+                              "WHERE label = 'Missing Value'")
                         .one_row();
-        auto row3 = trxn.exec(
-                            "SELECT count(*) FROM unified_extracts.sec_cash_flows_data "
-                            "WHERE label = 'Missing Value'")
+        auto row3 = trxn.exec("SELECT count(*) FROM unified_extracts.sec_cash_flows_data "
+                              "WHERE label = 'Missing Value'")
                         .one_row();
         trxn.commit();
         return row1[0].as<int>() + row2[0].as<int>() + row3[0].as<int>();
@@ -539,9 +531,8 @@ class ProcessFolderEndtoEnd : public Test
 
         // make sure the DB is empty before we start
 
-        auto row = trxn.exec(
-                           "SELECT count(*) FROM unified_extracts.sec_filing_id "
-                           "WHERE data_source = 'HTML'")
+        auto row = trxn.exec("SELECT count(*) FROM unified_extracts.sec_filing_id "
+                             "WHERE data_source = 'HTML'")
                        .one_row();
         trxn.commit();
         return row[0].as<int>();
@@ -595,8 +586,9 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory10QHTML)
     //	NOTE: the program name 'the_program' in the command line below is
     // ignored in the 	the test program.
 
-    std::vector<std::string> tokens{"the_program", "--log-level",          "information",       "--form", "10-Q", "--mode", "HTML",
-                                    "--form-dir",  SEC_DIRECTORY.string(), "replace-DB-content"};
+    std::vector<std::string> tokens{
+        "the_program", "--log-level",          "information",       "--form", "10-Q", "--mode", "HTML",
+        "--form-dir",  SEC_DIRECTORY.string(), "replace-DB-content"};
 
     try
     {
@@ -624,7 +616,7 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory10QHTML)
         spdlog::error(catenate("Something fundamental went wrong: ", theProblem.what()));
     }
     catch (...)
-    {    // handle exception: unspecified
+    { // handle exception: unspecified
         spdlog::error("Something totally unexpected happened.");
     }
     ASSERT_EQ(CountFilings(), 146);
@@ -997,8 +989,17 @@ TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3Async10Q)
     //	NOTE: the program name 'the_program' in the command line below is
     // ignored in the 	the test program.
 
-    std::vector<std::string> tokens{
-        "the_program", "--log-level", "debug", "--form", "10-Q,10-K", "--mode", "HTML", "-k", "6", "--list", "./test_directory_list.txt"};
+    std::vector<std::string> tokens{"the_program",
+                                    "--log-level",
+                                    "debug",
+                                    "--form",
+                                    "10-Q,10-K",
+                                    "--mode",
+                                    "HTML",
+                                    "-k",
+                                    "6",
+                                    "--list",
+                                    "./test_directory_list.txt"};
 
     try
     {
@@ -1026,7 +1027,7 @@ TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3Async10Q)
         spdlog::error(catenate("Something fundamental went wrong: ", theProblem.what()));
     }
     catch (...)
-    {    // handle exception: unspecified
+    { // handle exception: unspecified
         spdlog::error("Something totally unexpected happened.");
     }
     ASSERT_EQ(CountFilings(), 147);
@@ -1477,7 +1478,7 @@ TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3Async10Q)
 
 class ExportHTML : public Test
 {
-   public:
+public:
 };
 
 TEST_F(ExportHTML, ExportSingleFile)
@@ -1485,13 +1486,14 @@ TEST_F(ExportHTML, ExportSingleFile)
     //	NOTE: the program name 'the_program' in the command line below is
     // ignored in the 	the test program.
 
-    if (fs::exists("/tmp/extracts")) fs::remove_all("/tmp/extracts");
+    if (fs::exists("/tmp/extracts"))
+        fs::remove_all("/tmp/extracts");
 
-    std::vector<std::string> tokens{"the_program", "--log-level", "debug", "--form", "10-Q,10-K", "--mode", "HTML", "--log-path",
-                                    "/tmp/test1.log",
-                                    //		"--list", "./list_with_bad_file.txt"
-                                    "--export-HTML-data", "--HTML-forms-to-dir", "/tmp/extracts", "--HTML-forms-from-dir",
-                                    "/vol_DA/SEC/Archives/edgar", "--file", "/vol_DA/SEC/Archives/edgar/data/google-10k.txt"};
+    std::vector<std::string> tokens{
+        "the_program", "--log-level", "debug", "--form", "10-Q,10-K", "--mode", "HTML", "--log-path", "/tmp/test1.log",
+        //		"--list", "./list_with_bad_file.txt"
+        "--export-HTML-data", "--HTML-forms-to-dir", "/tmp/extracts", "--HTML-forms-from-dir",
+        "/vol_DA/SEC/Archives/edgar", "--file", "/vol_DA/SEC/Archives/edgar/data/google-10k.txt"};
 
     try
     {
@@ -1519,7 +1521,7 @@ TEST_F(ExportHTML, ExportSingleFile)
         spdlog::error(catenate("Something fundamental went wrong: ", theProblem.what()));
     }
     catch (...)
-    {    // handle exception: unspecified
+    { // handle exception: unspecified
         spdlog::error("Something totally unexpected happened.");
     }
     ASSERT_TRUE(fs::exists("/tmp/extracts/data/google-10k.txt_goog10-k2015.htm"));
@@ -1530,54 +1532,13 @@ TEST_F(ExportHTML, ExportHMTLFromDirectory)
     //	NOTE: the program name 'the_program' in the command line below is
     // ignored in the 	the test program.
 
-    if (fs::exists("/tmp/extracts/html")) fs::remove_all("/tmp/extracts/html");
+    if (fs::exists("/tmp/extracts/html"))
+        fs::remove_all("/tmp/extracts/html");
 
-    std::vector<std::string> tokens{"the_program", "--log-level", "debug", "--form", "10-Q,10-K", "--mode", "HTML", "--log-path",
-                                    "/tmp/test1.log",
+    std::vector<std::string> tokens{"the_program", "--log-level", "debug", "--form", "10-Q,10-K", "--mode", "HTML",
+                                    "--log-path", "/tmp/test1.log",
                                     //		"--list", "./list_with_bad_file.txt",
-                                    "--form-dir", SEC_DIRECTORY.string(), "--export-HTML-data", "--HTML-forms-to-dir", "/tmp/extracts/html",
-                                    "--HTML-forms-from-dir", "/vol_DA/SEC/Archives"};
-
-    try
-    {
-        ExtractorApp myApp(tokens);
-
-        decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
-        spdlog::info(catenate("\n\nTest: ", test_info->name(), " test case: ", test_info->test_case_name(), "\n\n"));
-
-        bool startup_OK = myApp.Startup();
-        if (startup_OK)
-        {
-            myApp.Run();
-            myApp.Shutdown();
-        }
-        else
-        {
-            std::cout << "Problems starting program.  No processing done.\n";
-        }
-    }
-
-    // catch any problems trying to setup application
-
-    catch (const std::exception &theProblem)
-    {
-        spdlog::error(catenate("Something fundamental went wrong: ", theProblem.what()));
-    }
-    catch (...)
-    {    // handle exception: unspecified
-        spdlog::error("Something totally unexpected happened.");
-    }
-    ASSERT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 178);
-}
-
-TEST_F(ExportHTML, VerifyNoExportOfExistingFilesWhenReplaceIsNotSpecifed)
-{
-    if (fs::exists("/tmp/extracts/html")) fs::remove_all("/tmp/extracts/html");
-
-    std::vector<std::string> tokens{"the_program", "--log-level", "debug", "--form", "10-Q,10-K", "--mode", "HTML", "--log-path",
-                                    "/tmp/test1.log",
-                                    //		"--list", "./list_with_bad_file.txt",
-                                    "--form-dir", SEC_DIRECTORY.string(), "-R", "--export-HTML-data", "--HTML-forms-to-dir",
+                                    "--form-dir", SEC_DIRECTORY.string(), "--export-HTML-data", "--HTML-forms-to-dir",
                                     "/tmp/extracts/html", "--HTML-forms-from-dir", "/vol_DA/SEC/Archives"};
 
     try
@@ -1606,7 +1567,50 @@ TEST_F(ExportHTML, VerifyNoExportOfExistingFilesWhenReplaceIsNotSpecifed)
         spdlog::error(catenate("Something fundamental went wrong: ", theProblem.what()));
     }
     catch (...)
-    {    // handle exception: unspecified
+    { // handle exception: unspecified
+        spdlog::error("Something totally unexpected happened.");
+    }
+    ASSERT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 178);
+}
+
+TEST_F(ExportHTML, VerifyNoExportOfExistingFilesWhenReplaceIsNotSpecifed)
+{
+    if (fs::exists("/tmp/extracts/html"))
+        fs::remove_all("/tmp/extracts/html");
+
+    std::vector<std::string> tokens{
+        "the_program", "--log-level", "debug", "--form", "10-Q,10-K", "--mode", "HTML", "--log-path", "/tmp/test1.log",
+        //		"--list", "./list_with_bad_file.txt",
+        "--form-dir", SEC_DIRECTORY.string(), "-R", "--export-HTML-data", "--HTML-forms-to-dir", "/tmp/extracts/html",
+        "--HTML-forms-from-dir", "/vol_DA/SEC/Archives"};
+
+    try
+    {
+        ExtractorApp myApp(tokens);
+
+        decltype(auto) test_info = UnitTest::GetInstance()->current_test_info();
+        spdlog::info(catenate("\n\nTest: ", test_info->name(), " test case: ", test_info->test_case_name(), "\n\n"));
+
+        bool startup_OK = myApp.Startup();
+        if (startup_OK)
+        {
+            myApp.Run();
+            myApp.Shutdown();
+        }
+        else
+        {
+            std::cout << "Problems starting program.  No processing done.\n";
+        }
+    }
+
+    // catch any problems trying to setup application
+
+    catch (const std::exception &theProblem)
+    {
+        spdlog::error(catenate("Something fundamental went wrong: ", theProblem.what()));
+    }
+    catch (...)
+    { // handle exception: unspecified
         spdlog::error("Something totally unexpected happened.");
     }
 
@@ -1616,8 +1620,8 @@ TEST_F(ExportHTML, VerifyNoExportOfExistingFilesWhenReplaceIsNotSpecifed)
 
     std::this_thread::sleep_for(std::chrono::seconds{3});
 
-    std::vector<std::string> tokens2{"the_program", "--log-level", "debug", "--form", "10-Q,10-K", "--mode", "HTML", "--log-path",
-                                     "/tmp/test1.log",
+    std::vector<std::string> tokens2{"the_program", "--log-level", "debug", "--form", "10-Q,10-K", "--mode", "HTML",
+                                     "--log-path", "/tmp/test1.log",
                                      //		"--list", "./list_with_bad_file.txt",
                                      "--form-dir", SEC_DIRECTORY.string(), "--export-HTML-data", "--HTML-forms-to-dir",
                                      "/tmp/extracts/html", "--HTML-forms-from-dir", "/vol_DA/SEC/Archives"};
@@ -1648,7 +1652,7 @@ TEST_F(ExportHTML, VerifyNoExportOfExistingFilesWhenReplaceIsNotSpecifed)
         spdlog::error(catenate("Something fundamental went wrong: ", theProblem.what()));
     }
     catch (...)
-    {    // handle exception: unspecified
+    { // handle exception: unspecified
         spdlog::error("Something totally unexpected happened.");
     }
     ASSERT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 178);
@@ -1663,7 +1667,8 @@ TEST_F(ExportHTML, ExportHTMLUsingFileList3Async10Q)
     //	NOTE: the program name 'the_program' in the command line below is
     // ignored in the 	the test program.
 
-    if (fs::exists("/tmp/extracts/html")) fs::remove_all("/tmp/extracts/html");
+    if (fs::exists("/tmp/extracts/html"))
+        fs::remove_all("/tmp/extracts/html");
 
     std::vector<std::string> tokens{"the_program",
                                     "--log-level",
@@ -1710,7 +1715,7 @@ TEST_F(ExportHTML, ExportHTMLUsingFileList3Async10Q)
         spdlog::error(catenate("Something fundamental went wrong: ", theProblem.what()));
     }
     catch (...)
-    {    // handle exception: unspecified
+    { // handle exception: unspecified
         spdlog::error("Something totally unexpected happened.");
     }
     ASSERT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 178);
@@ -1724,8 +1729,9 @@ TEST_F(ExportHTML, ExportHTMLDetectsFullDiskAndStops)
     std::vector<std::string> tokens{"the_program", "--log-level", "debug", "--form", "10-Q,10-K", "--mode", "HTML",
                                     //		"-k", "6",
                                     //		"--list", "./test_directory_list.txt",
-                                    "--form-dir", SEC_DIRECTORY.string(), "--log-path", "/tmp/test2.log", "--export-HTML-data",
-                                    "--HTML-forms-to-dir", "/tmp/ofstream_test", "--HTML-forms-from-dir", "/vol_DA/SEC/Archives"};
+                                    "--form-dir", SEC_DIRECTORY.string(), "--log-path", "/tmp/test2.log",
+                                    "--export-HTML-data", "--HTML-forms-to-dir", "/tmp/ofstream_test",
+                                    "--HTML-forms-from-dir", "/vol_DA/SEC/Archives"};
 
     try
     {
@@ -1753,7 +1759,7 @@ TEST_F(ExportHTML, ExportHTMLDetectsFullDiskAndStops)
         spdlog::error(catenate("Something fundamental went wrong: ", theProblem.what()));
     }
     catch (...)
-    {    // handle exception: unspecified
+    { // handle exception: unspecified
         spdlog::error("Something totally unexpected happened.");
     }
     // 	ASSERT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 182);
@@ -1809,7 +1815,7 @@ TEST_F(ExportHTML, AsyncExportHTMLDetectsFullDiskAndStops)
         spdlog::error(catenate("Something fundamental went wrong: ", theProblem.what()));
     }
     catch (...)
-    {    // handle exception: unspecified
+    { // handle exception: unspecified
         spdlog::error("Something totally unexpected happened.");
     }
     // 	ASSERT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 182);
@@ -1817,7 +1823,7 @@ TEST_F(ExportHTML, AsyncExportHTMLDetectsFullDiskAndStops)
 
 class UpdateSharesOutstanding : public Test
 {
-   public:
+public:
     int entires_with_shares{0};
 
     void SetUp() override
@@ -1828,9 +1834,8 @@ class UpdateSharesOutstanding : public Test
         // we want to count how many entries we have.
         // theoretically, we will update all of them.
 
-        auto row = trxn.exec(
-                           "SELECT count(*) FROM unified_extracts.sec_filing_id "
-                           "WHERE shares_outstanding != -1")
+        auto row = trxn.exec("SELECT count(*) FROM unified_extracts.sec_filing_id "
+                             "WHERE shares_outstanding != -1")
                        .one_row();
         entires_with_shares = row[0].as<int>();
 
@@ -1844,9 +1849,8 @@ class UpdateSharesOutstanding : public Test
 
         // make sure the DB is empty before we start
 
-        auto row = trxn.exec(
-                           "SELECT count(*) FROM unified_extracts.sec_filing_id "
-                           "WHERE shares_outstanding != -1")
+        auto row = trxn.exec("SELECT count(*) FROM unified_extracts.sec_filing_id "
+                             "WHERE shares_outstanding != -1")
                        .one_row();
         trxn.commit();
         return row[0].as<int>();
@@ -1904,7 +1908,7 @@ TEST_F(UpdateSharesOutstanding, UpdateSharesOutstandingAsyncAndSync)
         spdlog::error(catenate("Something fundamental went wrong: ", theProblem.what()));
     }
     catch (...)
-    {    // handle exception: unspecified
+    { // handle exception: unspecified
         spdlog::error("Something totally unexpected happened.");
     }
     EXPECT_NE(CountRows(), 0);
@@ -1913,7 +1917,7 @@ TEST_F(UpdateSharesOutstanding, UpdateSharesOutstandingAsyncAndSync)
 
 class TestBoth : public Test
 {
-   public:
+public:
     void SetUp() override
     {
         pqxx::connection c{"dbname=sec_extracts user=extractor_pg"};
@@ -1944,17 +1948,14 @@ class TestBoth : public Test
         pqxx::connection c{"dbname=sec_extracts user=extractor_pg"};
         pqxx::work trxn{c};
 
-        auto row1 = trxn.exec(
-                            "SELECT count(*) FROM unified_extracts.sec_bal_sheet_data "
-                            "WHERE label = 'Missing Value'")
+        auto row1 = trxn.exec("SELECT count(*) FROM unified_extracts.sec_bal_sheet_data "
+                              "WHERE label = 'Missing Value'")
                         .one_row();
-        auto row2 = trxn.exec(
-                            "SELECT count(*) FROM unified_extracts.sec_stmt_of_ops_data "
-                            "WHERE label = 'Missing Value'")
+        auto row2 = trxn.exec("SELECT count(*) FROM unified_extracts.sec_stmt_of_ops_data "
+                              "WHERE label = 'Missing Value'")
                         .one_row();
-        auto row3 = trxn.exec(
-                            "SELECT count(*) FROM unified_extracts.sec_cash_flows_data "
-                            "WHERE label = 'Missing Value'")
+        auto row3 = trxn.exec("SELECT count(*) FROM unified_extracts.sec_cash_flows_data "
+                              "WHERE label = 'Missing Value'")
                         .one_row();
         trxn.commit();
         return row1[0].as<int>() + row2[0].as<int>() + row3[0].as<int>();
@@ -1967,9 +1968,8 @@ class TestBoth : public Test
 
         // make sure the DB is empty before we start
 
-        auto row = trxn.exec(
-                           "SELECT count(*) FROM unified_extracts.sec_filing_id "
-                           "WHERE data_source = 'HTML'")
+        auto row = trxn.exec("SELECT count(*) FROM unified_extracts.sec_filing_id "
+                             "WHERE data_source = 'HTML'")
                        .one_row();
         trxn.commit();
         return row[0].as<int>();
@@ -1982,9 +1982,8 @@ class TestBoth : public Test
 
         // make sure the DB is empty before we start
 
-        auto row = trxn.exec(
-                           "SELECT count(*) FROM unified_extracts.sec_filing_id "
-                           "WHERE data_source != 'HTML'")
+        auto row = trxn.exec("SELECT count(*) FROM unified_extracts.sec_filing_id "
+                             "WHERE data_source != 'HTML'")
                        .one_row();
         trxn.commit();
         return row[0].as<int>();
@@ -2031,7 +2030,7 @@ TEST_F(TestBoth, UpdateDBFromList)
         spdlog::error(catenate("Something fundamental went wrong: ", theProblem.what()));
     }
     catch (...)
-    {    // handle exception: unspecified
+    { // handle exception: unspecified
         spdlog::error("Something totally unexpected happened.");
     }
     // there are 159 possible XBRL files but 3 of them are weirdly redundant

@@ -134,8 +134,9 @@ TEST_F(SingleFileEndToEndXBRL, VerifyCanLoadDataToDBForFileWithXML10QXBRL)
     //	NOTE: the program name 'the_program' in the command line below is
     // ignored in the 	the test program.
 
-    std::vector<std::string> tokens{
-        "the_program", "--log-level", "debug", "--form", "10-Q", "--mode", "XBRL", "-f", FILE_WITH_XML_10Q.string()};
+    std::vector<std::string> tokens{"the_program", "--log-level", "information",
+                                    "--form",      "10-Q",        "--mode",
+                                    "XBRL",        "-f",          FILE_WITH_XML_10Q.string()};
 
     try
     {
@@ -176,7 +177,7 @@ TEST_F(SingleFileEndToEndXBRL, VerifyLoadsNoDataToDBForFileWithXML10QHTML)
 
     std::vector<std::string> tokens{"the_program",
                                     "--log-level",
-                                    "debug",
+                                    "information",
                                     "--form",
                                     "10-Q",
                                     "--mode",
@@ -302,7 +303,7 @@ TEST_F(SingleFileEndToEndHTML, VerifyCanLoadDataToDBForFileWithHTML10QHTML)
 //	//	the test program.
 //
 //	std::vector<std::string> tokens{"the_program",
-//         "--log-level", "debug",
+//         "--log-level", "information",
 //		"--form", "10-Q",
 //		"-f", FILE_NO_NAMESPACE_10Q.string()
 //	};
@@ -346,7 +347,7 @@ TEST_F(SingleFileEndToEndHTML, VerifyCanLoadDataToDBForFileWithHTML10QHTML)
 //	//	the test program.
 //
 //	std::vector<std::string> tokens{"the_program",
-//         "--log-level", "debug",
+//         "--log-level", "information",
 //		"--form", "10-K",
 //		"-f", NO_SHARES_OUT.string()
 //	};
@@ -393,7 +394,7 @@ TEST_F(SingleFileEndToEndHTML, VerifyCanLoadDataToDBForFileWithXML10K)
                                     "--end-date",
                                     "2016-12-30",
                                     "--log-level",
-                                    "debug",
+                                    "information",
                                     "--mode",
                                     "HTML",
                                     "--form",
@@ -441,7 +442,7 @@ TEST_F(SingleFileEndToEndHTML, VerifyCanLoadDataToDBForFileWithXML10K)
 //	//	the test program.
 //
 //	std::vector<std::string> tokens{"the_program",
-//         "--log-level", "debug",
+//         "--log-level", "information",
 //		"--form", "10-K",
 //		"-f", BAD_FILE2.string()
 //	};
@@ -487,8 +488,7 @@ public:
 
         // make sure the DB is empty before we start
 
-        trxn.exec("DELETE FROM unified_extracts.sec_filing_id WHERE data_source = "
-                  "'HTML'");
+        trxn.exec("DELETE FROM unified_extracts.sec_filing_id WHERE data_source = 'HTML'");
         trxn.commit();
     }
 
@@ -546,7 +546,7 @@ public:
 //	//	the test program.
 //
 //	std::vector<std::string> tokens{"the_program",
-//         "--log-level", "debug",
+//         "--log-level", "information",
 //		"--form", "10-K"
 //     };
 //
@@ -587,8 +587,8 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory10QHTML)
     // ignored in the 	the test program.
 
     std::vector<std::string> tokens{
-        "the_program", "--log-level",          "information",       "--form", "10-Q", "--mode", "HTML",
-        "--form-dir",  SEC_DIRECTORY.string(), "replace-DB-content"};
+        "the_program", "--log-level",          "information",         "--form", "10-Q", "--mode", "HTML",
+        "--form-dir",  SEC_DIRECTORY.string(), "--replace-DB-content"};
 
     try
     {
@@ -629,7 +629,7 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory10QHTML)
 //	//	the test program.
 //
 //	std::vector<std::string> tokens{"the_program",
-//         "--log-level", "debug",
+//         "--log-level", "information",
 //		"--form", "10-Q",
 //		"--log-path", "/tmp/test4.log",
 //		"--list", "./test_directory_list.txt"
@@ -673,7 +673,7 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory10QHTML)
 //	//	the test program.
 //
 //	std::vector<std::string> tokens{"the_program",
-//         "--log-level", "debug",
+//         "--log-level", "information",
 //		"--form", "10-Q",
 //		"--log-path", "/tmp/test4.log",
 //		"--list", "./test_directory_list.txt",
@@ -720,7 +720,7 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory10QHTML)
 //	//	the test program.
 //
 //	std::vector<std::string> tokens{"the_program",
-//         "--log-level", "debug",
+//         "--log-level", "information",
 //		"--log-path", "/tmp/test8.log",
 //		"--list", MISSING_VALUES_LIST,
 //		"--form", "10-K",
@@ -765,7 +765,7 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory10QHTML)
 //	//	the test program.
 //
 //	std::vector<std::string> tokens{"the_program",
-//         "--log-level", "debug",
+//         "--log-level", "information",
 //		"--form", "10-K",
 //		"--log-path", "/tmp/test1.log",
 //		"--list", "./list_with_bad_file.txt",
@@ -811,7 +811,7 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory10QHTML)
 //	//	the test program.
 //
 //	std::vector<std::string> tokens{"the_program",
-//         "--log-level", "debug",
+//         "--log-level", "information",
 //		"--form", "10-K",
 //         "-k", "2",
 //		"--log-path", "/tmp/test1.log",
@@ -860,7 +860,7 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory10QHTML)
 //	//	the test program.
 //
 //	std::vector<std::string> tokens{"the_program",
-//         "--log-level", "debug",
+//         "--log-level", "information",
 //		"--form", "10-K",
 //		"--list", "./test_directory_list.txt"
 //     };
@@ -903,7 +903,7 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory10QHTML)
 //	//	the test program.
 //
 //	std::vector<std::string> tokens{"the_program",
-//         "--log-level", "debug",
+//         "--log-level", "information",
 //		"--form", "10-Q",
 //		"--max", "17",
 //		"--list", "./test_directory_list.txt"
@@ -947,7 +947,7 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory10QHTML)
 //	//	the test program.
 //
 //	std::vector<std::string> tokens{"the_program",
-//         "--log-level", "debug",
+//         "--log-level", "information",
 //		"--form", "10-K",
 //		"--max", "17",
 //		"--list", "./test_directory_list.txt"
@@ -991,7 +991,7 @@ TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3Async10Q)
 
     std::vector<std::string> tokens{"the_program",
                                     "--log-level",
-                                    "debug",
+                                    "information",
                                     "--form",
                                     "10-Q,10-K",
                                     "--mode",
@@ -1040,7 +1040,7 @@ TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3Async10Q)
 //	//	the test program.
 //
 //	std::vector<std::string> tokens{"the_program",
-//         "--log-level", "debug",
+//         "--log-level", "information",
 //		"--form", "10-Q",
 //		"--max", "17",
 //		"-k", "4",
@@ -1085,7 +1085,7 @@ TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3Async10Q)
 //	//	the test program.
 //
 //	std::vector<std::string> tokens{"the_program",
-//         "--log-level", "debug",
+//         "--log-level", "information",
 //		"--form", "10-K",
 //		"--list", "./test_directory_list.txt"
 //     };
@@ -1128,7 +1128,7 @@ TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3Async10Q)
 //	//	the test program.
 //
 //	std::vector<std::string> tokens{"the_program",
-//         "--log-level", "debug",
+//         "--log-level", "information",
 //		"--form", "10-K",
 //		"--form-dir", SEC_DIRECTORY.string()
 //	};
@@ -1173,7 +1173,7 @@ TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3Async10Q)
 //	std::vector<std::string> tokens{"the_program",
 //		"--begin-date", "2013-Mar-1",
 //		"--end-date", "2013-3-31",
-//         "--log-level", "debug",
+//         "--log-level", "information",
 //		"--form", "10-Q",
 //		"--form-dir", SEC_DIRECTORY.string()
 //	};
@@ -1218,7 +1218,7 @@ TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3Async10Q)
 //	std::vector<std::string> tokens{"the_program",
 //		"--begin-date", "2013-Mar-1",
 //		"--end-date", "2013-3-31",
-//         "--log-level", "debug",
+//         "--log-level", "information",
 //		"--form", "10-K,10-Q",
 //		"--form-dir", SEC_DIRECTORY.string()
 //	};
@@ -1263,7 +1263,7 @@ TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3Async10Q)
 //	std::vector<std::string> tokens{"the_program",
 //		"--begin-date", "2013-Mar-1",
 //		"--end-date", "2013-3-31",
-//         "--log-level", "debug",
+//         "--log-level", "information",
 //		"--form", "10-K,10-Q",
 //		"--CIK", "1541884",
 //		"--form-dir", SEC_DIRECTORY.string()
@@ -1309,7 +1309,7 @@ TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3Async10Q)
 //	std::vector<std::string> tokens{"the_program",
 //		"--begin-date", "2013-Mar-1",
 //		"--end-date", "2013-3-31",
-//         "--log-level", "debug",
+//         "--log-level", "information",
 //		"--form", "10-K,10-Q",
 //		"--CIK", "0000826772,0000826774",
 //		"--form-dir", SEC_DIRECTORY.string()
@@ -1353,7 +1353,7 @@ TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3Async10Q)
 //	//	the test program.
 //
 //	std::vector<std::string> tokens{"the_program",
-//         "--log-level", "debug",
+//         "--log-level", "information",
 //		"--form", "10-Q",
 //		"--form-dir", SEC_DIRECTORY.string()
 //	};
@@ -1397,7 +1397,7 @@ TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3Async10Q)
 //	//	the test program.
 //
 //	std::vector<std::string> tokens{"the_program",
-//         "--log-level", "debug",
+//         "--log-level", "information",
 //		"--form", "10-Q",
 //		"--max", "14",
 //		"--form-dir", SEC_DIRECTORY.string()
@@ -1489,11 +1489,12 @@ TEST_F(ExportHTML, ExportSingleFile)
     if (fs::exists("/tmp/extracts"))
         fs::remove_all("/tmp/extracts");
 
-    std::vector<std::string> tokens{
-        "the_program", "--log-level", "debug", "--form", "10-Q,10-K", "--mode", "HTML", "--log-path", "/tmp/test1.log",
-        //		"--list", "./list_with_bad_file.txt"
-        "--export-HTML-data", "--HTML-forms-to-dir", "/tmp/extracts", "--HTML-forms-from-dir",
-        "/vol_DA/SEC/Archives/edgar", "--file", "/vol_DA/SEC/Archives/edgar/data/google-10k.txt"};
+    std::vector<std::string> tokens{"the_program", "--log-level", "information", "--form", "10-Q,10-K", "--mode",
+                                    "HTML", "--log-path", "/tmp/test1.log",
+                                    //		"--list", "./list_with_bad_file.txt"
+                                    "--export-HTML-data", "--HTML-forms-to-dir", "/tmp/extracts",
+                                    "--HTML-forms-from-dir", "/vol_DA/SEC/Archives/edgar", "--file",
+                                    "/vol_DA/SEC/Archives/edgar/data/google-10k.txt"};
 
     try
     {
@@ -1535,8 +1536,8 @@ TEST_F(ExportHTML, ExportHMTLFromDirectory)
     if (fs::exists("/tmp/extracts/html"))
         fs::remove_all("/tmp/extracts/html");
 
-    std::vector<std::string> tokens{"the_program", "--log-level", "debug", "--form", "10-Q,10-K", "--mode", "HTML",
-                                    "--log-path", "/tmp/test1.log",
+    std::vector<std::string> tokens{"the_program", "--log-level", "information", "--form", "10-Q,10-K", "--mode",
+                                    "HTML", "--log-path", "/tmp/test1.log",
                                     //		"--list", "./list_with_bad_file.txt",
                                     "--form-dir", SEC_DIRECTORY.string(), "--export-HTML-data", "--HTML-forms-to-dir",
                                     "/tmp/extracts/html", "--HTML-forms-from-dir", "/vol_DA/SEC/Archives"};
@@ -1578,11 +1579,12 @@ TEST_F(ExportHTML, VerifyNoExportOfExistingFilesWhenReplaceIsNotSpecifed)
     if (fs::exists("/tmp/extracts/html"))
         fs::remove_all("/tmp/extracts/html");
 
-    std::vector<std::string> tokens{
-        "the_program", "--log-level", "debug", "--form", "10-Q,10-K", "--mode", "HTML", "--log-path", "/tmp/test1.log",
-        //		"--list", "./list_with_bad_file.txt",
-        "--form-dir", SEC_DIRECTORY.string(), "-R", "--export-HTML-data", "--HTML-forms-to-dir", "/tmp/extracts/html",
-        "--HTML-forms-from-dir", "/vol_DA/SEC/Archives"};
+    std::vector<std::string> tokens{"the_program", "--log-level", "information", "--form", "10-Q,10-K", "--mode",
+                                    "HTML", "--log-path", "/tmp/test1.log",
+                                    //		"--list", "./list_with_bad_file.txt",
+                                    "--form-dir", SEC_DIRECTORY.string(), "-R", "--export-HTML-data",
+                                    "--HTML-forms-to-dir", "/tmp/extracts/html", "--HTML-forms-from-dir",
+                                    "/vol_DA/SEC/Archives"};
 
     try
     {
@@ -1620,8 +1622,8 @@ TEST_F(ExportHTML, VerifyNoExportOfExistingFilesWhenReplaceIsNotSpecifed)
 
     std::this_thread::sleep_for(std::chrono::seconds{3});
 
-    std::vector<std::string> tokens2{"the_program", "--log-level", "debug", "--form", "10-Q,10-K", "--mode", "HTML",
-                                     "--log-path", "/tmp/test1.log",
+    std::vector<std::string> tokens2{"the_program", "--log-level", "information", "--form", "10-Q,10-K", "--mode",
+                                     "HTML", "--log-path", "/tmp/test1.log",
                                      //		"--list", "./list_with_bad_file.txt",
                                      "--form-dir", SEC_DIRECTORY.string(), "--export-HTML-data", "--HTML-forms-to-dir",
                                      "/tmp/extracts/html", "--HTML-forms-from-dir", "/vol_DA/SEC/Archives"};
@@ -1672,7 +1674,7 @@ TEST_F(ExportHTML, ExportHTMLUsingFileList3Async10Q)
 
     std::vector<std::string> tokens{"the_program",
                                     "--log-level",
-                                    "debug",
+                                    "information",
                                     "--form",
                                     "10-Q,10-K",
                                     "--mode",
@@ -1726,12 +1728,12 @@ TEST_F(ExportHTML, ExportHTMLDetectsFullDiskAndStops)
     //	NOTE: the program name 'the_program' in the command line below is
     // ignored in the 	the test program.
 
-    std::vector<std::string> tokens{"the_program", "--log-level", "debug", "--form", "10-Q,10-K", "--mode", "HTML",
-                                    //		"-k", "6",
-                                    //		"--list", "./test_directory_list.txt",
-                                    "--form-dir", SEC_DIRECTORY.string(), "--log-path", "/tmp/test2.log",
-                                    "--export-HTML-data", "--HTML-forms-to-dir", "/tmp/ofstream_test",
-                                    "--HTML-forms-from-dir", "/vol_DA/SEC/Archives"};
+    std::vector<std::string> tokens{
+        "the_program", "--log-level", "information", "--form", "10-Q,10-K", "--mode", "HTML",
+        //		"-k", "6",
+        //		"--list", "./test_directory_list.txt",
+        "--form-dir", SEC_DIRECTORY.string(), "--log-path", "/tmp/test2.log", "--export-HTML-data",
+        "--HTML-forms-to-dir", "/tmp/ofstream_test", "--HTML-forms-from-dir", "/vol_DA/SEC/Archives"};
 
     try
     {
@@ -1772,7 +1774,7 @@ TEST_F(ExportHTML, AsyncExportHTMLDetectsFullDiskAndStops)
 
     std::vector<std::string> tokens{"the_program",
                                     "--log-level",
-                                    "debug",
+                                    "information",
                                     "--form",
                                     "10-Q,10-K",
                                     "--mode",
@@ -1869,7 +1871,7 @@ TEST_F(UpdateSharesOutstanding, UpdateSharesOutstandingAsyncAndSync)
 
     std::vector<std::string> tokens{"the_program",
                                     "--log-level",
-                                    "debug",
+                                    "information",
                                     "--form",
                                     "10-Q,10-K",
                                     "--mode",

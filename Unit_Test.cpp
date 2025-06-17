@@ -34,13 +34,13 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <numeric>
+#include <ranges>
 #include <string>
 
 // #include <boost/algorithm/string/predicate.hpp>
 
 #include <gmock/gmock.h>
-
-#include <range/v3/all.hpp>
 
 #include <spdlog/spdlog.h>
 
@@ -54,7 +54,7 @@
 
 namespace fs = std::filesystem;
 
-namespace rng = ranges;
+namespace rng = std::ranges;
 
 using namespace testing;
 
@@ -257,7 +257,7 @@ TEST_F(Iterators, AnchorRangeFileWithHTML_10Q)
     const auto sections = LocateDocumentSections(file_content);
     HTML_FromFile htmls{&sections, FILE_WITH_HTML_10Q};
 
-    AnchorsFromHTML anchors{rng::front(htmls).html_};
+    AnchorsFromHTML anchors{(*htmls.begin()).html_};
 
     auto how_many = rng::distance(anchors);
     EXPECT_EQ(how_many, 22);
@@ -291,11 +291,11 @@ TEST_F(Iterators, AnchorRangeFileWithXML_10Q)
     const auto sections = LocateDocumentSections(file_content);
     HTML_FromFile htmls{&sections, FILE_WITH_XML_10Q};
 
-    int total = rng::accumulate(htmls | rng::views::transform([](const auto &html) {
-                                    AnchorsFromHTML x{html.html_};
-                                    return rng::distance(x);
-                                }),
-                                0);
+    int total = rng::fold_left(htmls | rng::views::transform([](const auto &html) {
+                                   AnchorsFromHTML x{html.html_};
+                                   return rng::distance(x);
+                               }),
+                               0, std::plus{});
     std::cout << "Total anchors found: " << total << '\n';
     ASSERT_TRUE(total == 2239);
 }
@@ -1897,7 +1897,7 @@ TEST_F(FindSharesOutstanding, Test10KFileWithNoPossibles)
     ASSERT_EQ(found_shares, 169173941);
 }
 
-TEST_F(FindSharesOutstanding, DISABLED_Test10KFileWithSharesBeforeYesNo)
+TEST_F(FindSharesOutstanding, Test10KFileWithSharesBeforeYesNo)
 {
     const auto file_content_10K = LoadDataFileForUse(FILE_WITH_SHARES_BEFORE_YESNO);
     EM::FileContent file_content{file_content_10K};

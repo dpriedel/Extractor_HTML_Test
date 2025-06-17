@@ -586,9 +586,8 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory10QHTML)
     //	NOTE: the program name 'the_program' in the command line below is
     // ignored in the 	the test program.
 
-    std::vector<std::string> tokens{
-        "the_program", "--log-level",          "information",         "--form", "10-Q", "--mode", "HTML",
-        "--form-dir",  SEC_DIRECTORY.string(), "--replace-DB-content"};
+    std::vector<std::string> tokens{"the_program", "--log-level", "information",         "--form", "10-Q", "--mode",
+                                    "HTML",        "--form-dir",  SEC_DIRECTORY.string()};
 
     try
     {
@@ -619,7 +618,7 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory10QHTML)
     { // handle exception: unspecified
         spdlog::error("Something totally unexpected happened.");
     }
-    ASSERT_EQ(CountFilings(), 146);
+    ASSERT_EQ(CountFilings(), 154);
 }
 
 // TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3_10Q)
@@ -1571,7 +1570,7 @@ TEST_F(ExportHTML, ExportHMTLFromDirectory)
     { // handle exception: unspecified
         spdlog::error("Something totally unexpected happened.");
     }
-    ASSERT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 178);
+    ASSERT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 187);
 }
 
 TEST_F(ExportHTML, VerifyNoExportOfExistingFilesWhenReplaceIsNotSpecifed)
@@ -1616,7 +1615,7 @@ TEST_F(ExportHTML, VerifyNoExportOfExistingFilesWhenReplaceIsNotSpecifed)
         spdlog::error("Something totally unexpected happened.");
     }
 
-    EXPECT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 178);
+    EXPECT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 187);
 
     auto x1 = CollectLastModifiedTimesForFilesInDirectoryTree("/tmp/extracts/html");
 
@@ -1657,7 +1656,7 @@ TEST_F(ExportHTML, VerifyNoExportOfExistingFilesWhenReplaceIsNotSpecifed)
     { // handle exception: unspecified
         spdlog::error("Something totally unexpected happened.");
     }
-    ASSERT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 178);
+    ASSERT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 187);
 
     auto x2 = CollectLastModifiedTimesForFilesInDirectoryTree("/tmp/extracts/html");
 
@@ -2002,9 +2001,19 @@ TEST_F(TestBoth, UpdateDBFromList)
         fs::remove("/tmp/test1.log");
     }
 
-    std::vector<std::string> tokens{"the_program", "--log-level", "info", "--form", "10-Q,10-K", "--mode", "BOTH",
-                                    //		"-k", "6",
-                                    "--list", "./test_directory_list.txt", "--log-path", "/tmp/test1.log"};
+    std::vector<std::string> tokens{"the_program",
+                                    "--log-level",
+                                    "info",
+                                    "--form",
+                                    "10-Q,10-K",
+                                    "--mode",
+                                    "BOTH",
+                                    "-k",
+                                    "6",
+                                    "--list",
+                                    "./test_directory_list.txt",
+                                    "--log-path",
+                                    "/tmp/test1.log"};
 
     try
     {
@@ -2052,6 +2061,7 @@ TEST_F(TestBoth, UpdateDBFromList)
  */
 void InitLogging()
 {
+    spdlog::set_level(spdlog::level::info);
     //    nothing to do for now.
     //    logging::core::get()->set_filter
     //    (

@@ -36,6 +36,7 @@
 // =====================================================================================
 
 #include <filesystem>
+#include <spdlog/sinks/stdout_color_sinks.h>
 
 #include "ExtractorApp.h"
 namespace fs = std::filesystem;
@@ -175,16 +176,9 @@ TEST_F(SingleFileEndToEndXBRL, VerifyLoadsNoDataToDBForFileWithXML10QHTML)
     //	NOTE: the program name 'the_program' in the command line below is
     // ignored in the 	the test program.
 
-    std::vector<std::string> tokens{"the_program",
-                                    "--log-level",
-                                    "information",
-                                    "--form",
-                                    "10-Q",
-                                    "--mode",
-                                    "HTML",
-                                    "-f",
-                                    FILE_WITH_XML_10Q.string(),
-                                    "--replace-DB-data"};
+    std::vector<std::string> tokens{"the_program", "--log-level", "information",
+                                    "--form",      "10-Q",        "--mode",
+                                    "HTML",        "-f",          FILE_WITH_XML_10Q.string()};
 
     try
     {
@@ -2061,7 +2055,7 @@ TEST_F(TestBoth, UpdateDBFromList)
  */
 void InitLogging()
 {
-    spdlog::set_level(spdlog::level::info);
+    // spdlog::set_level(spdlog::level::info);
     //    nothing to do for now.
     //    logging::core::get()->set_filter
     //    (
@@ -2071,7 +2065,13 @@ void InitLogging()
 
 int main(int argc, char **argv)
 {
-    InitLogging();
+    // simpler logging setup than unit test because here
+    // the app class will set up required logging.
+
+    auto my_default_logger = spdlog::stdout_color_mt("testing_logger");
+    spdlog::set_default_logger(my_default_logger);
+
+    // InitLogging();
 
     InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

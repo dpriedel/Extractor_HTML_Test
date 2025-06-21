@@ -135,9 +135,9 @@ TEST_F(SingleFileEndToEndXBRL, VerifyCanLoadDataToDBForFileWithXML10QXBRL)
     //	NOTE: the program name 'the_program' in the command line below is
     // ignored in the 	the test program.
 
-    std::vector<std::string> tokens{"the_program", "--log-level", "information",
-                                    "--form",      "10-Q",        "--mode",
-                                    "XBRL",        "-f",          FILE_WITH_XML_10Q.string()};
+    std::vector<std::string> tokens{
+        "the_program", "--log-level",    "debug", "--form", "10-Q", "--mode", "XBRL", "-f", FILE_WITH_XML_10Q.string(),
+        "--log-path",  "/tmp/test01.log"};
 
     try
     {
@@ -176,9 +176,17 @@ TEST_F(SingleFileEndToEndXBRL, VerifyLoadsNoDataToDBForFileWithXML10QHTML)
     //	NOTE: the program name 'the_program' in the command line below is
     // ignored in the 	the test program.
 
-    std::vector<std::string> tokens{"the_program", "--log-level", "information",
-                                    "--form",      "10-Q",        "--mode",
-                                    "HTML",        "-f",          FILE_WITH_XML_10Q.string()};
+    std::vector<std::string> tokens{"the_program",
+                                    "--log-level",
+                                    "information",
+                                    "--form",
+                                    "10-Q",
+                                    "--mode",
+                                    "HTML",
+                                    "-f",
+                                    FILE_WITH_XML_10Q.string(),
+                                    "--log-path",
+                                    "/tmp/test02.log"};
 
     try
     {
@@ -254,7 +262,7 @@ TEST_F(SingleFileEndToEndHTML, VerifyCanLoadDataToDBForFileWithHTML10QHTML)
 
     std::vector<std::string> tokens{"the_program", "--log-level", "debug", "--form", "10-Q", "--mode", "HTML",
                                     //		"-f", CRASH_IN_REGEX
-                                    "-f", FILE_WITH_HTML_10Q_WITH_ANCHORS};
+                                    "-f", FILE_WITH_HTML_10Q_WITH_ANCHORS, "--log-path", "/tmp/test03.log"};
 
     try
     {
@@ -394,7 +402,9 @@ TEST_F(SingleFileEndToEndHTML, VerifyCanLoadDataToDBForFileWithXML10K)
                                     "--form",
                                     "10-K",
                                     "-f",
-                                    FILE_WITH_XML_10K.string()};
+                                    FILE_WITH_XML_10K.string(),
+                                    "--log-path",
+                                    "/tmp/test04.log"};
 
     try
     {
@@ -580,8 +590,9 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory10QHTML)
     //	NOTE: the program name 'the_program' in the command line below is
     // ignored in the 	the test program.
 
-    std::vector<std::string> tokens{"the_program", "--log-level", "information",         "--form", "10-Q", "--mode",
-                                    "HTML",        "--form-dir",  SEC_DIRECTORY.string()};
+    std::vector<std::string> tokens{
+        "the_program", "--log-level", "information",          "--form",     "10-Q",           "--mode",
+        "HTML",        "--form-dir",  SEC_DIRECTORY.string(), "--log-path", "/tmp/test05.log"};
 
     try
     {
@@ -705,278 +716,6 @@ TEST_F(ProcessFolderEndtoEnd, UseDirectory10QHTML)
 //	ASSERT_EQ(CountFilings(), 31);
 // }
 //
-
-// TEST_F(ProcessFolderEndtoEnd, WorkWithMissingValuesFileList1)
-//{
-//	//	NOTE: the program name 'the_program' in the command line below
-// is ignored in the
-//	//	the test program.
-//
-//	std::vector<std::string> tokens{"the_program",
-//         "--log-level", "information",
-//		"--log-path", "/tmp/test8.log",
-//		"--list", MISSING_VALUES_LIST,
-//		"--form", "10-K",
-//         "-k", "4"
-//     };
-//
-//     ExtractorApp myApp;
-//	try
-//	{
-//         myApp.init(tokens);
-//
-//		decltype(auto) test_info =
-// UnitTest::GetInstance()->current_test_info();
-//		myApp.logger().information(std::string("\n\nTest: ") +
-// test_info->name() + " test case: " + test_info->test_case_name() + "\n\n");
-//
-//         myApp.run();
-//	}
-//
-//     // catch any problems trying to setup application
-//
-//	catch (const std::exception& theProblem)
-//	{
-//		// poco_fatal(myApp->logger(), theProblem.what());
-//
-//		myApp.logger().error(std::string("Something fundamental went
-// wrong: ") + theProblem.what()); 		throw;	//	so test
-// framework will get it too.
-//	}
-//	catch (...)
-//	{		// handle exception: unspecified
-//		myApp.logger().error("Something totally unexpected happened.");
-//		throw;
-//	}
-//	ASSERT_TRUE(CountFilings() > 0 && CountMissingValues() == 0);
-// }
-//
-// TEST_F(ProcessFolderEndtoEnd, WorkWithFileListContainsFormName)
-//{
-//	//	NOTE: the program name 'the_program' in the command line below
-// is ignored in the
-//	//	the test program.
-//
-//	std::vector<std::string> tokens{"the_program",
-//         "--log-level", "information",
-//		"--form", "10-K",
-//		"--log-path", "/tmp/test1.log",
-//		"--list", "./list_with_bad_file.txt",
-//         "filename-has-form"
-//     };
-//
-//     ExtractorApp myApp;
-//	try
-//	{
-//         myApp.init(tokens);
-//
-//		decltype(auto) test_info =
-// UnitTest::GetInstance()->current_test_info();
-//		myApp.logger().information(std::string("\n\nTest: ") +
-// test_info->name() + " test case: " + test_info->test_case_name() + "\n\n");
-//
-//         myApp.run();
-//	}
-//
-//     // catch any problems trying to setup application
-//
-//	catch (const std::exception& theProblem)
-//	{
-//		// poco_fatal(myApp->logger(), theProblem.what());
-//
-//		myApp.logger().error(std::string("Something fundamental went
-// wrong: ") + theProblem.what()); 		throw;	//	so test
-// framework will get it too.
-//	}
-//	catch (...)
-//	{		// handle exception: unspecified
-//		myApp.logger().error("Something totally unexpected happened.");
-//		throw;
-//	}
-//     // there are 7 potential filings in the list.  1 is 'bad'.
-//	ASSERT_EQ(CountFilings(), 6);
-// }
-//
-// TEST_F(ProcessFolderEndtoEnd, WorkWithFileListContainsBadFileRepeat)
-//{
-//	//	NOTE: the program name 'the_program' in the command line below
-// is ignored in the
-//	//	the test program.
-//
-//	std::vector<std::string> tokens{"the_program",
-//         "--log-level", "information",
-//		"--form", "10-K",
-//         "-k", "2",
-//		"--log-path", "/tmp/test1.log",
-//		"--list", "./list_with_bad_file.txt",
-//
-//     };
-//
-//     ExtractorApp myApp;
-//	try
-//	{
-//         myApp.init(tokens);
-//
-//		decltype(auto) test_info =
-// UnitTest::GetInstance()->current_test_info();
-//		myApp.logger().information(std::string("\n\nTest: ") +
-// test_info->name() + " test case: " + test_info->test_case_name() + "\n\n");
-//
-//         myApp.run();
-//
-//         myApp.run();    //  do it again
-//	}
-//
-//     // catch any problems trying to setup application
-//
-//	catch (const std::exception& theProblem)
-//	{
-//		// poco_fatal(myApp->logger(), theProblem.what());
-//
-//		myApp.logger().error(std::string("Something fundamental went
-// wrong: ") + theProblem.what()); 		throw;	//	so test
-// framework will get it too.
-//	}
-//	catch (...)
-//	{		// handle exception: unspecified
-//		myApp.logger().error("Something totally unexpected happened.");
-//		throw;
-//	}
-//     // there are 7 potential filings in the list.  1 is 'bad'.
-//	ASSERT_EQ(CountFilings(), 6);
-// }
-//
-// TEST_F(ProcessFolderEndtoEnd, DISABLED_WorkWithFileListBadFile_10K)
-//{
-//	//	NOTE: the program name 'the_program' in the command line below
-// is ignored in the
-//	//	the test program.
-//
-//	std::vector<std::string> tokens{"the_program",
-//         "--log-level", "information",
-//		"--form", "10-K",
-//		"--list", "./test_directory_list.txt"
-//     };
-//
-//     ExtractorApp myApp;
-//	try
-//	{
-//         myApp.init(tokens);
-//
-//		decltype(auto) test_info =
-// UnitTest::GetInstance()->current_test_info();
-//		myApp.logger().information(std::string("\n\nTest: ") +
-// test_info->name() + " test case: " + test_info->test_case_name() + "\n\n");
-//
-//         ASSERT_THROW(myApp.run(), ExtractException);
-//	}
-//
-//     // catch any problems trying to setup application
-//
-//	catch (const std::exception& theProblem)
-//	{
-//		// poco_fatal(myApp->logger(), theProblem.what());
-//
-//		myApp.logger().error(std::string("Something fundamental went
-// wrong: ") + theProblem.what()); 		throw;	//	so test
-// framework will get it too.
-//	}
-//	catch (...)
-//	{		// handle exception: unspecified
-//		myApp.logger().error("Something totally unexpected happened.");
-//		throw;
-//	}
-//	ASSERT_EQ(CountFilings(), 1);
-// }
-//
-// TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3WithLimit_10Q)
-//{
-//	//	NOTE: the program name 'the_program' in the command line below
-// is ignored in the
-//	//	the test program.
-//
-//	std::vector<std::string> tokens{"the_program",
-//         "--log-level", "information",
-//		"--form", "10-Q",
-//		"--max", "17",
-//		"--list", "./test_directory_list.txt"
-//     };
-//
-//     ExtractorApp myApp;
-//	try
-//	{
-//         myApp.init(tokens);
-//
-//		decltype(auto) test_info =
-// UnitTest::GetInstance()->current_test_info();
-//		myApp.logger().information(std::string("\n\nTest: ") +
-// test_info->name() + " test case: " + test_info->test_case_name() + "\n\n");
-//
-//         myApp.run();
-//	}
-//
-//     // catch any problems trying to setup application
-//
-//	catch (const std::exception& theProblem)
-//	{
-//		// poco_fatal(myApp->logger(), theProblem.what());
-//
-//		myApp.logger().error(std::string("Something fundamental went
-// wrong: ") + theProblem.what()); 		throw;	//	so test
-// framework will get it too.
-//	}
-//	catch (...)
-//	{		// handle exception: unspecified
-//		myApp.logger().error("Something totally unexpected happened.");
-//		throw;
-//	}
-//	ASSERT_EQ(CountFilings(), 17);
-// }
-//
-// TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3WithLimit_10K)
-//{
-//	//	NOTE: the program name 'the_program' in the command line below
-// is ignored in the
-//	//	the test program.
-//
-//	std::vector<std::string> tokens{"the_program",
-//         "--log-level", "information",
-//		"--form", "10-K",
-//		"--max", "17",
-//		"--list", "./test_directory_list.txt"
-//     };
-//
-//     ExtractorApp myApp;
-//	try
-//	{
-//         myApp.init(tokens);
-//
-//		decltype(auto) test_info =
-// UnitTest::GetInstance()->current_test_info();
-//		myApp.logger().information(std::string("\n\nTest: ") +
-// test_info->name() + " test case: " + test_info->test_case_name() + "\n\n");
-//
-//         myApp.run();
-//	}
-//
-//     // catch any problems trying to setup application
-//
-//	catch (const std::exception& theProblem)
-//	{
-//		// poco_fatal(myApp->logger(), theProblem.what());
-//
-//		myApp.logger().error(std::string("Something fundamental went
-// wrong: ") + theProblem.what()); 		throw;	//	so test
-// framework will get it too.
-//	}
-//	catch (...)
-//	{		// handle exception: unspecified
-//		myApp.logger().error("Something totally unexpected happened.");
-//		throw;
-//	}
-//	ASSERT_EQ(CountFilings(), 1);
-// }
-//
 TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3Async10Q)
 {
     //	NOTE: the program name 'the_program' in the command line below is
@@ -992,7 +731,9 @@ TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3Async10Q)
                                     "-k",
                                     "6",
                                     "--list",
-                                    "./test_directory_list.txt"};
+                                    "./test_directory_list.txt",
+                                    "--log-path",
+                                    "/tmp/test06.log"};
 
     try
     {
@@ -1467,7 +1208,6 @@ TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3Async10Q)
 //// 	// ASSERT_THAT(x1 == x2, Eq(false));
 //// 	ASSERT_TRUE(0);
 //// }
-//
 
 class ExportHTML : public Test
 {
@@ -1483,7 +1223,7 @@ TEST_F(ExportHTML, ExportSingleFile)
         fs::remove_all("/tmp/extracts");
 
     std::vector<std::string> tokens{"the_program", "--log-level", "information", "--form", "10-Q,10-K", "--mode",
-                                    "HTML", "--log-path", "/tmp/test1.log",
+                                    "HTML", "--log-path", "/tmp/test07.log",
                                     //		"--list", "./list_with_bad_file.txt"
                                     "--export-HTML-data", "--HTML-forms-to-dir", "/tmp/extracts",
                                     "--HTML-forms-from-dir", "/vol_DA/SEC/Archives/edgar", "--file",
@@ -1530,7 +1270,7 @@ TEST_F(ExportHTML, ExportHMTLFromDirectory)
         fs::remove_all("/tmp/extracts/html");
 
     std::vector<std::string> tokens{"the_program", "--log-level", "information", "--form", "10-Q,10-K", "--mode",
-                                    "HTML", "--log-path", "/tmp/test1.log",
+                                    "HTML", "--log-path", "/tmp/test08.log",
                                     //		"--list", "./list_with_bad_file.txt",
                                     "--form-dir", SEC_DIRECTORY.string(), "--export-HTML-data", "--HTML-forms-to-dir",
                                     "/tmp/extracts/html", "--HTML-forms-from-dir", "/vol_DA/SEC/Archives"};
@@ -1573,7 +1313,7 @@ TEST_F(ExportHTML, VerifyNoExportOfExistingFilesWhenReplaceIsNotSpecifed)
         fs::remove_all("/tmp/extracts/html");
 
     std::vector<std::string> tokens{"the_program", "--log-level", "information", "--form", "10-Q,10-K", "--mode",
-                                    "HTML", "--log-path", "/tmp/test1.log",
+                                    "HTML", "--log-path", "/tmp/test09.log",
                                     //		"--list", "./list_with_bad_file.txt",
                                     "--form-dir", SEC_DIRECTORY.string(), "-R", "--export-HTML-data",
                                     "--HTML-forms-to-dir", "/tmp/extracts/html", "--HTML-forms-from-dir",
@@ -1616,7 +1356,7 @@ TEST_F(ExportHTML, VerifyNoExportOfExistingFilesWhenReplaceIsNotSpecifed)
     std::this_thread::sleep_for(std::chrono::seconds{3});
 
     std::vector<std::string> tokens2{"the_program", "--log-level", "information", "--form", "10-Q,10-K", "--mode",
-                                     "HTML", "--log-path", "/tmp/test1.log",
+                                     "HTML", "--log-path", "/tmp/test10.log",
                                      //		"--list", "./list_with_bad_file.txt",
                                      "--form-dir", SEC_DIRECTORY.string(), "--export-HTML-data", "--HTML-forms-to-dir",
                                      "/tmp/extracts/html", "--HTML-forms-from-dir", "/vol_DA/SEC/Archives"};
@@ -1677,7 +1417,7 @@ TEST_F(ExportHTML, ExportHTMLUsingFileList3Async10Q)
                                     "--list",
                                     "./test_directory_list.txt",
                                     "--log-path",
-                                    "/tmp/test1.log",
+                                    "/tmp/test11.log",
                                     "--export-HTML-data",
                                     "--HTML-forms-to-dir",
                                     "/tmp/extracts/html",
@@ -1725,7 +1465,7 @@ TEST_F(ExportHTML, ExportHTMLDetectsFullDiskAndStops)
         "the_program", "--log-level", "information", "--form", "10-Q,10-K", "--mode", "HTML",
         //		"-k", "6",
         //		"--list", "./test_directory_list.txt",
-        "--form-dir", SEC_DIRECTORY.string(), "--log-path", "/tmp/test2.log", "--export-HTML-data",
+        "--form-dir", SEC_DIRECTORY.string(), "--log-path", "/tmp/test12.log", "--export-HTML-data",
         "--HTML-forms-to-dir", "/tmp/ofstream_test", "--HTML-forms-from-dir", "/vol_DA/SEC/Archives"};
 
     try
@@ -1777,7 +1517,7 @@ TEST_F(ExportHTML, AsyncExportHTMLDetectsFullDiskAndStops)
                                     "--list",
                                     "./test_directory_list.txt",
                                     "--log-path",
-                                    "/tmp/test2.log",
+                                    "/tmp/test13.log",
                                     "--export-HTML-data",
                                     "--HTML-forms-to-dir",
                                     "/tmp/ofstream_test",
@@ -1874,7 +1614,7 @@ TEST_F(UpdateSharesOutstanding, UpdateSharesOutstandingAsyncAndSync)
                                     "--list",
                                     "./test_directory_list.txt",
                                     "--log-path",
-                                    "/tmp/test1.log",
+                                    "/tmp/test14.log",
                                     "--UpdateSharesOutstanding"};
 
     try
@@ -2007,7 +1747,7 @@ TEST_F(TestBoth, UpdateDBFromList)
                                     "--list",
                                     "./test_directory_list.txt",
                                     "--log-path",
-                                    "/tmp/test1.log"};
+                                    "/tmp/test15.log"};
 
     try
     {

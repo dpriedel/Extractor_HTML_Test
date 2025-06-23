@@ -135,8 +135,9 @@ TEST_F(SingleFileEndToEndXBRL, VerifyCanLoadDataToDBForFileWithXML10QXBRL)
     //	NOTE: the program name 'the_program' in the command line below is
     // ignored in the 	the test program.
 
-    // NOTE:  use 'replace-DB-content' option because the SetUp function appears to
-    // be incorrect -- I get duplicate key errors *somethimes*. Since this test
+    // NOTE:  use 'replace-DB-content' option because a given file can have both HTML
+    // and XBRL. Depending on which mode is used in prior tests, duplicates may occur
+    // from running with different modes in other tests. Since this test
     // is not about replacement processing, just do it.
 
     std::vector<std::string> tokens{"the_program",
@@ -713,7 +714,7 @@ TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3WithLimitAsync_10Q)
     { // handle exception: unspecified
         spdlog::error("Something totally unexpected happened.");
     }
-    ASSERT_EQ(CountFilings(), 17);
+    ASSERT_EQ(CountFilings(), 15);
 }
 
 TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3_10K)

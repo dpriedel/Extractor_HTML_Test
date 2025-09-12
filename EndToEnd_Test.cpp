@@ -1159,8 +1159,8 @@ TEST_F(ExportHTML, ExportSingleFile)
     if (fs::exists("/tmp/extracts"))
         fs::remove_all("/tmp/extracts");
 
-    std::vector<std::string> tokens{"the_program", "--log-level", "information", "--form", "10-Q,10-K", "--mode",
-                                    "HTML", "--log-path", "/tmp/Extractor/test12.log",
+    std::vector<std::string> tokens{"the_program", "--log-level", "debug", "--form", "10-Q,10-K", "--mode", "HTML",
+                                    "--log-path", "/tmp/Extractor/test12.log",
                                     //		"--list", "./list_with_bad_file.txt"
                                     "--export-HTML-data", "--HTML-forms-to-dir", "/tmp/extracts",
                                     "--HTML-forms-from-dir", "/vol_DA/SEC/Archives/edgar", "--file",

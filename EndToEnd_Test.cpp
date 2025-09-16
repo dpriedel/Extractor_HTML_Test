@@ -527,7 +527,7 @@ TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3_10Q)
                                     "10-Q",
                                     "--log-path",
                                     "/tmp/Extractor/test06.log",
-                                    "--list",
+                                    "--list-file",
                                     "./test_directory_list.txt"};
 
     try
@@ -576,7 +576,7 @@ TEST_F(ProcessFolderEndtoEnd, WorkWithFileListResume_10Q)
                                     "10-Q",
                                     "--log-path",
                                     "/tmp/Extractor/test07.log",
-                                    "--list",
+                                    "--list-file",
                                     "./test_directory_list.txt",
                                     "--resume-at",
                                     "/vol_DA/SEC/Archives/edgar/data/1326688/0001104659-09-064933.txt"};
@@ -627,7 +627,7 @@ TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3Async10Q)
                                     "HTML",
                                     "-k",
                                     "6",
-                                    "--list",
+                                    "--list-file",
                                     "./test_directory_list.txt",
                                     "--log-path",
                                     "/tmp/Extractor/test08.log"};
@@ -729,7 +729,7 @@ TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3_10K)
                                     "HTML",
                                     "--form",
                                     "10-K",
-                                    "--list",
+                                    "--list-file",
                                     "./test_directory_list.txt",
                                     "--log-path",
                                     "/tmp/Extractor/test10.log"};
@@ -1161,7 +1161,7 @@ TEST_F(ExportHTML, ExportSingleFile)
 
     std::vector<std::string> tokens{"the_program", "--log-level", "debug", "--form", "10-Q,10-K", "--mode", "HTML",
                                     "--log-path", "/tmp/Extractor/test12.log",
-                                    //		"--list", "./list_with_bad_file.txt"
+                                    //		"--list-file", "./list_with_bad_file.txt"
                                     "--export-HTML-data", "--HTML-forms-to-dir", "/tmp/extracts",
                                     "--HTML-forms-from-dir", "/vol_DA/SEC/Archives/edgar", "--file",
                                     "/vol_DA/SEC/Archives/edgar/data/google-10k.txt"};
@@ -1208,7 +1208,7 @@ TEST_F(ExportHTML, ExportHMTLFromDirectory)
 
     std::vector<std::string> tokens{"the_program", "--log-level", "information", "--form", "10-Q,10-K", "--mode",
                                     "HTML", "--log-path", "/tmp/Extractor/test13.log",
-                                    //		"--list", "./list_with_bad_file.txt",
+                                    //		"--list-file", "./list_with_bad_file.txt",
                                     "--form-dir", SEC_DIRECTORY.string(), "--export-HTML-data", "--HTML-forms-to-dir",
                                     "/tmp/extracts/html", "--HTML-forms-from-dir", "/vol_DA/SEC/Archives"};
 
@@ -1241,7 +1241,7 @@ TEST_F(ExportHTML, ExportHMTLFromDirectory)
     { // handle exception: unspecified
         spdlog::error("Something totally unexpected happened.");
     }
-    ASSERT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 187);
+    ASSERT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 191);
 }
 
 TEST_F(ExportHTML, VerifyNoExportOfExistingFilesWhenReplaceIsNotSpecifed)
@@ -1251,10 +1251,9 @@ TEST_F(ExportHTML, VerifyNoExportOfExistingFilesWhenReplaceIsNotSpecifed)
 
     std::vector<std::string> tokens{"the_program", "--log-level", "information", "--form", "10-Q,10-K", "--mode",
                                     "HTML", "--log-path", "/tmp/Extractor/test14.log",
-                                    //		"--list", "./list_with_bad_file.txt",
-                                    "--form-dir", SEC_DIRECTORY.string(), "-R", "--export-HTML-data",
-                                    "--HTML-forms-to-dir", "/tmp/extracts/html", "--HTML-forms-from-dir",
-                                    "/vol_DA/SEC/Archives"};
+                                    //		"--list-file", "./list_with_bad_file.txt",
+                                    "--form-dir", SEC_DIRECTORY.string(), "--export-HTML-data", "--HTML-forms-to-dir",
+                                    "/tmp/extracts/html", "--HTML-forms-from-dir", "/vol_DA/SEC/Archives"};
 
     try
     {
@@ -1286,7 +1285,7 @@ TEST_F(ExportHTML, VerifyNoExportOfExistingFilesWhenReplaceIsNotSpecifed)
         spdlog::error("Something totally unexpected happened.");
     }
 
-    EXPECT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 187);
+    EXPECT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 191);
 
     auto x1 = CollectLastModifiedTimesForFilesInDirectoryTree("/tmp/extracts/html");
 
@@ -1294,7 +1293,7 @@ TEST_F(ExportHTML, VerifyNoExportOfExistingFilesWhenReplaceIsNotSpecifed)
 
     std::vector<std::string> tokens2{"the_program", "--log-level", "information", "--form", "10-Q,10-K", "--mode",
                                      "HTML", "--log-path", "/tmp/Extractor/test15.log",
-                                     //		"--list", "./list_with_bad_file.txt",
+                                     //		"--list-file", "./list_with_bad_file.txt",
                                      "--form-dir", SEC_DIRECTORY.string(), "--export-HTML-data", "--HTML-forms-to-dir",
                                      "/tmp/extracts/html", "--HTML-forms-from-dir", "/vol_DA/SEC/Archives"};
 
@@ -1327,7 +1326,7 @@ TEST_F(ExportHTML, VerifyNoExportOfExistingFilesWhenReplaceIsNotSpecifed)
     { // handle exception: unspecified
         spdlog::error("Something totally unexpected happened.");
     }
-    ASSERT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 187);
+    ASSERT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 191);
 
     auto x2 = CollectLastModifiedTimesForFilesInDirectoryTree("/tmp/extracts/html");
 
@@ -1351,7 +1350,7 @@ TEST_F(ExportHTML, ExportHTMLUsingFileList3Async10Q)
                                     "HTML",
                                     "-k",
                                     "6",
-                                    "--list",
+                                    "--list-file",
                                     "./test_directory_list.txt",
                                     "--log-path",
                                     "/tmp/Extractor/test16.log",
@@ -1401,7 +1400,7 @@ TEST_F(ExportHTML, ExportHTMLDetectsFullDiskAndStops)
     std::vector<std::string> tokens{
         "the_program", "--log-level", "information", "--form", "10-Q,10-K", "--mode", "HTML",
         //		"-k", "6",
-        //		"--list", "./test_directory_list.txt",
+        //		"--list-file", "./test_directory_list.txt",
         "--form-dir", SEC_DIRECTORY.string(), "--log-path", "/tmp/Extractor/test17.log", "--export-HTML-data",
         "--HTML-forms-to-dir", "/tmp/ofstream_test", "--HTML-forms-from-dir", "/vol_DA/SEC/Archives"};
 
@@ -1451,7 +1450,7 @@ TEST_F(ExportHTML, AsyncExportHTMLDetectsFullDiskAndStops)
                                     "HTML",
                                     "-k",
                                     "6",
-                                    "--list",
+                                    "--list-file",
                                     "./test_directory_list.txt",
                                     "--log-path",
                                     "/tmp/Extractor/test18.log",
@@ -1546,7 +1545,7 @@ TEST_F(UpdateSharesOutstanding, UpdateSharesOutstandingAsyncAndSync)
                                     "HTML",
                                     "-k",
                                     "6",
-                                    "--list",
+                                    "--list-file",
                                     "./test_directory_list.txt",
                                     "--log-path",
                                     "/tmp/Extractor/test19.log",
@@ -1668,14 +1667,14 @@ TEST_F(TestBoth, UpdateDBFromList)
 
     std::vector<std::string> tokens{"the_program",
                                     "--log-level",
-                                    "info",
+                                    "information",
                                     "--form",
                                     "10-Q,10-K",
                                     "--mode",
                                     "BOTH",
                                     "-k",
                                     "6",
-                                    "--list",
+                                    "--list-file",
                                     "./test_directory_list.txt",
                                     "--log-path",
                                     "/tmp/Extractor/test20.log"};

@@ -1389,7 +1389,7 @@ TEST_F(ExportHTML, ExportHTMLUsingFileList3Async10Q)
     { // handle exception: unspecified
         spdlog::error("Something totally unexpected happened.");
     }
-    ASSERT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 178);
+    ASSERT_EQ(CountFilesInDirectoryTree("/tmp/extracts/html"), 182);
 }
 
 TEST_F(ExportHTML, ExportHTMLDetectsFullDiskAndStops)

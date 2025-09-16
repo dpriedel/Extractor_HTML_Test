@@ -19,11 +19,18 @@
 #
 MAKE=gmake
 
-BOOSTDIR := /extra/boost/boost-1.88_gcc-15
+BOOSTDIR := /extra/boost/boost-1.89_gcc-15
 GCCDIR := /extra/gcc/gcc-15
 GTESTDIR := /usr/local/include
 CPP := $(GCCDIR)/bin/g++
 
+# temporary for migration from boost program_options to CLI11
+
+USE_PG_OPTIONS :=
+
+ifeq ($(USE_PG_OPTIONS), 1)
+  PG_OPTIONS_LIB := -lboost_program_options-mt-x64
+endif
 # If no configuration is specified, "Debug" will be used
 ifndef "CFG"
 	CFG := Debug
@@ -35,7 +42,7 @@ OUTFILE := EndToEnd_Test
 
 CFG_INC := -I/home/dpriedel/projects/Extractor_Markup/src \
 	-I$(GTESTDIR) \
-	-isystem$(BOOSTDIR) 
+	-IisystemI$(BOOSTDIR) 
 
 RPATH_LIB := -Wl,-rpath,$(GCCDIR)/lib64 -Wl,-rpath,$(BOOSTDIR)/lib -Wl,-rpath,/usr/local/lib
 
@@ -58,20 +65,13 @@ SRCS := $(SRCS1) $(SRCS2)
 
 VPATH := $(SDIR1):$(SDIR2)
 
-#
-# Configuration: Debug
-#
-ifeq "$(CFG)" "Debug"
-
-OUTDIR=Debug_e2e
-
 CFG_LIB := -lpthread \
 		-L$(GCCDIR)/lib64 \
 		-lstdc++ \
 		-lstdc++exp \
 		-L$(BOOSTDIR)/lib \
 		-lboost_iostreams-mt-d-x64 \
-		-lboost_program_options-mt-x64 \
+		$(PG_OPTIONS_LIB) \
 		-L/usr/local/lib \
 		-lxlsxio_read \
 		-lgtest -lgtest_main \
@@ -90,9 +90,20 @@ OBJS2=$(addprefix $(OUTDIR)/, $(addsuffix .o, $(basename $(notdir $(SRCS2)))))
 OBJS=$(OBJS1) $(OBJS2)
 DEPS=$(OBJS:.o=.d)
 
+#
+# Configuration: Debug
+#
+ifeq "$(CFG)" "Debug"
+
+OUTDIR=Debug_e2e
+
 # COMPILE=$(CPP) -c  -x c++  -O0  -g3 -std=c++20 -DBOOST_ENABLE_ASSERT_HANDLER -D_DEBUG -fsanitize=address -fPIC -o $@ $(CFG_INC) $< -march=native -MMD -MP
 # LINK := $(CPP)  -g -fsanitize=address -o $(OUTFILE) $(OBJS) $(CFG_LIB) -Wl,-E $(RPATH_LIB)
+ifeq ($(USE_PG_OPTIONS), 1)
+COMPILE=$(CPP) -c  -x c++  -O0  -g3 -std=c++26 -DUSE_PG_OPTIONS -DBOOST_ENABLE_ASSERT_HANDLER -D_DEBUG -DSPDLOG_USE_STD_FORMAT -DBOOST_REGEX_STANDALONE -DUSE_OS_TZDB -fPIC -o $@ $(CFG_INC) $< -march=native -MMD -MP
+else
 COMPILE=$(CPP) -c  -x c++  -O0  -g3 -std=c++26 -DBOOST_ENABLE_ASSERT_HANDLER -D_DEBUG -DSPDLOG_USE_STD_FORMAT -DBOOST_REGEX_STANDALONE -DUSE_OS_TZDB -fPIC -o $@ $(CFG_INC) $< -march=native -MMD -MP
+endif
 LINK := $(CPP)  -g -o $(OUTFILE) $(OBJS) $(CFG_LIB) -Wl,-E $(RPATH_LIB)
 
 endif #	DEBUG configuration

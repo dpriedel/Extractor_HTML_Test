@@ -95,7 +95,7 @@ protected:
 
         // make sure the DB is empty before we start
 
-        trxn.exec("DELETE FROM unified_extracts.sec_filing_id WHERE data_source != 'HTML'");
+        trxn.exec("DELETE FROM test_unified_extracts.sec_filing_id WHERE data_source != 'HTML'");
         trxn.commit();
     }
 
@@ -105,14 +105,14 @@ public:
         pqxx::connection c{"dbname=sec_extracts user=extractor_pg"};
         pqxx::work trxn{c};
 
-        auto row1 = trxn.query_value<int>("select count(*) from unified_extracts.sec_filing_id as t1 inner join "
-                                          "unified_extracts.sec_bal_sheet_data as t2 on t1.filing_id =  "
+        auto row1 = trxn.query_value<int>("select count(*) from test_unified_extracts.sec_filing_id as t1 inner join "
+                                          "test_unified_extracts.sec_bal_sheet_data as t2 on t1.filing_id =  "
                                           "t2.filing_id where t1.data_source = 'XLS';");
-        auto row2 = trxn.query_value<int>("select count(*) from unified_extracts.sec_filing_id as t1 inner join "
-                                          "unified_extracts.sec_stmt_of_ops_data as t2 on t1.filing_id =  "
+        auto row2 = trxn.query_value<int>("select count(*) from test_unified_extracts.sec_filing_id as t1 inner join "
+                                          "test_unified_extracts.sec_stmt_of_ops_data as t2 on t1.filing_id =  "
                                           "t2.filing_id where t1.data_source = 'XLS';");
-        auto row3 = trxn.query_value<int>("select count(*) from unified_extracts.sec_filing_id as t1 inner join "
-                                          "unified_extracts.sec_cash_flows_data as t2 on t1.filing_id =  "
+        auto row3 = trxn.query_value<int>("select count(*) from test_unified_extracts.sec_filing_id as t1 inner join "
+                                          "test_unified_extracts.sec_cash_flows_data as t2 on t1.filing_id =  "
                                           "t2.filing_id where t1.data_source = 'XLS';");
         trxn.commit();
         int total = row1 + row2 + row3;
@@ -121,8 +121,8 @@ public:
             // maybe we have plain XBRL
 
             pqxx::work trxn{c};
-            total = trxn.query_value<int>("select count(*) from unified_extracts.sec_filing_id as t1 inner "
-                                          "join unified_extracts.sec_xbrl_data as t2 on t1.filing_id =  "
+            total = trxn.query_value<int>("select count(*) from test_unified_extracts.sec_filing_id as t1 inner "
+                                          "join test_unified_extracts.sec_xbrl_data as t2 on t1.filing_id =  "
                                           "t2.filing_id where t1.data_source = 'XBRL';");
             trxn.commit();
         }
@@ -244,7 +244,7 @@ protected:
 
         // make sure the DB is empty before we start
 
-        trxn.exec("DELETE FROM unified_extracts.sec_filing_id WHERE data_source = "
+        trxn.exec("DELETE FROM test_unified_extracts.sec_filing_id WHERE data_source = "
                   "'HTML'");
         trxn.commit();
     }
@@ -255,14 +255,14 @@ public:
         pqxx::connection c{"dbname=sec_extracts user=extractor_pg"};
         pqxx::work trxn{c};
 
-        auto row1 = trxn.query_value<int>("select count(*) from unified_extracts.sec_filing_id as t1 inner join "
-                                          "unified_extracts.sec_bal_sheet_data as t2 on t1.filing_id =  "
+        auto row1 = trxn.query_value<int>("select count(*) from test_unified_extracts.sec_filing_id as t1 inner join "
+                                          "test_unified_extracts.sec_bal_sheet_data as t2 on t1.filing_id =  "
                                           "t2.filing_id where t1.data_source = 'HTML';");
-        auto row2 = trxn.query_value<int>("select count(*) from unified_extracts.sec_filing_id as t1 inner join "
-                                          "unified_extracts.sec_stmt_of_ops_data as t2 on t1.filing_id =  "
+        auto row2 = trxn.query_value<int>("select count(*) from test_unified_extracts.sec_filing_id as t1 inner join "
+                                          "test_unified_extracts.sec_stmt_of_ops_data as t2 on t1.filing_id =  "
                                           "t2.filing_id where t1.data_source = 'HTML';");
-        auto row3 = trxn.query_value<int>("select count(*) from unified_extracts.sec_filing_id as t1 inner join "
-                                          "unified_extracts.sec_cash_flows_data as t2 on t1.filing_id =  "
+        auto row3 = trxn.query_value<int>("select count(*) from test_unified_extracts.sec_filing_id as t1 inner join "
+                                          "test_unified_extracts.sec_cash_flows_data as t2 on t1.filing_id =  "
                                           "t2.filing_id where t1.data_source = 'HTML';");
         trxn.commit();
         int total = row1 + row2 + row3;
@@ -419,7 +419,7 @@ protected:
 
         // make sure the DB is empty before we start
 
-        trxn.exec("DELETE FROM unified_extracts.sec_filing_id WHERE data_source = 'HTML'");
+        trxn.exec("DELETE FROM test_unified_extracts.sec_filing_id WHERE data_source = 'HTML'");
         trxn.commit();
     }
 
@@ -431,9 +431,9 @@ public:
 
         // make sure the DB is empty before we start
 
-        auto row1 = trxn.exec("SELECT count(*) FROM unified_extracts.sec_bal_sheet_data").one_row();
-        auto row2 = trxn.exec("SELECT count(*) FROM unified_extracts.sec_stmt_of_ops_data").one_row();
-        auto row3 = trxn.exec("SELECT count(*) FROM unified_extracts.sec_cash_flows_data").one_row();
+        auto row1 = trxn.exec("SELECT count(*) FROM test_unified_extracts.sec_bal_sheet_data").one_row();
+        auto row2 = trxn.exec("SELECT count(*) FROM test_unified_extracts.sec_stmt_of_ops_data").one_row();
+        auto row3 = trxn.exec("SELECT count(*) FROM test_unified_extracts.sec_cash_flows_data").one_row();
         trxn.commit();
         return row1[0].as<int>() + row2[0].as<int>() + row3[0].as<int>();
     }
@@ -443,13 +443,13 @@ public:
         pqxx::connection c{"dbname=sec_extracts user=extractor_pg"};
         pqxx::work trxn{c};
 
-        auto row1 = trxn.exec("SELECT count(*) FROM unified_extracts.sec_bal_sheet_data "
+        auto row1 = trxn.exec("SELECT count(*) FROM test_unified_extracts.sec_bal_sheet_data "
                               "WHERE label = 'Missing Value'")
                         .one_row();
-        auto row2 = trxn.exec("SELECT count(*) FROM unified_extracts.sec_stmt_of_ops_data "
+        auto row2 = trxn.exec("SELECT count(*) FROM test_unified_extracts.sec_stmt_of_ops_data "
                               "WHERE label = 'Missing Value'")
                         .one_row();
-        auto row3 = trxn.exec("SELECT count(*) FROM unified_extracts.sec_cash_flows_data "
+        auto row3 = trxn.exec("SELECT count(*) FROM test_unified_extracts.sec_cash_flows_data "
                               "WHERE label = 'Missing Value'")
                         .one_row();
         trxn.commit();
@@ -463,7 +463,7 @@ public:
 
         // make sure the DB is empty before we start
 
-        auto row = trxn.exec("SELECT count(*) FROM unified_extracts.sec_filing_id "
+        auto row = trxn.exec("SELECT count(*) FROM test_unified_extracts.sec_filing_id "
                              "WHERE data_source = 'HTML'")
                        .one_row();
         trxn.commit();
@@ -676,11 +676,11 @@ TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3WithLimitAsync_10Q)
                                     "HTML",
                                     "--form",
                                     "10-Q",
-                                    "--max",
+                                    "--max-files",
                                     "17",
                                     "-k",
                                     "4",
-                                    "--list",
+                                    "--list-file",
                                     "./test_directory_list.txt",
                                     "--log-path",
                                     "/tmp/Extractor/test09.log"};
@@ -1507,12 +1507,12 @@ protected:
         // we want to count how many entries we have.
         // theoretically, we will update all of them.
 
-        auto row = trxn.exec("SELECT count(*) FROM unified_extracts.sec_filing_id "
+        auto row = trxn.exec("SELECT count(*) FROM test_unified_extracts.sec_filing_id "
                              "WHERE shares_outstanding != -1")
                        .one_row();
         entires_with_shares = row[0].as<int>();
 
-        trxn.exec("UPDATE unified_extracts.sec_filing_id SET shares_outstanding = -1");
+        trxn.exec("UPDATE test_unified_extracts.sec_filing_id SET shares_outstanding = -1");
         trxn.commit();
     }
 
@@ -1524,7 +1524,7 @@ public:
 
         // make sure the DB is empty before we start
 
-        auto row = trxn.exec("SELECT count(*) FROM unified_extracts.sec_filing_id "
+        auto row = trxn.exec("SELECT count(*) FROM test_unified_extracts.sec_filing_id "
                              "WHERE shares_outstanding != -1")
                        .one_row();
         trxn.commit();
@@ -1595,7 +1595,7 @@ protected:
 
         // make sure the DB is empty before we start
 
-        trxn.exec("DELETE FROM unified_extracts.sec_filing_id");
+        trxn.exec("DELETE FROM test_unified_extracts.sec_filing_id");
         trxn.commit();
     }
 
@@ -1607,9 +1607,9 @@ public:
 
         // make sure the DB is empty before we start
 
-        auto row1 = trxn.exec("SELECT count(*) FROM unified_extracts.sec_bal_sheet_data").one_row();
-        auto row2 = trxn.exec("SELECT count(*) FROM unified_extracts.sec_stmt_of_ops_data").one_row();
-        auto row3 = trxn.exec("SELECT count(*) FROM unified_extracts.sec_cash_flows_data").one_row();
+        auto row1 = trxn.exec("SELECT count(*) FROM test_unified_extracts.sec_bal_sheet_data").one_row();
+        auto row2 = trxn.exec("SELECT count(*) FROM test_unified_extracts.sec_stmt_of_ops_data").one_row();
+        auto row3 = trxn.exec("SELECT count(*) FROM test_unified_extracts.sec_cash_flows_data").one_row();
         trxn.commit();
         return row1[0].as<int>() + row2[0].as<int>() + row3[0].as<int>();
     }
@@ -1619,13 +1619,13 @@ public:
         pqxx::connection c{"dbname=sec_extracts user=extractor_pg"};
         pqxx::work trxn{c};
 
-        auto row1 = trxn.exec("SELECT count(*) FROM unified_extracts.sec_bal_sheet_data "
+        auto row1 = trxn.exec("SELECT count(*) FROM test_unified_extracts.sec_bal_sheet_data "
                               "WHERE label = 'Missing Value'")
                         .one_row();
-        auto row2 = trxn.exec("SELECT count(*) FROM unified_extracts.sec_stmt_of_ops_data "
+        auto row2 = trxn.exec("SELECT count(*) FROM test_unified_extracts.sec_stmt_of_ops_data "
                               "WHERE label = 'Missing Value'")
                         .one_row();
-        auto row3 = trxn.exec("SELECT count(*) FROM unified_extracts.sec_cash_flows_data "
+        auto row3 = trxn.exec("SELECT count(*) FROM test_unified_extracts.sec_cash_flows_data "
                               "WHERE label = 'Missing Value'")
                         .one_row();
         trxn.commit();
@@ -1639,7 +1639,7 @@ public:
 
         // make sure the DB is empty before we start
 
-        auto row = trxn.exec("SELECT count(*) FROM unified_extracts.sec_filing_id "
+        auto row = trxn.exec("SELECT count(*) FROM test_unified_extracts.sec_filing_id "
                              "WHERE data_source = 'HTML'")
                        .one_row();
         trxn.commit();
@@ -1653,7 +1653,7 @@ public:
 
         // make sure the DB is empty before we start
 
-        auto row = trxn.exec("SELECT count(*) FROM unified_extracts.sec_filing_id "
+        auto row = trxn.exec("SELECT count(*) FROM test_unified_extracts.sec_filing_id "
                              "WHERE data_source != 'HTML'")
                        .one_row();
         trxn.commit();

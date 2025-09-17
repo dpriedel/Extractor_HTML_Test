@@ -44,7 +44,7 @@ OUTFILE := EndToEnd_Test
 
 CFG_INC := -I/home/dpriedel/projects/Extractor_Markup/src \
 	-I$(GTESTDIR) \
-	-IisystemI$(BOOSTDIR) 
+	-isystem$(BOOSTDIR) 
 
 RPATH_LIB := -Wl,-rpath,$(GCCDIR)/lib64 -Wl,-rpath,$(BOOSTDIR)/lib -Wl,-rpath,/usr/local/lib
 

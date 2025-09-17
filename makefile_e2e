@@ -26,7 +26,9 @@ CPP := $(GCCDIR)/bin/g++
 
 # temporary for migration from boost program_options to CLI11
 
+ifndef "USE_PG_OPTIONS"
 USE_PG_OPTIONS :=
+endif
 
 ifeq ($(USE_PG_OPTIONS), 1)
   PG_OPTIONS_LIB := -lboost_program_options-mt-x64

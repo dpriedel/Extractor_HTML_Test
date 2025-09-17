@@ -1,4 +1,0 @@
-
-" let's help our file searchs
-
-set path+=/usr/local/include,../Extractor_Markup/src

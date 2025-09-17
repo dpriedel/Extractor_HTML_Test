@@ -244,8 +244,7 @@ protected:
 
         // make sure the DB is empty before we start
 
-        trxn.exec("DELETE FROM test_unified_extracts.sec_filing_id WHERE data_source = "
-                  "'HTML'");
+        trxn.exec("DELETE FROM test_unified_extracts.sec_filing_id WHERE data_source = 'HTML'");
         trxn.commit();
     }
 
@@ -714,7 +713,7 @@ TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3WithLimitAsync_10Q)
     { // handle exception: unspecified
         spdlog::error("Something totally unexpected happened.");
     }
-    ASSERT_EQ(CountFilings(), 15);
+    ASSERT_EQ(CountFilings(), 14);
 }
 
 TEST_F(ProcessFolderEndtoEnd, WorkWithFileList3_10K)

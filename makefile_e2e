@@ -79,7 +79,7 @@ CFG_LIB := -lpthread \
 		-lgtest -lgtest_main \
 		-lspdlog \
 		-lgumbo \
-		-lgq \
+		-lgumbo_query \
 		-lpqxx -lpq \
 		-L/usr/lib \
 		-lexpat \

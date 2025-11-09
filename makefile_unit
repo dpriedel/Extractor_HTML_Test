@@ -74,7 +74,7 @@ CFG_LIB := -lpthread \
 		-lgtest -lgtest_main \
 		-lspdlog \
 		-lgumbo \
-		-lgq \
+		-lgumbo_query \
 		-lpqxx \
 		-L/usr/lib \
 		-lpq \

@@ -19,20 +19,11 @@
 #
 MAKE=gmake
 
-BOOSTDIR := /extra/boost/boost-1.89_gcc-15
+BOOSTDIR := /extra/boost/boost-1.90_gcc-15
 GCCDIR := /extra/gcc/gcc-15
 GTESTDIR := /usr/local/include
 CPP := $(GCCDIR)/bin/g++
 
-# temporary for migration from boost program_options to CLI11
-
-ifndef "USE_PG_OPTIONS"
-USE_PG_OPTIONS :=
-endif
-
-ifeq ($(USE_PG_OPTIONS), 1)
-  PG_OPTIONS_LIB := -lboost_program_options-mt-x64
-endif
 # If no configuration is specified, "Debug" will be used
 ifndef "CFG"
 	CFG := Debug
@@ -73,7 +64,6 @@ CFG_LIB := -lpthread \
 		-lstdc++exp \
 		-L$(BOOSTDIR)/lib \
 		-lboost_iostreams-mt-d-x64 \
-		$(PG_OPTIONS_LIB) \
 		-L/usr/local/lib \
 		-lxlsxio_read \
 		-lgtest -lgtest_main \
@@ -101,11 +91,7 @@ OUTDIR=Debug_e2e
 
 # COMPILE=$(CPP) -c  -x c++  -O0  -g3 -std=c++20 -DBOOST_ENABLE_ASSERT_HANDLER -D_DEBUG -fsanitize=address -fPIC -o $@ $(CFG_INC) $< -march=native -MMD -MP
 # LINK := $(CPP)  -g -fsanitize=address -o $(OUTFILE) $(OBJS) $(CFG_LIB) -Wl,-E $(RPATH_LIB)
-ifeq ($(USE_PG_OPTIONS), 1)
-COMPILE=$(CPP) -c  -x c++  -O0  -g3 -std=c++26 -DUSE_PG_OPTIONS -DBOOST_ENABLE_ASSERT_HANDLER -D_DEBUG -DSPDLOG_USE_STD_FORMAT -DBOOST_REGEX_STANDALONE -DUSE_OS_TZDB -fPIC -o $@ $(CFG_INC) $< -march=native -MMD -MP
-else
 COMPILE=$(CPP) -c  -x c++  -O0  -g3 -std=c++26 -DBOOST_ENABLE_ASSERT_HANDLER -D_DEBUG -DSPDLOG_USE_STD_FORMAT -DBOOST_REGEX_STANDALONE -DUSE_OS_TZDB -fPIC -o $@ $(CFG_INC) $< -march=native -MMD -MP
-endif
 LINK := $(CPP)  -g -o $(OUTFILE) $(OBJS) $(CFG_LIB) -Wl,-E $(RPATH_LIB)
 
 endif #	DEBUG configuration

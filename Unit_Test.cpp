@@ -138,6 +138,9 @@ const EM::FileName FILE_WITH_XBRL_INSIDE_HTM_DOCUMENT{"/vol_KUtil2/SEC_exports/h
                                                       "0000029905-19-000019.txt_wfx-20181231.htm"};
 const EM::FileName FILE_WITH_XBRL_INSIDE_TXT_DOCUMENT{"/vol_DA/SEC/SEC_forms/0000029905/10-K/0000029905-19-000019.txt"};
 
+const EM::FileName FILE_WITH_LIST_PROBLEM_ACCESSION_NUMBERS{
+    "/home/dpriedel/projects/Extractor_HTML_Test/test_files/file_name_problem.lst"};
+
 // This ctype facet does NOT classify spaces and tabs as whitespace
 // from cppreference example
 
@@ -345,6 +348,35 @@ TEST_F(Iterators, TableRangeIteratorFileWithHTML_10Q)
     how_many = rng::distance(tables);
     ASSERT_EQ(how_many, 49);
 }
+
+class ParseSEC_Header : public Test
+{
+};
+
+TEST_F(ParseSEC_Header, TestListOfFiles)
+{
+    int files_processed{0};
+
+    auto load_SEC_Header = [&files_processed](const auto &dir_ent) {
+        if (dir_ent.status().type() == fs::file_type::regular)
+        {
+            const auto file_content_raw = LoadDataFileForUse(FILE_WITH_HTML_10Q);
+            EM::FileContent file_content{file_content_raw};
+
+            SEC_Header SEC_data;
+            SEC_data.UseData(file_content);
+            EXPECT_NO_THROW(SEC_data.ExtractHeaderFields());
+            ++files_processed;
+        }
+    };
+    std::for_each(fs::recursive_directory_iterator(SEC_DIRECTORY.get()), fs::recursive_directory_iterator(),
+                  load_SEC_Header);
+    ASSERT_EQ(files_processed, 200);
+};
+
+TEST_F(ParseSEC_Header, TestListKnownProblemFiles){
+
+};
 
 class IdentifyHTMLFilesToUse : public Test
 {

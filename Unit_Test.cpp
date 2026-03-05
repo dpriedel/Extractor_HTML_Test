@@ -35,6 +35,7 @@
 #include <fstream>
 #include <iostream>
 #include <numeric>
+#include <print>
 #include <ranges>
 #include <string>
 
@@ -374,8 +375,26 @@ TEST_F(ParseSEC_Header, TestListOfFiles)
     ASSERT_EQ(files_processed, 200);
 };
 
-TEST_F(ParseSEC_Header, TestListKnownProblemFiles){
+TEST_F(ParseSEC_Header, TestListKnownProblemFiles)
+{
+    int files_processed{0};
 
+    auto load_SEC_Header = [&files_processed](const auto &file_name) {
+        const auto file_content_raw = LoadDataFileForUse(file_name);
+        EM::FileContent file_content{file_content_raw};
+
+        SEC_Header SEC_data;
+        SEC_data.UseData(file_content);
+        EXPECT_NO_THROW(SEC_data.ExtractHeaderFields());
+        // std::println("{}", SEC_data.GetFields().at("file_name"));
+        ++files_processed;
+    };
+    // rng::for_each(line_view(FILE_WITH_LIST_PROBLEM_ACCESSION_NUMBERS.get()), load_SEC_Header);
+    for (const auto &line : view_file_by_line(FILE_WITH_LIST_PROBLEM_ACCESSION_NUMBERS.get()))
+    {
+        load_SEC_Header(EM::FileName(line));
+    }
+    ASSERT_EQ(files_processed, 10);
 };
 
 class IdentifyHTMLFilesToUse : public Test
